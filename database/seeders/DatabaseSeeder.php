@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +15,32 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        Permission::create(['name' => 'make user']);
+        Permission::create(['name' => 'edit user']);
+        Permission::create(['name' => 'view user']);
+        Permission::create(['name' => 'delete user']);
+        Permission::create(['name' => 'view anime']);
+        Permission::create(['name' => 'view pokemon']);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        Role::create(['name' => 'admin']);
+        Role::create(['name' => 'superuser']);
+
+        $admin = Role::findByName('admin');
+        $admin->givePermissionTo('make user');
+        $admin->givePermissionTo('view user');
+        $admin->givePermissionTo('edit user');
+        $admin->givePermissionTo('delete user');
+
+        $superuser = Role::findByName('superuser');
+        $superuser->givePermissionTo('view anime');
+        $superuser->givePermissionTo('view pokemon');
+
+        $user = User::create([
+            'name' => 'admin',
+            'username' => 'boss',
+            'email' => 'admin@gmail.com',
+            'password' => bcrypt('123qweasd')
         ]);
+        $user->assignRole('admin');
     }
 }
