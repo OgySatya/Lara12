@@ -38,6 +38,24 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'password' => bcrypt('123')
         ]);
+        $user = User::create([
+            'name' => 'Ogy Satya',
+            'username' => 'ogy',
+            'NIP' => '321',
+            'jabatan' => 'kates',
+            'group' => 'b',
+            'email' => 'admin2@gmail.com',
+            'password' => bcrypt('321')
+        ]);
+        $user = User::create([
+            'name' => 'lekzar',
+            'username' => 'zar',
+            'NIP' => '567',
+            'jabatan' => 'entah',
+            'group' => 'c',
+            'email' => 'admin1@gmail.com',
+            'password' => bcrypt('567')
+        ]);
         $user->assignRole('admin');
     }
 }
