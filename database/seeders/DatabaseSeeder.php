@@ -19,11 +19,8 @@ class DatabaseSeeder extends Seeder
         Permission::create(['name' => 'edit user']);
         Permission::create(['name' => 'view user']);
         Permission::create(['name' => 'delete user']);
-        Permission::create(['name' => 'view anime']);
-        Permission::create(['name' => 'view pokemon']);
 
         Role::create(['name' => 'admin']);
-        Role::create(['name' => 'superuser']);
 
         $admin = Role::findByName('admin');
         $admin->givePermissionTo('make user');
@@ -31,15 +28,15 @@ class DatabaseSeeder extends Seeder
         $admin->givePermissionTo('edit user');
         $admin->givePermissionTo('delete user');
 
-        $superuser = Role::findByName('superuser');
-        $superuser->givePermissionTo('view anime');
-        $superuser->givePermissionTo('view pokemon');
 
         $user = User::create([
             'name' => 'admin',
             'username' => 'boss',
+            'NIP' => '123',
+            'jabatan' => 'boss',
+            'group' => 'a',
             'email' => 'admin@gmail.com',
-            'password' => bcrypt('123qweasd')
+            'password' => bcrypt('123')
         ]);
         $user->assignRole('admin');
     }
