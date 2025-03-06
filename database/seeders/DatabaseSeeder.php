@@ -33,16 +33,17 @@ class DatabaseSeeder extends Seeder
             'name' => 'admin',
             'username' => 'boss',
             'NIP' => '123',
-            'jabatan' => 'boss',
+            'jabatan_id' => 1,
             'group' => 'a',
             'email' => 'admin@gmail.com',
             'password' => bcrypt('123')
         ]);
+        $user->assignRole('admin');
         $user = User::create([
             'name' => 'Ogy Satya',
             'username' => 'ogy',
             'NIP' => '321',
-            'jabatan' => 'kates',
+            'jabatan_id' => 1,
             'group' => 'b',
             'email' => 'admin2@gmail.com',
             'password' => bcrypt('321')
@@ -51,11 +52,11 @@ class DatabaseSeeder extends Seeder
             'name' => 'lekzar',
             'username' => 'zar',
             'NIP' => '567',
-            'jabatan' => 'entah',
+            'jabatan_id' => 1,
             'group' => 'c',
             'email' => 'admin1@gmail.com',
             'password' => bcrypt('567')
         ]);
-        $user->assignRole('admin');
+        
     }
 }
