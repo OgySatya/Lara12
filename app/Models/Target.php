@@ -9,7 +9,7 @@ class Target extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'tugas_id'];
+    protected $fillable = ['name', 'alias', 'tugas_id'];
 
     public function tugas()
     {

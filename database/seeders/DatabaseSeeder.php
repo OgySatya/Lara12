@@ -30,33 +30,29 @@ class DatabaseSeeder extends Seeder
 
 
         $user = User::create([
-            'name' => 'admin',
-            'username' => 'boss',
-            'NIP' => '123',
+            'name' => 'GEDE OGY SATIA HAPRABU',
+            'username' => 'ogy',
+            'NIP' => '199106192023211005',
             'jabatan_id' => 1,
-            'group' => 'a',
-            'email' => 'admin@gmail.com',
-            'password' => bcrypt('123')
+            'group' => 'b',
+            'password' => bcrypt('199106192023211005')
         ]);
         $user->assignRole('admin');
         $user = User::create([
-            'name' => 'Ogy Satya',
-            'username' => 'ogy',
-            'NIP' => '321',
-            'jabatan_id' => 1,
+            'name' => 'WULAN AFRIAL CATUR KUNCORO',
+            'username' => 'kuncoro',
+            'NIP' => '198004102008011018',
+            'jabatan_id' => 2,
             'group' => 'b',
-            'email' => 'admin2@gmail.com',
-            'password' => bcrypt('321')
+            'password' => bcrypt('198004102008011018')
         ]);
         $user = User::create([
-            'name' => 'lekzar',
-            'username' => 'zar',
-            'NIP' => '567',
-            'jabatan_id' => 1,
+            'name' => 'SUKOCO',
+            'username' => 'sukoco',
+            'NIP' => '198105022008011022',
+            'jabatan_id' => 2,
             'group' => 'c',
-            'email' => 'admin1@gmail.com',
-            'password' => bcrypt('567')
+            'password' => bcrypt('198105022008011022')
         ]);
-        
     }
 }

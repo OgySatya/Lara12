@@ -19,18 +19,19 @@ return new class extends Migration
         Schema::create('tugas', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('jabatan_id')->constrained()->onDelete('cascade'); 
+            $table->foreignId('jabatan_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
         Schema::create('targets', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('tugas_id')->constrained()->onDelete('cascade'); 
+            $table->string('alias');
+            $table->foreignId('tugas_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
 
-    
+
     public function down(): void
     {
         Schema::dropIfExists('jabatans');
