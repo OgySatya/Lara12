@@ -9,14 +9,14 @@ class Tugas extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'iso_code', 'country_id'];
+    protected $fillable = ['name', 'jabatan_id'];
 
-    public function country()
+    public function jabatan()
     {
         return $this->belongsTo(Jabatan::class);
     }
 
-    public function cities()
+    public function target()
     {
         return $this->hasMany(Target::class);
     }
