@@ -9,23 +9,23 @@ import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Admin',
-        href: '/skp1',
+        title: 'Rencana Aksi 1',
+        href: '/tugas1',
         icon: Component,
     },
     {
-        title: 'abc',
-        href: '/dashboard',
+        title: 'Rencana Aksi 2',
+        href: '/tugas2',
         icon: Activity,
     },
     {
-        title: 'abc',
-        href: '/dashboard',
+        title: 'Rencana Aksi 3',
+        href: '/tugas3',
         icon: LayoutGrid,
     },
     {
-        title: 'abc',
-        href: '/dashboard',
+        title: 'Rencana Aksi 4',
+        href: '/tugas4',
         icon: Cog,
     },
 ];

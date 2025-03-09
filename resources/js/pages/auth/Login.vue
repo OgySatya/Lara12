@@ -21,7 +21,6 @@ const props = defineProps<{
     canResetPassword: boolean;
     users: User[]
 }>();
-console.log('sdf')
 const form = useForm({
     username: '',
     password: '',

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('target_id')->constrained()->onDelete('cascade');
             $table->dateTime('tanggal');
-            $table->string('name');
+            $table->string('link');
             $table->timestamps();
         });
     }

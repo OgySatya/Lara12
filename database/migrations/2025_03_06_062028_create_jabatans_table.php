@@ -14,20 +14,20 @@ return new class extends Migration
         Schema::create('jabatans', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->timestamps();
+            $table->timestamps(0);
         });
         Schema::create('tugas', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->foreignId('jabatan_id')->constrained()->onDelete('cascade');
-            $table->timestamps();
+            $table->timestamps(0);
         });
         Schema::create('targets', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('alias');
+            $table->string('slug');
             $table->foreignId('tugas_id')->constrained()->onDelete('cascade');
-            $table->timestamps();
+            $table->timestamps(0);
         });
     }
 
