@@ -33,10 +33,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 console.log(props.tugas)
 console.log(props.user)
-const GITHUB_USERNAME = "OgySatya";
+const GITHUB_USERNAME = "";
 const GITHUB_REPO = "seloaji";
 const GITHUB_BRANCH = "main";
-const GITHUB_ACCESS_TOKEN = "";
+const a = "";
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/Foto/`;
 
 const image = ref<File | null>(null);
@@ -74,7 +74,7 @@ const uploadImage = async (id: number, slug: string) => {
                 },
                 {
                     headers: {
-                        Authorization: `token ${GITHUB_ACCESS_TOKEN}`,
+                        Authorization: `token ${a}`,
                         Accept: "application/vnd.github.v3+json",
                     },
                 }
