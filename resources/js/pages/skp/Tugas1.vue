@@ -36,7 +36,7 @@ console.log(props.user)
 const GITHUB_USERNAME = "";
 const GITHUB_REPO = "seloaji";
 const GITHUB_BRANCH = "main";
-const a = "";
+
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/Foto/`;
 
 const image = ref<File | null>(null);
