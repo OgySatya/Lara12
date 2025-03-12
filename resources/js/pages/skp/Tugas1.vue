@@ -21,6 +21,7 @@ const props = defineProps<{
     tugas: Data;
     user: { id: number; username: string };
     link: string;
+    date: { month: number; year: number }
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -31,7 +32,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 console.log(props.tugas);
-console.log(props.user);
 console.log(props.link);
 const GITHUB_USERNAME = import.meta.env.VITE_GITHUB_USERNAME;
 const GITHUB_REPO = import.meta.env.VITE_GITHUB_REPO;
@@ -82,6 +82,8 @@ const uploadImage = async (id: number, slug: string, index: number) => {
 
             uploadedImageUrl.value[index] = response.data.content.download_url;
             form.link = response.data.content.download_url;
+            form.bulan = selectedMonth.value;
+            form.tahun = selectedYear.value;
             form.user_id = props.user.id;
             form.target_id = id;
             form.post(route('upload'), {
@@ -99,80 +101,77 @@ const uploadImage = async (id: number, slug: string, index: number) => {
 
 const form = useForm({
     link: '',
+    bulan: 0,
+    tahun: 0,
     user_id: 0,
     target_id: 0,
 });
-// Generate years dynamically (last 30 years + next 10 years)
+
 const currentYear = new Date().getFullYear();
 const years = Array.from({ length: 7 }, (_, i) => currentYear - 3 + i);
-
-// List of months
 const months = [
-    { id: 1, name: 'January' },
-    { id: 2, name: 'February' },
-    { id: 3, name: 'March' },
+    { id: 1, name: 'Januari' },
+    { id: 2, name: 'Februari' },
+    { id: 3, name: 'Maret' },
     { id: 4, name: 'April' },
-    { id: 5, name: 'May' },
-    { id: 6, name: 'June' },
-    { id: 7, name: 'July' },
-    { id: 8, name: 'August' },
+    { id: 5, name: 'Mei' },
+    { id: 6, name: 'Juni' },
+    { id: 7, name: 'Juli' },
+    { id: 8, name: 'Agustus' },
     { id: 9, name: 'September' },
-    { id: 10, name: 'October' },
+    { id: 10, name: 'Oktober' },
     { id: 11, name: 'November' },
-    { id: 12, name: 'December' },
+    { id: 12, name: 'Desember' },
 ];
 
-// Default selections
-const selectedYear = ref<number>(currentYear);
-const selectedMonth = ref<number>(new Date().getMonth() + 1);
+const selectedYear = ref<number>(Number(props.date.year));
+const selectedMonth = ref<number>(Number(props.date.month));
+console.log(typeof selectedMonth.value);
+const redirect = (month: number) => {
+    window.location.href = `/tugas1?month=${month}`;
+};
 </script>
 
 <template>
+
     <Head title="Dashboard" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <h1 class="mx-auto font-bold underline underline-offset-4">{{ props.tugas.name }}</h1>
             <div class="flex w-56 flex-col space-y-4">
-                <!-- Year Picker -->
                 <div>
-                    <label for="year" class="font-semibold text-gray-700">Select Year:</label>
-                    <select
-                        v-model="selectedYear"
-                        id="year"
-                        class="w-full rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
+                    <label for="year" class="font-semibold text-gray-700">Tahun:</label>
+                    <select v-model="selectedYear" id="year"
+                        class="w-full rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option v-for="year in years" :key="year" :value="year">
                             {{ year }}
                         </option>
                     </select>
                 </div>
 
-                <!-- Month Picker -->
                 <div>
-                    <label for="month" class="font-semibold text-gray-700">Select Month:</label>
-                    <select
-                        v-model="selectedMonth"
-                        id="month"
-                        class="w-full rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
+                    <label for="month" class="font-semibold text-gray-700">Sasih:</label>
+                    <select @change="redirect(selectedMonth)" v-model="selectedMonth" class="p-2 border rounded-lg">
                         <option v-for="month in months" :key="month.id" :value="month.id">
                             {{ month.name }}
                         </option>
                     </select>
                 </div>
 
-                <!-- Selected Date Display -->
                 <p class="text-gray-600">
-                    Selected: <span class="font-semibold">{{ months.find((m) => m.id === selectedMonth)?.name }} {{ selectedYear }}</span>
+                    Laporan Bulan : <span class="font-semibold">{{months.find((m) => m.id === selectedMonth)?.name}} {{
+                        selectedYear }}</span>
                 </p>
             </div>
             <div>
                 <div v-for="(job, index) in props.tugas.target" :key="job.id">
-                    <div class="border border-gray-400 px-4 py-2 hover:bg-gray-100">{{ index + 1 }}. {{ job.name }}</div>
+                    <div class="border border-gray-400 px-4 py-2 hover:bg-gray-100">{{ index + 1 }}. {{ job.name }}
+                    </div>
                     <div class="my-4 grid grid-cols-2 gap-4">
                         <div>
-                            <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                            <div
+                                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                                 <div v-if="previewUrl[index]">
                                     <img :src="previewUrl[index]" alt="Preview" class="" />
                                 </div>
@@ -180,19 +179,18 @@ const selectedMonth = ref<number>(new Date().getMonth() + 1);
                                     <PlaceholderPattern />
                                 </div>
                             </div>
-                            <input type="file" @change="(event) => onFileChange(event, index)" accept="image/*" class="mb-2" />
-                            <button
-                                @click="uploadImage(job.id, job.slug, index)"
-                                :disabled="isUploading[index]"
-                                class="mt-2 rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
-                            >
+                            <input type="file" @change="(event) => onFileChange(event, index)" accept="image/*"
+                                class="mb-2" />
+                            <button @click="uploadImage(job.id, job.slug, index)" :disabled="isUploading[index]"
+                                class="mt-2 rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-700">
                                 {{ isUploading[index] ? 'Tunggu Boss...' : 'Upload Foto' }}
                             </button>
 
                             <!-- Uploaded Image URL -->
                             <div v-if="uploadedImageUrl[index]" class="mt-2">
                                 <p>Uploaded Image:</p>
-                                <a :href="uploadedImageUrl[index]" target="_blank" class="text-blue-500 underline">{{ uploadedImageUrl[index] }}</a>
+                                <a :href="uploadedImageUrl[index]" target="_blank" class="text-blue-500 underline">{{
+                                    uploadedImageUrl[index] }}</a>
                             </div>
                         </div>
                     </div>

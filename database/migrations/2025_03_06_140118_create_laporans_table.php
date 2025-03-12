@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('target_id')->constrained()->onDelete('cascade');
+            $table->integer('bulan');
+            $table->integer('tahun');
             $table->string('link');
             $table->timestamps();
         });
