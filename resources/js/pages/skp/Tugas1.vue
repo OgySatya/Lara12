@@ -16,13 +16,14 @@ interface Job {
     id: number;
     name: string;
     slug: string;
+    image: [];
 }
 const props = defineProps<{
     tugas: Data;
     user: { id: number; username: string };
-    link: string;
-    date: { month: number; year: number }
+    date: { month: number; year: number };
 }>();
+console.log(props.tugas.target[0].image);
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -32,7 +33,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 console.log(props.tugas);
-console.log(props.link);
 const GITHUB_USERNAME = import.meta.env.VITE_GITHUB_USERNAME;
 const GITHUB_REPO = import.meta.env.VITE_GITHUB_REPO;
 const GITHUB_BRANCH = import.meta.env.VITE_GITHUB_BRANCH;
@@ -41,7 +41,6 @@ const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB
 
 const image = ref<File[]>([]);
 const previewUrl = ref<string[]>([]);
-const uploadedImageUrl = ref<string[]>([]);
 const isUploading = ref<boolean[]>([]);
 
 const onFileChange = (event: Event, index: number) => {
@@ -54,7 +53,7 @@ const onFileChange = (event: Event, index: number) => {
 
 const uploadImage = async (id: number, slug: string, index: number) => {
     if (!image.value[index]) {
-        alert('Please select an image first!');
+        alert('isi foto dulu Bolo...');
         return;
     }
 
@@ -80,8 +79,7 @@ const uploadImage = async (id: number, slug: string, index: number) => {
                 },
             );
 
-            uploadedImageUrl.value[index] = response.data.content.download_url;
-            form.link = response.data.content.download_url;
+            form.image = response.data.content.download_url;
             form.bulan = selectedMonth.value;
             form.tahun = selectedYear.value;
             form.user_id = props.user.id;
@@ -93,6 +91,8 @@ const uploadImage = async (id: number, slug: string, index: number) => {
             console.error('Upload failed:', error);
         } finally {
             isUploading.value[index] = false;
+            previewUrl.value = [];
+            image.value = [];
         }
     };
 
@@ -100,7 +100,7 @@ const uploadImage = async (id: number, slug: string, index: number) => {
 };
 
 const form = useForm({
-    link: '',
+    image: '',
     bulan: 0,
     tahun: 0,
     user_id: 0,
@@ -126,14 +126,12 @@ const months = [
 
 const selectedYear = ref<number>(Number(props.date.year));
 const selectedMonth = ref<number>(Number(props.date.month));
-console.log(typeof selectedMonth.value);
 const redirect = (month: number) => {
     window.location.href = `/tugas1?month=${month}`;
 };
 </script>
 
 <template>
-
     <Head title="Dashboard" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
@@ -142,8 +140,11 @@ const redirect = (month: number) => {
             <div class="flex w-56 flex-col space-y-4">
                 <div>
                     <label for="year" class="font-semibold text-gray-700">Tahun:</label>
-                    <select v-model="selectedYear" id="year"
-                        class="w-full rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <select
+                        v-model="selectedYear"
+                        id="year"
+                        class="w-full rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
                         <option v-for="year in years" :key="year" :value="year">
                             {{ year }}
                         </option>
@@ -152,7 +153,7 @@ const redirect = (month: number) => {
 
                 <div>
                     <label for="month" class="font-semibold text-gray-700">Sasih:</label>
-                    <select @change="redirect(selectedMonth)" v-model="selectedMonth" class="p-2 border rounded-lg">
+                    <select @change="redirect(selectedMonth)" v-model="selectedMonth" class="rounded-lg border p-2">
                         <option v-for="month in months" :key="month.id" :value="month.id">
                             {{ month.name }}
                         </option>
@@ -160,18 +161,20 @@ const redirect = (month: number) => {
                 </div>
 
                 <p class="text-gray-600">
-                    Laporan Bulan : <span class="font-semibold">{{months.find((m) => m.id === selectedMonth)?.name}} {{
-                        selectedYear }}</span>
+                    Laporan Bulan : <span class="font-semibold">{{ months.find((m) => m.id === selectedMonth)?.name }} {{ selectedYear }}</span>
                 </p>
             </div>
             <div>
                 <div v-for="(job, index) in props.tugas.target" :key="job.id">
-                    <div class="border border-gray-400 px-4 py-2 hover:bg-gray-100">{{ index + 1 }}. {{ job.name }}
-                    </div>
+                    <div class="border border-gray-400 px-4 py-2 hover:bg-gray-100">{{ index + 1 }}. {{ job.name }}</div>
                     <div class="my-4 grid grid-cols-2 gap-4">
+                        <div v-for="img in props.tugas.target[index].image" :key="job.id">
+                            <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                                <img :src="img.image" />
+                            </div>
+                        </div>
                         <div>
-                            <div
-                                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                            <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                                 <div v-if="previewUrl[index]">
                                     <img :src="previewUrl[index]" alt="Preview" class="" />
                                 </div>
@@ -179,19 +182,20 @@ const redirect = (month: number) => {
                                     <PlaceholderPattern />
                                 </div>
                             </div>
-                            <input type="file" @change="(event) => onFileChange(event, index)" accept="image/*"
-                                class="mb-2" />
-                            <button @click="uploadImage(job.id, job.slug, index)" :disabled="isUploading[index]"
-                                class="mt-2 rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-700">
+                            <input type="file" @change="(event) => onFileChange(event, index)" accept="image/*" class="mb-2" />
+                            <button
+                                @click="uploadImage(job.id, job.slug, index)"
+                                :disabled="isUploading[index]"
+                                class="mt-2 rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
+                            >
                                 {{ isUploading[index] ? 'Tunggu Boss...' : 'Upload Foto' }}
                             </button>
 
                             <!-- Uploaded Image URL -->
-                            <div v-if="uploadedImageUrl[index]" class="mt-2">
+                            <!-- <div v-if="uploadedImageUrl[index]" class="mt-2">
                                 <p>Uploaded Image:</p>
-                                <a :href="uploadedImageUrl[index]" target="_blank" class="text-blue-500 underline">{{
-                                    uploadedImageUrl[index] }}</a>
-                            </div>
+                                <a :href="uploadedImageUrl[index]" target="_blank" class="text-blue-500 underline">{{ uploadedImageUrl[index] }}</a>
+                            </div> -->
                         </div>
                     </div>
                 </div>

@@ -9,7 +9,7 @@ class Laporan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'target_id', 'bulan', 'tahun', 'link',];
+    protected $fillable = ['user_id', 'target_id', 'bulan', 'tahun', 'image',];
 
     public function user()
     {
