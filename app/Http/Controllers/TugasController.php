@@ -28,30 +28,25 @@ class TugasController extends Controller
             ->where('target_id', $tugas1->target[0]->id)
             ->where('bulan', $month)
             ->where('tahun', $year)
+            ->select('image')
             ->get();
-            $tugas1->target[0]->image = $link1;
+            $tugas1->target[0]->laporan = $link1;
         $link2 = Laporan::where('user_id', $user->id)
             ->where('target_id', $tugas1->target[1]->id)
             ->where('bulan', $month)
             ->where('tahun', $year)
+            ->select('image')
             ->get();
-            $tugas1->target[1]->image = $link2;
-        // if ($tugas1->target[2]->id) {
-        //     $link3 = Laporan::where('user_id', $user->id)
-        //     ->where('target_id', $tugas1->target[2]->id)
-        //     ->where('bulan', $month)
-        //     ->where('tahun', $year)
-        //     ->get();
-        //     $tugas1->target[2]->image = $link3;
-        // }
+            $tugas1->target[1]->laporan = $link2;
         if (isset($tugas1->target[2]) && $tugas1->target[2]->id) {
             $link3 = Laporan::where('user_id', $user->id)
                 ->where('target_id', $tugas1->target[2]->id)
                 ->where('bulan', $month)
                 ->where('tahun', $year)
+                ->select('image')
                 ->get();
         
-            $tugas1->target[2]->image = $link3;
+            $tugas1->target[2]->laporan = $link3;
         }
       
         $date = new \stdClass();

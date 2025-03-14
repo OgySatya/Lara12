@@ -16,14 +16,14 @@ interface Job {
     id: number;
     name: string;
     slug: string;
-    image: [];
+    laporan: { image: string };
 }
 const props = defineProps<{
     tugas: Data;
     user: { id: number; username: string };
     date: { month: number; year: number };
 }>();
-console.log(props.tugas.target[0].image);
+console.log(props.tugas.target[0].laporan);
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -151,7 +151,7 @@ const redirect = (month: number) => {
                     </select>
                 </div>
 
-                <div>
+                <div class="grid">
                     <label for="month" class="font-semibold text-gray-700">Sasih:</label>
                     <select @change="redirect(selectedMonth)" v-model="selectedMonth" class="rounded-lg border p-2">
                         <option v-for="month in months" :key="month.id" :value="month.id">
@@ -168,7 +168,7 @@ const redirect = (month: number) => {
                 <div v-for="(job, index) in props.tugas.target" :key="job.id">
                     <div class="border border-gray-400 px-4 py-2 hover:bg-gray-100">{{ index + 1 }}. {{ job.name }}</div>
                     <div class="my-4 grid grid-cols-2 gap-4">
-                        <div v-for="img in props.tugas.target[index].image" :key="job.id">
+                        <div v-for="(img, imgIndex) in props.tugas.target[index]?.laporan || []" :key="imgIndex">
                             <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                                 <img :src="img.image" />
                             </div>
