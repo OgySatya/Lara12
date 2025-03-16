@@ -9,51 +9,41 @@ use Inertia\Response;
 use App\Models\Laporan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class TugasController extends Controller
 {
-    public function tugas1(Request $request): Response
+    public function tugas(Request $request): Response
     {
-
         $user = Auth::user([
             'id',
             'username'
         ]);
+        $job = $request->tugas ?: 1;
         $month = $request->month ?: Carbon::now()->month;
         $year = $request->year ?: Carbon::now()->year;
         $job_id = Auth::user()->jabatan_id;
-        $tugas1 = Tugas::where('jabatan_id', $job_id)->with('target', 'jabatan')->skip(0)->take(1)->first();
+        $tugas = Tugas::where('jabatan_id', $job_id)->with('target', 'jabatan')->skip($job - 1)->take(1)->first();
 
-        $link1 = Laporan::where('user_id', $user->id)
-            ->where('target_id', $tugas1->target[0]->id)
-            ->where('bulan', $month)
-            ->where('tahun', $year)
-            ->select('image')
-            ->get();
-            $tugas1->target[0]->laporan = $link1;
-        $link2 = Laporan::where('user_id', $user->id)
-            ->where('target_id', $tugas1->target[1]->id)
-            ->where('bulan', $month)
-            ->where('tahun', $year)
-            ->select('image')
-            ->get();
-            $tugas1->target[1]->laporan = $link2;
-        if (isset($tugas1->target[2]) && $tugas1->target[2]->id) {
-            $link3 = Laporan::where('user_id', $user->id)
-                ->where('target_id', $tugas1->target[2]->id)
+        function getLaporanImages($userId, $targetId, $month, $year)
+        {
+            return Laporan::where('user_id', $userId)
+                ->where('target_id', $targetId)
                 ->where('bulan', $month)
                 ->where('tahun', $year)
-                ->select('image')
-                ->get();
-        
-            $tugas1->target[2]->laporan = $link3;
+                ->pluck('image');
         }
-      
+
+        foreach ($tugas->target as $target) {
+            $target->laporan = getLaporanImages($user->id, $target->id, $month, $year);
+        }
+
         $date = new \stdClass();
         $date->month = $month;
         $date->year = $year;
-        return Inertia::render('skp/Tugas1', [
-            'tugas' => $tugas1,
+        $user->job = $job;
+        return Inertia::render('skp/Tugas', [
+            'tugas' => $tugas,
             'user' => $user,
             'date' => $date
         ]);
@@ -62,18 +52,37 @@ class TugasController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'image' => 'required|max:225',
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:1024',
             'bulan' => 'required|integer',
             'tahun' => 'required|integer',
             'user_id' => 'required|integer',
             'target_id' => 'required|integer',
+            'slug' => 'required|string',
+            'username' => 'required|string',
+        ]);
+
+        $image = $request->file('image');
+        $imageName = time() . '_' . $request['username'] . '_' . $request['slug'] . '.jpg';
+        $imageContent = base64_encode(file_get_contents($image->getRealPath()));
+        $owner = env('GITHUB_USERNAME');
+        $repo = env('GITHUB_REPO');
+        $path = "foto/{$imageName}";
+        $branch = 'main';
+        $token = env('GITHUB_TOKEN');
+        $response = Http::withHeaders([
+            'Authorization' => "token {$token}",
+            'Accept' => 'application/vnd.github.v3+json',
+        ])->put("https://api.github.com/repos/{$owner}/{$repo}/contents/{$path}", [
+            'message' => "Uploaded {$imageName}",
+            'content' => $imageContent,
+            'branch' => $branch,
         ]);
         Laporan::create([
             'user_id' => $request['user_id'],
             'target_id' => $request['target_id'],
             'bulan' => $request['bulan'],
             'tahun' => $request['tahun'],
-            'image' => $request['image'],
+            'image' => $response->json()['content']['download_url'],
         ]);
     }
 }

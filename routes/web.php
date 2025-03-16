@@ -12,8 +12,7 @@ Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 Route::middleware('auth', 'verified')->group(function () {
-    // Route::post('tugas', [TugasController::class, 'tugas1'])->name('tugas');
-    Route::get('tugas1', [TugasController::class, 'tugas1'])->name('tugas1');
+    Route::get('tugas', [TugasController::class, 'tugas'])->name('tugas');
     Route::post('upload', [TugasController::class, 'store'])->name('upload');
 });
 require __DIR__ . '/settings.php';
