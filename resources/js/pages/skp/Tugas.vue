@@ -24,7 +24,7 @@ const props = defineProps<{
     user: { id: number; username: string; job: Number };
     date: { month: number; year: number };
 }>();
-
+console.log(props);
 const { tugas } = toRefs(props);
 const images = computed(() => tugas.value.target);
 
@@ -98,12 +98,11 @@ const redirect = (month: number, year: number) => {
 };
 const isGenerating = ref(false);
 
-const generatePdf = () => {
+const generatePdf = (month: number, year: number) => {
     isGenerating.value = true;
-    router.post("/generate-pdf", {}, {
-        onFinish: () => isGenerating.value = false,
-    });
+    window.location.href = `/pdf?tugas=${props.user.job}&month=${month}&year=${year}`;
 };
+
 </script>
 
 <template>
@@ -170,12 +169,11 @@ const generatePdf = () => {
                 </div>
             </div>
             <div class="p-6 bg-white shadow-lg rounded-lg">
-                <h1 class="text-xl font-bold mb-4">Generate PDF</h1>
-                <p class="text-gray-600">Click the button to generate a PDF from this page.</p>
+                <p class="text-emerald-500 text-2xl">Jika sudah yakin, Langsung saja Bolo</p>
 
-                <button @click="generatePdf" :disabled="isGenerating"
+                <button @click="generatePdf(selectedMonth, selectedYear)" :disabled="isGenerating"
                     class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-400">
-                    {{ isGenerating ? "Generating..." : "Download PDF" }}
+                    {{ isGenerating ? "Ngenteni sithik suwe BOSS..." : "Rekap SKP" }}
                 </button>
             </div>
         </div>

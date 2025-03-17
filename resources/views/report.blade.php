@@ -7,12 +7,12 @@
 </head>
 <style>
 ul {
-  list-style-type: none;  
-  padding-left: 0;        
+  list-style-type: number;  
+  padding-left: 25px; 
 }
 .container {
       align-items: center;      /* Centers the image vertically */
-      width: 210mm;             /* Set the container width to 210mm */         /* Set the container height to 297mm (A4 paper height) */
+      width: 210mm;         /* Set the container width to 210mm */         /* Set the container height to 297mm (A4 paper height) */
     }
 
     .container .kop {
@@ -21,37 +21,56 @@ ul {
       object-fit: contain; /* Ensures the image maintains aspect ratio while fitting the container */
     }
     .box {
-      width: 80mm;         /* Set the box width to 50mm */
+      width: 80mm;
+      margin-top: 30px         /* Set the box width to 50mm */
     }
 
     /* Align the box to the right side */
     .container .box {
       margin-left: auto;  /* Pushes the box to the right side */
     }
- 
+    .grid-container {
+      display: grid;          /* Enables CSS Grid */
+      grid-template-columns: repeat(2, 1fr); /* Creates 2 equal columns */
+      gap: 50px;      
+      align-items: center;        /* Adds space between grid items */
+    }
+
+    /* Grid items */
+    .grid-item {
+      width: 85mm; 
+      height: 50mm; 
+      object-fit: cover; /* Ensures it fills the space */
+      border: 2px solid #000; /* Adds a border around the image */
+    }
 </style>
 <body>
 <div class="container">
     <img class="kop" src="https://raw.githubusercontent.com/OgySatya/Lara12/refs/heads/main/storage/app/public/kop%20seloaji.jpg" loading="lazy" alt="Image">
         <div style="text-align: center;">
-            <h4 >LAPORAN BUKTI DUKUNG LAPORAN E KINERJA BULAN
+            <h4 style="text-transform: uppercase;" >LAPORAN BUKTI DUKUNG LAPORAN E KINERJA BULAN
              <br>
-             BULAN
+             {{$date->month}} {{$date->year}}
             </h4>
         </div>
         <div >
-            <pre style="font-family: Arial, sans-serif;">Nama       : GEDE OGY SATIA HAPRABU
-                <br>NIP           : 199106192023211005
-                <br>Jabatan    : Penguji Kendaraan Bermotor Terampil
+            <pre style="font-family: Arial, sans-serif;">Nama       : {{$user->name}}
+                <br>NIP           : {{$user->NIP}}
+                <br>Jabatan    : {{$tugas->Jabatan->name}}
             </pre>
      
         </div>
-            <h4 style="text-align: center;">Terlaksananya Pemeriksaan Unsur Administarsi Kendaraan Bermotor di Terminal</h4>
-            <p>Software Engineer</p>
+            <h4 style="text-align: center;">{{$tugas->name}}</h4>
             <ul >
-                <li>Developed and maintained web applications using Laravel and Vue.js</li>
-                <li>Collaborated with cross-functional teams to define and design new features</li>
-                <li>Optimized applications for maximum speed and scalability</li>
+              @foreach($tugas['target'] as $job)
+              <li><p style="margin-block-end: 20px;">{{ $job['name'] }} </p>
+                <div class="gird-container">
+                  @foreach($job['laporan'] as $link)
+                  <img class="grid-item" src="{{$link}}" alt="" height="300px">
+                  @endforeach
+                </div>
+              </li>
+            @endforeach
             </ul>
         <div class="box">
         <p >Mengetahui :</p>

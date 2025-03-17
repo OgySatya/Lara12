@@ -36,9 +36,22 @@ class SummaryController extends Controller
         foreach ($tugas->target as $target) {
             $target->laporan = getLaporanImages($user->id, $target->id, $month, $year);
         }
-
+        $months = [
+            1 => 'Januari',
+            2 => 'Februari',
+            3 => 'Maret',
+            4 => 'April',
+            5 => 'Mei',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'Agustus',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember'
+        ];
         $date = new \stdClass();
-        $date->month = $month;
+        $date->month = $months[$month];
         $date->year = $year;
         $user->job = $job;
         return view('report', [
@@ -48,23 +61,66 @@ class SummaryController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(Request $request)
     {
-
-        $html = view('Report')->render();  // This loads the Blade view
-
-        // Create a new instance of mPDF
-        $mpdf = new \Mpdf\Mpdf([
-            'margin_top' => 2,   // 15mm top margin
-            'margin_left' => 10,  // 10mm left margin
-            'margin_right' => 10, // 10mm right margin
-            'margin_bottom' => 10, // 10mm bottom margin
+        $user = Auth::user([
+            'id',
+            'username'
         ]);
+        $job = $request->tugas ?: 1;
+        $month = $request->month ?: Carbon::now()->month;
+        $year = $request->year ?: Carbon::now()->year;
+        $job_id = Auth::user()->jabatan_id;
+        $tugas = Tugas::where('jabatan_id', $job_id)->with('target', 'jabatan')->skip($job - 1)->take(1)->first();
 
-        // Write HTML content to the PDF
+        function LaporanImages($userId, $targetId, $month, $year)
+        {
+            return Laporan::where('user_id', $userId)
+                ->where('target_id', $targetId)
+                ->where('bulan', $month)
+                ->where('tahun', $year)
+                ->pluck('image');
+        }
+
+        foreach ($tugas->target as $target) {
+            $target->laporan = LaporanImages($user->id, $target->id, $month, $year);
+        }
+        $months = [
+            1 => 'Januari',
+            2 => 'Februari',
+            3 => 'Maret',
+            4 => 'April',
+            5 => 'Mei',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'Agustus',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember'
+        ];
+        $date = new \stdClass();
+        $date->month = $months[3];
+        $date->year = $year;
+        $user->job = $job;
+
+
+        $html = view('Report', [
+            'tugas' => $tugas,
+            'user' => $user,
+            'date' => $date
+        ])->render();
+
+        $mpdf = new \Mpdf\Mpdf([
+            'margin_top' => 2,
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'margin_bottom' => 10,
+        ]);
+        $mpdf->AddPage();
+        $mpdf->SetMargins(15, 10, 10);
         $mpdf->WriteHTML($html);
 
-        // Output PDF (inline in browser or download)
         return $mpdf->Output('document.pdf', 'I');
     }
 }
