@@ -51,21 +51,20 @@ class SummaryController extends Controller
     public function create()
     {
 
-        // Fetch data to be used in the PDF
-        $data = [
-            'title' => 'Laravel mPDF Example',
-            'content' => 'This PDF is generated using a Blade view.',
-        ];
+        $html = view('Report')->render();  // This loads the Blade view
 
-        // Load view and convert to HTML
-        $html = view('report')->render();
+        // Create a new instance of mPDF
+        $mpdf = new \Mpdf\Mpdf([
+            'margin_top' => 2,   // 15mm top margin
+            'margin_left' => 10,  // 10mm left margin
+            'margin_right' => 10, // 10mm right margin
+            'margin_bottom' => 10, // 10mm bottom margin
+        ]);
 
-        // Create mPDF instance
-        $mpdf = new Mpdf();
+        // Write HTML content to the PDF
         $mpdf->WriteHTML($html);
 
-        // Output to browser
-        return response($mpdf->Output('document.pdf', 'I'))
-            ->header('Content-Type', 'application/pdf');
+        // Output PDF (inline in browser or download)
+        return $mpdf->Output('document.pdf', 'I');
     }
 }
