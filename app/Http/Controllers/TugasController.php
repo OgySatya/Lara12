@@ -52,31 +52,42 @@ class TugasController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:1024',
             'bulan' => 'required|integer',
             'tahun' => 'required|integer',
             'user_id' => 'required|integer',
             'target_id' => 'required|integer',
             'slug' => 'required|string',
             'username' => 'required|string',
+            'image' => 'required|image|max:2048', 
         ]);
 
-        $image = $request->file('image');
-        $imageName = time() . '_' . $request['username'] . '_' . $request['slug'] . '.jpg';
-        $imageContent = base64_encode(file_get_contents($image->getRealPath()));
-        $owner = env('GITHUB_USERNAME');
+
+        // Get file details
+        $file = $request->file('image');
+        $filename= time() . '_' . $request['username'] . '_' . $request['slug'] . '.jpg';
+        $imageContent = base64_encode(file_get_contents($file->path()));
+
+        // GitHub API details
+        $username = env('GITHUB_USERNAME');
         $repo = env('GITHUB_REPO');
-        $path = "foto/{$imageName}";
-        $branch = 'main';
         $token = env('GITHUB_TOKEN');
+        $path = "foto/" . $filename; // Path in the repo
+
+        // GitHub API URL
+        $githubApiUrl = "https://api.github.com/repos/{$username}/{$repo}/contents/{$path}";
+
+        // Upload to GitHub
         $response = Http::withHeaders([
             'Authorization' => "token {$token}",
             'Accept' => 'application/vnd.github.v3+json',
-        ])->put("https://api.github.com/repos/{$owner}/{$repo}/contents/{$path}", [
-            'message' => "Uploaded {$imageName}",
+        ])->put($githubApiUrl, [
+            'message' => "Uploaded image: {$filename}",
             'content' => $imageContent,
-            'branch' => $branch,
         ]);
+
+        // Check if upload was successful
+        if ($response->successful()) {
+            
         Laporan::create([
             'user_id' => $request['user_id'],
             'target_id' => $request['target_id'],
@@ -84,5 +95,17 @@ class TugasController extends Controller
             'tahun' => $request['tahun'],
             'image' => $response->json()['content']['download_url'],
         ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Image uploaded successfully',
+                'github_url' => $response->json()['content']['download_url'],
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to upload image',
+                'error' => $response->json(),
+            ], 400);
+        }
     }
 }

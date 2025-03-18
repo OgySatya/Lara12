@@ -2,10 +2,10 @@
 import PlaceholderPattern from '@/components/PlaceholderPattern.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head, router } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import { toRefs } from '@vueuse/core';
 import axios from 'axios';
-import { defineProps, computed, ref } from 'vue';
+import { computed, defineProps, ref } from 'vue';
 
 interface Data {
     name: string;
@@ -35,7 +35,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const uploadMessage = ref("");
+const uploadMessage = ref('');
 
 const image = ref<File[]>([]);
 const previewUrl = ref<string[]>([]);
@@ -51,29 +51,36 @@ const onFileChange = (event: Event, index: number) => {
 
 const uploadImage = async (id: number, slug: string, index: number) => {
     if (!image.value[index]) {
-        uploadMessage.value = "Please select an image.";
+        uploadMessage.value = 'Please select an image.';
         return;
     }
 
     isUploading.value[index] = true;
-    uploadMessage.value = "";
+    uploadMessage.value = '';
 
     const formData = new FormData();
-    formData.append("image", image.value[index]);
-    formData.append("username", props.user.username);
-    formData.append("slug", slug);
-    formData.append("target_id", String(id));
-    formData.append("user_id", String(props.user.id));
-    formData.append("bulan", String(selectedMonth.value));
-    formData.append("tahun", String(selectedYear.value));
+    formData.append('image', image.value[index]!);
+    formData.append('username', props.user.username);
+    formData.append('slug', slug);
+    formData.append('target_id', String(id));
+    formData.append('user_id', String(props.user.id));
+    formData.append('bulan', String(selectedMonth.value));
+    formData.append('tahun', String(selectedYear.value));
+
     try {
         const response = await axios.post(route('upload'), formData);
+
+        if (response.status === 200) {
+            uploadMessage.value = 'Upload successful!';
+        } else {
+            uploadMessage.value = 'Upload failed.';
+        }
+    } catch (error) {
+        uploadMessage.value = 'Upload error. Please try again.';
     } finally {
         isUploading.value[index] = false;
-        window.location.reload();
     }
 };
-
 const currentYear = new Date().getFullYear();
 const years = Array.from({ length: 7 }, (_, i) => currentYear - 3 + i);
 const months = [
@@ -102,11 +109,9 @@ const generatePdf = (month: number, year: number) => {
     isGenerating.value = true;
     window.location.href = `/pdf?tugas=${props.user.job}&month=${month}&year=${year}`;
 };
-
 </script>
 
 <template>
-
     <Head :title="`Tugas ${props.user.job}`" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
@@ -115,8 +120,11 @@ const generatePdf = (month: number, year: number) => {
             <div class="flex w-56 flex-col space-y-4">
                 <div>
                     <label for="year" class="font-semibold text-gray-700">Tahun:</label>
-                    <select v-model="selectedYear" id="year"
-                        class="w-full rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <select
+                        v-model="selectedYear"
+                        id="year"
+                        class="w-full rounded-lg border border-gray-300 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
                         <option v-for="year in years" :key="year" :value="year">
                             {{ year }}
                         </option>
@@ -125,8 +133,7 @@ const generatePdf = (month: number, year: number) => {
 
                 <div class="grid">
                     <label for="month" class="font-semibold text-gray-700">Sasih:</label>
-                    <select @change="redirect(selectedMonth, selectedYear)" v-model="selectedMonth"
-                        class="rounded-lg border p-2">
+                    <select @change="redirect(selectedMonth, selectedYear)" v-model="selectedMonth" class="rounded-lg border p-2">
                         <option v-for="month in months" :key="month.id" :value="month.id">
                             {{ month.name }}
                         </option>
@@ -134,46 +141,49 @@ const generatePdf = (month: number, year: number) => {
                 </div>
 
                 <p class="text-gray-600">
-                    Laporan Bulan : <span class="font-semibold">{{months.find((m) => m.id === selectedMonth)?.name}}
-                        {{ selectedYear }}</span>
+                    Laporan Bulan : <span class="font-semibold">{{ months.find((m) => m.id === selectedMonth)?.name }} {{ selectedYear }}</span>
                 </p>
             </div>
             <div>
                 <div v-for="(job, index) in props.tugas.target" :key="job.id">
-                    <div class="border border-gray-400 px-4 py-2 hover:bg-gray-100">{{ index + 1 }}. {{ job.name }}
-                    </div>
+                    <div class="border border-gray-400 px-4 py-2 hover:bg-gray-100">{{ index + 1 }}. {{ job.name }}</div>
                     <div class="my-4 grid grid-cols-2 gap-4">
                         <div v-for="(link, imgIndex) in images[index].laporan || []" :key="imgIndex">
-                            <div
-                                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                                <img :src="link" />
+                            <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                                <img class="h-full w-full object-fill" :src="link" />
                             </div>
                         </div>
                         <div>
-                            <div
-                                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                            <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                                 <div v-if="previewUrl[index]">
-                                    <img :src="previewUrl[index]" alt="Preview" class="" />
+                                    <img class="h-max object-fill" :src="previewUrl[index]" alt="Preview" />
                                 </div>
                                 <div v-else>
                                     <PlaceholderPattern />
                                 </div>
                             </div>
-                            <input type="file" @change="(event) => onFileChange(event, index)" accept="image/*"
-                                class="mb-2" />
-                            <button @click="uploadImage(job.id, job.slug, index)" :disabled="isUploading[index]"
-                                class="mt-2 rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-700">
-                                {{ isUploading[index] ? ' Tunggu Boss...' : 'Upload Foto' }} </button>
+                            <input type="file" @change="(event) => onFileChange(event, index)" accept="image/*" class="mb-2" />
+                            <button
+                                @click="uploadImage(job.id, job.slug, index)"
+                                :disabled="isUploading[index]"
+                                class="mt-2 rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
+                            >
+                                {{ isUploading[index] ? ' Tunggu Boss...' : 'Upload Foto' }}
+                            </button>
+                            <p v-if="uploadMessage" class="mt-2 text-sm text-gray-700">{{ uploadMessage }}</p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="p-6 bg-white shadow-lg rounded-lg">
-                <p class="text-emerald-500 text-2xl">Jika sudah yakin, Langsung saja Bolo</p>
+            <div class="rounded-lg bg-white p-6 shadow-lg">
+                <p class="text-2xl text-emerald-500">Jika sudah yakin, Langsung saja Bolo</p>
 
-                <button @click="generatePdf(selectedMonth, selectedYear)" :disabled="isGenerating"
-                    class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-400">
-                    {{ isGenerating ? "Ngenteni sithik suwe BOSS..." : "Rekap SKP" }}
+                <button
+                    @click="generatePdf(selectedMonth, selectedYear)"
+                    :disabled="isGenerating"
+                    class="mt-4 rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:bg-gray-400"
+                >
+                    {{ isGenerating ? 'Ngenteni sithik suwe BOSS...' : 'Rekap SKP' }}
                 </button>
             </div>
         </div>

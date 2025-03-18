@@ -103,7 +103,7 @@ class SummaryController extends Controller
         $date->month = $months[3];
         $date->year = $year;
         $user->job = $job;
-
+        ini_set('max_execution_time', 300);
 
         $html = view('Report', [
             'tugas' => $tugas,

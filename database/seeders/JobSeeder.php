@@ -6,7 +6,7 @@ use App\Models\Tugas;
 use App\Models\Target;
 use App\Models\Jabatan;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
 
 class JobSeeder extends Seeder
 {
