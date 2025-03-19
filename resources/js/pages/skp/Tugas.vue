@@ -79,6 +79,7 @@ const uploadImage = async (id: number, slug: string, index: number) => {
         uploadMessage.value = 'Upload error. Please try again.';
     } finally {
         isUploading.value[index] = false;
+        window.location.reload();
     }
 };
 const currentYear = new Date().getFullYear();

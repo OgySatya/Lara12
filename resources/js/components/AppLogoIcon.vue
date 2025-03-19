@@ -13,5 +13,5 @@ defineProps<Props>();
 </script>
 
 <template>
-    <img src="https://images.seeklogo.com/logo-png/43/1/ditjen-kemenhub-logo-png_seeklogo-431056.png">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/1/13/Direktorat_Jenderal_Perhubungan_Darat.png" />
 </template>
