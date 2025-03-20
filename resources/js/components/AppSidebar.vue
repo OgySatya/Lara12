@@ -10,22 +10,22 @@ import AppLogo from './AppLogo.vue';
 const mainNavItems: NavItem[] = [
     {
         title: 'Rencana Aksi 1',
-        href: '/tugas?tugas=1',
+        href: '/job?job=1',
         icon: Component,
     },
     {
         title: 'Rencana Aksi 2',
-        href: '/tugas?tugas=2',
+        href: '/job?job=2',
         icon: Activity,
     },
     {
         title: 'Rencana Aksi 3',
-        href: '/tugas?tugas=3',
+        href: '/job?job=3',
         icon: LayoutGrid,
     },
     {
         title: 'Rencana Aksi 4',
-        href: '/tugas?tugas=4',
+        href: '/job?job=4',
         icon: Cog,
     },
 ];
@@ -38,7 +38,7 @@ const mainNavItems: NavItem[] = [
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
                         <Link :href="route('home')">
-                            <AppLogo />
+                        <AppLogo />
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>

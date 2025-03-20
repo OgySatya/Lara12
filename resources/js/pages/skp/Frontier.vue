@@ -16,11 +16,11 @@ interface Job {
     id: number;
     name: string;
     slug: string;
-    laporan: { image: string };
+    laporan: string[];
 }
 const props = defineProps<{
     tugas: Data;
-    user: { id: number; username: string };
+    user: { id: number; username: string; job: Number };
     date: { month: number; year: number };
 }>();
 console.log(props.tugas.target[0].laporan);
@@ -28,16 +28,12 @@ console.log(props.tugas.target[0].laporan);
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: props.tugas.jabatan.name,
-        href: 'tugas1',
+        href: 'tugas',
     },
 ];
 
 console.log(props.tugas);
-const GITHUB_USERNAME = import.meta.env.VITE_GITHUB_USERNAME;
-const GITHUB_REPO = import.meta.env.VITE_GITHUB_REPO;
-const GITHUB_BRANCH = import.meta.env.VITE_GITHUB_BRANCH;
-const GITHUB_ACCESS_TOKEN = import.meta.env.VITE_GITHUB_ACCESS_TOKEN;
-const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/foto/`;
+
 
 const image = ref<File[]>([]);
 const previewUrl = ref<string[]>([]);
@@ -65,15 +61,15 @@ const uploadImage = async (id: number, slug: string, index: number) => {
 
         try {
             const response = await axios.put(
-                `${GITHUB_API_URL}${fileName}`,
+                `https://api.github.com/repos/OgySatya/seloaji/contents/foto/${fileName}`,
                 {
                     message: `Upload image: ${fileName}`,
                     content: base64Image,
-                    branch: GITHUB_BRANCH,
+                    branch: 'main',
                 },
                 {
                     headers: {
-                        Authorization: `token ${GITHUB_ACCESS_TOKEN}`,
+                        Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`,
                         Accept: 'application/vnd.github.v3+json',
                     },
                 },
@@ -84,15 +80,16 @@ const uploadImage = async (id: number, slug: string, index: number) => {
             form.tahun = selectedYear.value;
             form.user_id = props.user.id;
             form.target_id = id;
-            form.post(route('upload'), {
-                onFinish: () => form.reset(),
-            });
+
         } catch (error) {
             console.error('Upload failed:', error);
         } finally {
             isUploading.value[index] = false;
             previewUrl.value = [];
             image.value = [];
+            form.post(route('put'), {
+                onFinish: () => form.reset(),
+            });
         }
     };
 
@@ -126,14 +123,20 @@ const months = [
 
 const selectedYear = ref<number>(Number(props.date.year));
 const selectedMonth = ref<number>(Number(props.date.month));
-const redirect = (month: number) => {
-    window.location.href = `/tugas1?month=${month}`;
+const redirect = (month: number, year: number) => {
+    route(`/job?=${props.user.job}&month=${month}&year=${year}`)
+};
+const isGenerating = ref(false);
+
+const generatePdf = (month: number, year: number) => {
+    isGenerating.value = true;
+    window.location.href = `/pdf?tugas=${props.user.job}&month=${month}&year=${year}`;
 };
 </script>
 
 <template>
 
-    <Head title="Dashboard" />
+    <Head title="Rekapitulasi" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
@@ -151,7 +154,8 @@ const redirect = (month: number) => {
 
                 <div class="grid">
                     <label for="month" class="font-semibold text-gray-700">Sasih:</label>
-                    <select @change="redirect(selectedMonth)" v-model="selectedMonth" class="rounded-lg border p-2">
+                    <select @change="redirect(selectedMonth, selectedYear)" v-model="selectedMonth"
+                        class="rounded-lg border p-2">
                         <option v-for="month in months" :key="month.id" :value="month.id">
                             {{ month.name }}
                         </option>
@@ -168,11 +172,10 @@ const redirect = (month: number) => {
                     <div class="border border-gray-400 px-4 py-2 hover:bg-gray-100">{{ index + 1 }}. {{ job.name }}
                     </div>
                     <div class="my-4 grid grid-cols-2 gap-4">
-                        <div v-if="props.tugas.target[index]?.laporan"
-                            v-for="(link, imgIndex) in props.tugas.target[index]?.laporan" :key="imgIndex">
+                        <div v-for="(link, imgIndex) in props.tugas.target[index].laporan || []" :key="imgIndex">
                             <div
                                 class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                                <img :src="link.image" />
+                                <img class="h-full w-full object-fill" :src="link" />
                             </div>
                         </div>
                         <div>
@@ -191,15 +194,17 @@ const redirect = (month: number) => {
                                 class="mt-2 rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-700">
                                 {{ isUploading[index] ? 'Tunggu Boss...' : 'Upload Foto' }}
                             </button>
-
-                            <!-- Uploaded Image URL -->
-                            <!-- <div v-if="uploadedImageUrl[index]" class="mt-2">
-                                <p>Uploaded Image:</p>
-                                <a :href="uploadedImageUrl[index]" target="_blank" class="text-blue-500 underline">{{ uploadedImageUrl[index] }}</a>
-                            </div> -->
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="rounded-lg bg-white p-6 shadow-lg">
+                <p class="text-2xl text-emerald-500">Rekap SKP jadi PDF</p>
+
+                <button @click="generatePdf(selectedMonth, selectedYear)" :disabled="isGenerating"
+                    class="mt-4 rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:bg-gray-400">
+                    {{ isGenerating ? 'Ngenteni sithik suwe BOSS...' : 'Rekap SKP' }}
+                </button>
             </div>
         </div>
     </AppLayout>

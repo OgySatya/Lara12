@@ -58,13 +58,13 @@ class TugasController extends Controller
             'target_id' => 'required|integer',
             'slug' => 'required|string',
             'username' => 'required|string',
-            'image' => 'required|image|max:2048', 
+            'image' => 'required|image|max:2048',
         ]);
 
 
         // Get file details
         $file = $request->file('image');
-        $filename= time() . '_' . $request['username'] . '_' . $request['slug'] . '.jpg';
+        $filename = time() . '_' . $request['username'] . '_' . $request['slug'] . '.jpg';
         $imageContent = base64_encode(file_get_contents($file->path()));
 
         // GitHub API details
@@ -87,14 +87,14 @@ class TugasController extends Controller
 
         // Check if upload was successful
         if ($response->successful()) {
-            
-        Laporan::create([
-            'user_id' => $request['user_id'],
-            'target_id' => $request['target_id'],
-            'bulan' => $request['bulan'],
-            'tahun' => $request['tahun'],
-            'image' => $response->json()['content']['download_url'],
-        ]);
+
+            Laporan::create([
+                'user_id' => $request['user_id'],
+                'target_id' => $request['target_id'],
+                'bulan' => $request['bulan'],
+                'tahun' => $request['tahun'],
+                'image' => $response->json()['content']['download_url'],
+            ]);
             return response()->json([
                 'success' => true,
                 'message' => 'Image uploaded successfully',
@@ -107,5 +107,58 @@ class TugasController extends Controller
                 'error' => $response->json(),
             ], 400);
         }
+    }
+    public function frontline(Request $request): Response
+    {
+        $user = Auth::user([
+            'id',
+            'username'
+        ]);
+        $job = $request->job ?: 1;
+        $month = $request->month ?: Carbon::now()->month;
+        $year = $request->year ?: Carbon::now()->year;
+        $job_id = Auth::user()->jabatan_id;
+        $tugas = Tugas::where('jabatan_id', $job_id)->with('target', 'jabatan')->skip($job - 1)->take(1)->first();
+
+        function images($userId, $targetId, $month, $year)
+        {
+            return Laporan::where('user_id', $userId)
+                ->where('target_id', $targetId)
+                ->where('bulan', $month)
+                ->where('tahun', $year)
+                ->pluck('image');
+        }
+
+        foreach ($tugas->target as $target) {
+            $target->laporan = images($user->id, $target->id, $month, $year);
+        }
+
+        $date = new \stdClass();
+        $date->month = $month;
+        $date->year = $year;
+        $user->job = $job;
+        return Inertia::render('skp/Frontier', [
+            'tugas' => $tugas,
+            'user' => $user,
+            'date' => $date
+        ]);
+    }
+    public function pionier(Request $request)
+    {
+        $request->validate([
+            'bulan' => 'required|integer',
+            'tahun' => 'required|integer',
+            'user_id' => 'required|integer',
+            'target_id' => 'required|integer',
+            'image' => 'required|string',
+        ]);
+
+        Laporan::create([
+            'user_id' => $request['user_id'],
+            'target_id' => $request['target_id'],
+            'bulan' => $request['bulan'],
+            'tahun' => $request['tahun'],
+            'image' => $request['image'],
+        ]);
     }
 }
