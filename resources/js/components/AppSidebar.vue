@@ -4,29 +4,29 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { Activity, Cog, Component, LayoutGrid } from 'lucide-vue-next';
+import { Tally1, Tally2, Tally3, Tally4 } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
     {
         title: 'Rencana Aksi 1',
         href: '/job?job=1',
-        icon: Component,
+        icon: Tally1,
     },
     {
         title: 'Rencana Aksi 2',
         href: '/job?job=2',
-        icon: Activity,
+        icon: Tally2,
     },
     {
         title: 'Rencana Aksi 3',
         href: '/job?job=3',
-        icon: LayoutGrid,
+        icon: Tally3,
     },
     {
         title: 'Rencana Aksi 4',
         href: '/job?job=4',
-        icon: Cog,
+        icon: Tally4,
     },
 ];
 </script>
@@ -38,7 +38,7 @@ const mainNavItems: NavItem[] = [
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
                         <Link :href="route('home')">
-                        <AppLogo />
+                            <AppLogo />
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
