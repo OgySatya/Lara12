@@ -16,21 +16,36 @@ export interface NavItem {
     icon?: LucideIcon;
     isActive?: boolean;
 }
+export interface Data {
+    name: string;
+    tugas: Job[];
+    target: Job[];
+    id: number;
+    jabatan: { name: string };
+}
+export interface Job {
+    id: number;
+    name: string;
+    slug: string;
+    laporan: string[];
+}
 
 export interface SharedData extends PageProps {
     name: string;
-    quote: { message: string; author: string };
+    jobList: Data;
     auth: Auth;
 }
 
 export interface User {
     id: number;
     name: string;
-    email: string;
+    username: string;
+    NIP: number;
+    job: number;
+    jabatan_id: number;
+    group: string;
     avatar?: string;
-    email_verified_at: string | null;
-    created_at: string;
-    updated_at: string;
+ 
 }
 
 export type BreadcrumbItemType = BreadcrumbItem;

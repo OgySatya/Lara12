@@ -4,29 +4,37 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { Activity, Cog, Component, LayoutGrid } from 'lucide-vue-next';
+import { Tally1, Tally2, Tally3, Tally4 } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
+import { usePage } from '@inertiajs/vue3';
+import { type SharedData, type Job } from '@/types';
 
+
+const page = usePage<SharedData>();
+const jobList = page.props.jobList.tugas as Job[];
+const jobName: string = page.props.jobList.name;
+
+console.log(jobList);
 const mainNavItems: NavItem[] = [
     {
-        title: 'Rencana Aksi 1',
+        title: jobList[0].name,
         href: '/job?job=1',
-        icon: Component,
+        icon: Tally1,
     },
     {
-        title: 'Rencana Aksi 2',
+        title: jobList[1].name,
         href: '/job?job=2',
-        icon: Activity,
+        icon: Tally2,
     },
     {
-        title: 'Rencana Aksi 3',
+        title: jobList[2].name,
         href: '/job?job=3',
-        icon: LayoutGrid,
+        icon: Tally3,
     },
     {
-        title: 'Rencana Aksi 4',
+        title: jobList[3].name,
         href: '/job?job=4',
-        icon: Cog,
+        icon: Tally4,
     },
 ];
 </script>
@@ -37,7 +45,7 @@ const mainNavItems: NavItem[] = [
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
-                        <Link :href="route('home')">
+                        <Link :href="route('job')">
                         <AppLogo />
                         </Link>
                     </SidebarMenuButton>
@@ -46,7 +54,7 @@ const mainNavItems: NavItem[] = [
         </SidebarHeader>
 
         <SidebarContent>
-            <NavMain :items="mainNavItems" />
+            <NavMain :items="mainNavItems" :job="jobName" />
         </SidebarContent>
 
         <SidebarFooter>

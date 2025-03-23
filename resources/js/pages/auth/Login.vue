@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
 import AuthBase from '@/layouts/AuthLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, Link } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
 import { defineProps } from 'vue';
 
@@ -34,6 +34,7 @@ const masuk = (name: string, pass: string) => {
 
 <template>
     <AuthBase title="Log in dulu" description="Silahkan Pilih Pegawagi">
+
         <Head title="Log in" />
 
         <div v-if="status" class="mb-4 text-center text-sm font-medium text-green-600">
@@ -55,13 +56,8 @@ const masuk = (name: string, pass: string) => {
                         <td class="border border-gray-400 px-4 py-2">{{ user.username }}</td>
                         <td class="border border-gray-400 px-4 py-2">{{ user.NIP }}</td>
                         <td class="border border-gray-400 px-4 py-2">
-                            <Button
-                                @click="masuk(user.username, user.NIP)"
-                                type="submit"
-                                class="mt-4 w-full"
-                                :tabindex="4"
-                                :disabled="form.processing"
-                            >
+                            <Button @click="masuk(user.username, user.NIP)" type="submit" class="mt-4 w-full"
+                                :tabindex="4" :disabled="form.processing">
                                 <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
                                 Log in
                             </Button>
@@ -70,5 +66,9 @@ const masuk = (name: string, pass: string) => {
                 </tbody>
             </table>
         </div>
+        <Link :href="route('register')">
+        <span
+            class="mx-auto bg-red-100 text-red-800 font-medium me-2 px-5 py-2 rounded-sm dark:bg-red-900 dark:text-red-300">Anyar</span>
+        </Link>
     </AuthBase>
 </template>

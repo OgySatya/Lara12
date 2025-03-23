@@ -5,20 +5,22 @@ import { Link, usePage } from '@inertiajs/vue3';
 
 defineProps<{
     items: NavItem[];
+    job: String
 }>();
 
 const page = usePage<SharedData>();
+console.log(page);
 </script>
 
 <template>
     <SidebarGroup class="px-2 py-0">
-        <SidebarGroupLabel>Rencana Aksi</SidebarGroupLabel>
+        <SidebarGroupLabel>{{ job }}</SidebarGroupLabel>
         <SidebarMenu>
             <SidebarMenuItem v-for="item in items" :key="item.title">
                 <SidebarMenuButton as-child :is-active="item.href === page.url">
                     <Link :href="item.href">
                     <component :is="item.icon" />
-                    <span>{{ item.title }}</span>
+                    <span class="bg-red">{{ item.title }}</span>
                     </Link>
                 </SidebarMenuButton>
             </SidebarMenuItem>

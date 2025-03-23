@@ -36,7 +36,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('tugas', absolute: false));
+        return redirect()->intended(route('job', absolute: false));
     }
 
     /**

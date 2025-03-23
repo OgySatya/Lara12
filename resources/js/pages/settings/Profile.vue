@@ -12,12 +12,9 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
 import { type BreadcrumbItem, type SharedData, type User } from '@/types';
 
-interface Props {
-    mustVerifyEmail: boolean;
-    status?: string;
-}
-
-defineProps<Props>();
+const props = defineProps<{
+    jabatan: { name: string; id: number }[];
+}>();
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -28,10 +25,15 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const page = usePage<SharedData>();
 const user = page.props.auth.user as User;
+console.log(user);
 
 const form = useForm({
+    id: user.id,
     name: user.name,
-    email: user.email,
+    username: user.username,
+    NIP: user.NIP,
+    jabatan: user.jabatan_id,
+    group: user.group,
 });
 
 const submit = () => {
@@ -43,6 +45,7 @@ const submit = () => {
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbs">
+
         <Head title="Profile settings" />
 
         <SettingsLayout>
@@ -52,52 +55,51 @@ const submit = () => {
                 <form @submit.prevent="submit" class="space-y-6">
                     <div class="grid gap-2">
                         <Label for="name">Name</Label>
-                        <Input id="name" class="mt-1 block w-full" v-model="form.name" required autocomplete="name" placeholder="Full name" />
+                        <Input id="name" class="mt-1 block w-full" v-model="form.name" required autocomplete="name"
+                            placeholder="Full name" />
                         <InputError class="mt-2" :message="form.errors.name" />
                     </div>
 
                     <div class="grid gap-2">
-                        <Label for="email">Email address</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            class="mt-1 block w-full"
-                            v-model="form.email"
-                            required
-                            autocomplete="username"
-                            placeholder="Email address"
-                        />
-                        <InputError class="mt-2" :message="form.errors.email" />
+                        <Label for="username">User Name</Label>
+                        <Input id="username" type="username" class="mt-1 block w-full" v-model="form.username" required
+                            autocomplete="username" placeholder="username" />
+                        <InputError class="mt-2" :message="form.errors.username" />
                     </div>
 
-                    <div v-if="mustVerifyEmail && !user.email_verified_at">
-                        <p class="-mt-4 text-sm text-muted-foreground">
-                            Your email address is unverified.
-                            <Link
-                                :href="route('verification.send')"
-                                method="post"
-                                as="button"
-                                class="hover:!decoration-current text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out dark:decoration-neutral-500"
-                            >
-                                Click here to resend the verification email.
-                            </Link>
-                        </p>
-
-                        <div v-if="status === 'verification-link-sent'" class="mt-2 text-sm font-medium text-green-600">
-                            A new verification link has been sent to your email address.
-                        </div>
+                    <div class="grid gap-2">
+                        <Label for="NIP">NIP</Label>
+                        <Input id="NIP" type="NIP" class="mt-1 block w-full" v-model="form.NIP" required
+                            autocomplete="NIP" placeholder="NIP" />
+                        <InputError class="mt-2" :message="form.errors.NIP" />
                     </div>
+                    <div class="grid gap-2">
+                        <Label for="password">Jabatan</Label>
+                        <select v-model="form.jabatan" :tabindex="3" id="jabatan" name="jabatan"
+                            class="border border-gray-300 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option v-for="job in props.jabatan" :value=job.id>{{ job.name }}</option>
+                        </select>
+                        <InputError :message="form.errors.jabatan" />
+                    </div>
+
+                    <div class="grid gap-2">
+                        <Label for="group">Group</Label>
+                        <select v-model="form.group" :tabindex="4" id="group" name="group"
+                            class="border border-gray-300 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option value='A'>Group A</option>
+                            <option value='B'>Group B</option>
+                            <option value='C'>Group C</option>
+                            <option value='Admin'>Group Admin</option>
+                        </select>
+                        <InputError :message="form.errors.group" />
+                    </div>
+
 
                     <div class="flex items-center gap-4">
                         <Button :disabled="form.processing">Save</Button>
 
-                        <TransitionRoot
-                            :show="form.recentlySuccessful"
-                            enter="transition ease-in-out"
-                            enter-from="opacity-0"
-                            leave="transition ease-in-out"
-                            leave-to="opacity-0"
-                        >
+                        <TransitionRoot :show="form.recentlySuccessful" enter="transition ease-in-out"
+                            enter-from="opacity-0" leave="transition ease-in-out" leave-to="opacity-0">
                             <p class="text-sm text-neutral-600">Saved.</p>
                         </TransitionRoot>
                     </div>
