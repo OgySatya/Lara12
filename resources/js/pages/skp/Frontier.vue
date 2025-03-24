@@ -24,18 +24,12 @@ const props = defineProps<{
     date: { month: number; year: number };
 }>();
 
-console.log(props.tugas.target[0].laporan);
-console.log(props.user);
-
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: props.user.name,
         href: 'job',
     },
 ];
-
-console.log(props.tugas);
-
 
 const image = ref<File[]>([]);
 const previewUrl = ref<string[]>([]);

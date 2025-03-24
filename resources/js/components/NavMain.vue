@@ -20,7 +20,7 @@ console.log(page);
                 <SidebarMenuButton as-child :is-active="item.href === page.url">
                     <Link :href="item.href">
                     <component :is="item.icon" />
-                    <span class="bg-red">{{ item.title }}</span>
+                    <span>{{ item.title }}</span>
                     </Link>
                 </SidebarMenuButton>
             </SidebarMenuItem>

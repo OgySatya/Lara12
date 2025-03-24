@@ -40,6 +40,10 @@ const masuk = (name: string, pass: string) => {
         <div v-if="status" class="mb-4 text-center text-sm font-medium text-green-600">
             {{ status }}
         </div>
+        <Link :href="route('register')">
+        <span
+            class="mx-auto bg-red-100 text-red-800 font-medium me-2 px-5 py-2 rounded-sm dark:bg-red-900 dark:text-red-300">Anyar</span>
+        </Link>
         <div>
             <h1 class="mb-4 text-2xl font-bold">Group A</h1>
             <table class="w-full border-collapse border border-gray-400">
