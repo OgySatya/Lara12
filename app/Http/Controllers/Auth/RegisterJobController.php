@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
 use Inertia\Inertia;
+use App\Models\Tugas;
 use Inertia\Response;
+use App\Models\Target;
 use App\Models\Jabatan;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
@@ -28,29 +30,31 @@ class RegisterJobController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255',
-            'NIP' => 'required|integer',
-            'jabatan' => 'required|integer',
-            'group' => 'required|string',
-        ]);
+        $newjob = Jabatan::create(['name' => $request->jabatan]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'username' => $request->username,
-            'NIP' => $request->NIP,
-            'jabatan_id' => $request->jabatan,
-            'group' => $request->group,
-            'password' => Hash::make($request->NIP),
-        ]);
+        function sidejob($job_id, $sidejob)
+        {
+            return Tugas::create([
+                'name' => $sidejob,
+                'jabatan_id' => $job_id
+            ]);
+        };
+        function target($sidejob_id, $subjob, $slug)
+        {
+            return Target::create([
+                'name' => $subjob,
+                'jabatan_id' => $sidejob_id,
+                'slug' => $slug
+            ]);
+        };
 
-        event(new Registered($user));
-
-        Auth::login($user);
-
-        return to_route('login');
+        foreach ($request->rencaAksi as $jobs) {
+            $tugas = sidejob($jobs->name, $newjob->id);
+            foreach ($request->rencaAksi->subjob->name as $subjobs) {
+                target($tugas->id, $subjobs, $request->slug);
+            }
+        }
     }
 }

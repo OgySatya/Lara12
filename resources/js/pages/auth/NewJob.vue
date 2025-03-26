@@ -27,15 +27,16 @@ const addSubjobs = (index: number) => {
 };
 const form = useForm({
     jabatan: '',
+    slug: '',
     rencanaAksi: [] as { name: string, subJobs: { name: string }[] }[],
 });
 
 const submit = () => {
     form.rencanaAksi = rencanaAksi.value;
     console.log(form.rencanaAksi);
-    // form.post(route('register'), {
-    //     onFinish: () => form.reset(),
-    // });
+    form.post(route('newjob'), {
+        onFinish: () => form.reset(),
+    });
 };
 </script>
 
@@ -48,15 +49,20 @@ const submit = () => {
             <div class="grid gap-6">
                 <div class="grid gap-2">
                     <Label class="text-lg font-semibold" for="name">NAMA JABATAN ANYAR:</Label>
-                    <Input class="ring-2 ring-offset-2" id="name" type="text" required autofocus autocomplete="name"
-                        v-model="form.jabatan" placeholder="Kates Entah" />
+                    <Input class="ring-2 ring-offset-2" id="name" type="text" required autofocus v-model="form.jabatan"
+                        placeholder="Kates Entah" />
+                </div>
+                <div class="flex gap-2">
+                    <p class="text-sm font-semibold" for="name">Nama pendek jabatan : </p>
+                    <Input class="ring-2 ring-offset-2" id="name" type="text" required autofocus v-model="form.slug"
+                        placeholder="contoh : Lalin" />
                 </div>
                 <ul v-for="(job, index) in rencanaAksi || []">
                     <li class="grid gap-2 ring-2 ring-offset-2 rounded-md p-4">
                         <div class="grid gap-2">
                             <Label class="text-center underline" for="username">RENCANA AKSI {{ index + 1 }}</Label>
-                            <Input class="w-full" id="username" type="text" autocomplete="name"
-                                v-model="rencanaAksi[index].name" placeholder="mangan turu" />
+                            <Input class="w-full" id="username" type="text" v-model="rencanaAksi[index].name"
+                                placeholder="mangan turu" />
                         </div>
                         <p class="text-sm">Sub Tugas :</p>
                         <div v-for="(subJob, subIndex) in rencanaAksi[index].subJobs || []">
