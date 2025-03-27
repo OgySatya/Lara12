@@ -14,11 +14,8 @@ class SummaryController extends Controller
 
     public function show(Request $request)
     {
-        $user = Auth::user([
-            'id',
-            'username'
-        ]);
-        $job = $request->tugas ?: 1;
+        $user = Auth::user();
+        $job = $request->job ?: 1;
         $month = $request->month ?: Carbon::now()->month;
         $year = $request->year ?: Carbon::now()->year;
         $job_id = Auth::user()->jabatan_id;
@@ -67,7 +64,7 @@ class SummaryController extends Controller
             'id',
             'username'
         ]);
-        $job = $request->tugas ?: 1;
+        $job = $request->job ?: 1;
         $month = $request->month ?: Carbon::now()->month;
         $year = $request->year ?: Carbon::now()->year;
         $job_id = Auth::user()->jabatan_id;
@@ -105,7 +102,7 @@ class SummaryController extends Controller
         $user->job = $job;
         ini_set('max_execution_time', 300);
 
-        $html = view('Report', [
+        $html = view('report', [
             'tugas' => $tugas,
             'user' => $user,
             'date' => $date

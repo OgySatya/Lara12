@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import PlaceholderPattern from '@/components/PlaceholderPattern.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem } from '@/types';
+import { type BreadcrumbItem, type SharedData, type User } from '@/types';
 import { Head, useForm } from '@inertiajs/vue3';
 import axios from 'axios';
 import { defineProps, ref } from 'vue';
@@ -20,20 +20,16 @@ interface Job {
 }
 const props = defineProps<{
     tugas: Data;
-    user: { id: number; username: string; job: Number };
+    user: User;
     date: { month: number; year: number };
 }>();
-console.log(props.tugas.target[0].laporan);
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: props.tugas.jabatan.name,
-        href: 'tugas',
+        title: props.user.name,
+        href: 'job',
     },
 ];
-
-console.log(props.tugas);
-
 
 const image = ref<File[]>([]);
 const previewUrl = ref<string[]>([]);
@@ -52,7 +48,12 @@ const uploadImage = async (id: number, slug: string, index: number) => {
         alert('isi foto dulu Bolo...');
         return;
     }
-
+    const file = image.value[index];
+    const maxSize = 200 * 1024;
+    if (file.size > maxSize) {
+        alert('Ukuran gambar maksimal 200KB!');
+        return;
+    }
     isUploading.value[index] = true;
     const reader = new FileReader();
     reader.onload = async () => {
@@ -75,7 +76,7 @@ const uploadImage = async (id: number, slug: string, index: number) => {
                 },
             );
 
-            form.image = response.data.content.download_url;
+            form.image = fileName;
             form.bulan = selectedMonth.value;
             form.tahun = selectedYear.value;
             form.user_id = props.user.id;
@@ -95,7 +96,42 @@ const uploadImage = async (id: number, slug: string, index: number) => {
 
     reader.readAsDataURL(image.value[index]);
 };
+const deleteImage = async (fileName: string) => {
+    if (!confirm(`Are you sure you want to delete ${fileName}?`)) {
+        return;
+    }
 
+    try {
+        const fileUrl = `https://api.github.com/repos/OgySatya/seloaji/contents/foto/${fileName}`;
+        const fileResponse = await axios.get(fileUrl, {
+            headers: {
+                Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`,
+                Accept: 'application/vnd.github.v3+json',
+            },
+        });
+
+        const fileSha = fileResponse.data.sha;
+
+        const deleteResponse = await axios.delete(fileUrl, {
+            headers: {
+                Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`,
+                Accept: 'application/vnd.github.v3+json',
+            },
+            data: {
+                message: `Delete image: ${fileName}`,
+                sha: fileSha,
+                branch: 'main',
+            },
+        });
+        form.image = fileName;
+        form.delete(route('image'), {
+            onFinish: () => form.reset(),
+        });
+        alert('Foto berhasil dihapus');
+    } catch (error) {
+        alert('Error gak iso di hapus');
+    }
+};
 const form = useForm({
     image: '',
     bulan: 0,
@@ -124,13 +160,13 @@ const months = [
 const selectedYear = ref<number>(Number(props.date.year));
 const selectedMonth = ref<number>(Number(props.date.month));
 const redirect = (month: number, year: number) => {
-    route(`/job?=${props.user.job}&month=${month}&year=${year}`)
+    window.location.href = `/job?job=${props.user.job}&month=${month}&year=${year}`;
 };
 const isGenerating = ref(false);
 
 const generatePdf = (month: number, year: number) => {
     isGenerating.value = true;
-    window.location.href = `/pdf?tugas=${props.user.job}&month=${month}&year=${year}`;
+    window.location.href = `/pdf?job=${props.user.job}&month=${month}&year=${year}`;
 };
 </script>
 
@@ -171,12 +207,17 @@ const generatePdf = (month: number, year: number) => {
                 <div v-for="(job, index) in props.tugas.target" :key="job.id">
                     <div class="border border-gray-400 px-4 py-2 hover:bg-gray-100">{{ index + 1 }}. {{ job.name }}
                     </div>
-                    <div class="my-4 grid grid-cols-2 gap-4">
-                        <div v-for="(link, imgIndex) in props.tugas.target[index].laporan || []" :key="imgIndex">
+                    <div class="my-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div class="grid" v-for="(link, imgIndex) in props.tugas.target[index].laporan || []"
+                            :key="imgIndex">
                             <div
                                 class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                                <img class="h-full w-full object-fill" :src="link" />
+                                <img class="h-full w-full object-fill"
+                                    :src="`https://raw.githubusercontent.com/OgySatya/seloaji/main/foto/${link}`" />
                             </div>
+                            <button
+                                class="mt-1 w-32 mx-auto rounded-lg bg-red-500 px-4 py-1  hover:bg-red-700 text-white"
+                                @click="deleteImage(link)">Hapus Foto</button>
                         </div>
                         <div>
                             <div
@@ -188,22 +229,30 @@ const generatePdf = (month: number, year: number) => {
                                     <PlaceholderPattern />
                                 </div>
                             </div>
-                            <input type="file" @change="(event) => onFileChange(event, index)" accept="image/*"
-                                class="mb-2" />
-                            <button @click="uploadImage(job.id, job.slug, index)" :disabled="isUploading[index]"
-                                class="mt-2 rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-700">
-                                {{ isUploading[index] ? 'Tunggu Boss...' : 'Upload Foto' }}
-                            </button>
+                            <div class="flex gap-2 w-3/4 mt-1 mx-auto justify-between">
+                                <label>
+                                    <input type="file" hidden @change="(event) => onFileChange(event, index)"
+                                        accept="image/*" />
+                                    <div
+                                        class=" rounded-lg w-32 bg-lime-500 px-3 py-1 text-white hover:bg-lime-700 text-center">
+                                        Isi Foto
+                                    </div>
+                                </label>
+                                <button @click="uploadImage(job.id, job.slug, index)" :disabled="isUploading[index]"
+                                    class="rounded-lg bg-gray-500 px-3 py-1 text-white hover:bg-blue-700">
+                                    {{ isUploading[index] ? 'Tunggu Boss...' : 'Upload Foto' }}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="rounded-lg bg-white p-6 shadow-lg">
+            <div class="rounded-lg bg-teal-100 p-6 shadow-lg">
                 <p class="text-2xl text-emerald-500">Rekap SKP jadi PDF</p>
 
                 <button @click="generatePdf(selectedMonth, selectedYear)" :disabled="isGenerating"
                     class="mt-4 rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:bg-gray-400">
-                    {{ isGenerating ? 'Ngenteni sithik suwe BOSS...' : 'Rekap SKP' }}
+                    {{ isGenerating ? 'Monggo di enteni, suwe BOSS...' : 'Rekap SKP' }}
                 </button>
             </div>
         </div>

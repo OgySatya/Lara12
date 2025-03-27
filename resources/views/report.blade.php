@@ -66,7 +66,7 @@ ul {
               <li><p style="margin-block-end: 20px;">{{ $job['name'] }} </p>
                 <div class="gird-container">
                   @foreach($job['laporan'] as $link)
-                  <img class="grid-item" src="{{$link}}" alt="" height="300px">
+                  <img class="grid-item" src="{{ 'https://raw.githubusercontent.com/OgySatya/seloaji/main/foto/' . $link }}" alt="" height="300px">
                   @endforeach
                 </div>
               </li>

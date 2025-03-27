@@ -52,21 +52,23 @@ const closeModal = () => {
             </div>
             <Dialog>
                 <DialogTrigger as-child>
-                    <Button variant="destructive">Delete account</Button>
+                    <Button variant="destructive">Hapus Pegawai</Button>
                 </DialogTrigger>
                 <DialogContent>
                     <form class="space-y-6" @submit="deleteUser">
                         <DialogHeader class="space-y-3">
                             <DialogTitle>Are you sure you want to delete your account?</DialogTitle>
                             <DialogDescription>
-                                Once your account is deleted, all of its resources and data will also be permanently deleted. Please enter your
+                                Once your account is deleted, all of its resources and data will also be permanently
+                                deleted. Please enter your
                                 password to confirm you would like to permanently delete your account.
                             </DialogDescription>
                         </DialogHeader>
 
                         <div class="grid gap-2">
                             <Label for="password" class="sr-only">Password</Label>
-                            <Input id="password" type="password" name="password" ref="passwordInput" v-model="form.password" placeholder="Password" />
+                            <Input id="password" type="password" name="password" ref="passwordInput"
+                                v-model="form.password" placeholder="Masukan NIP" />
                             <InputError :message="form.errors.password" />
                         </div>
 
