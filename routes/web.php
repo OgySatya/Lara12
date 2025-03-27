@@ -2,7 +2,8 @@
 
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TugasController;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\SummaryController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -14,8 +15,8 @@ Route::get('dashboard', function () {
 Route::middleware('auth', 'verified')->group(function () {
     // Route::get('tugas', [TugasController::class, 'tugas'])->name('tugas');
     // Route::post('upload', [TugasController::class, 'store'])->name('upload');
-    Route::get('job', [TugasController::class, 'frontline'])->name('job');
-    Route::post('put', [TugasController::class, 'pionier'])->name('put');
+    Route::get('job', [TaskController::class, 'frontline'])->name('job');
+    Route::post('put', [TaskController::class, 'pionier'])->name('put');
     Route::get('laporan', [SummaryController::class, 'show'])->name('laporan');
     Route::get('pdf', [SummaryController::class, 'create'])->name('pdf');
 });

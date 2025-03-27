@@ -32,29 +32,38 @@ class RegisterJobController extends Controller
      */
     public function store(Request $request)
     {
+     
         $newjob = Jabatan::create(['name' => $request->jabatan]);
-
+    
+      
         function sidejob($job_id, $sidejob)
         {
             return Tugas::create([
                 'name' => $sidejob,
                 'jabatan_id' => $job_id
             ]);
-        };
+        }
+    
+      
         function target($sidejob_id, $subjob, $slug)
         {
             return Target::create([
                 'name' => $subjob,
-                'jabatan_id' => $sidejob_id,
+                'tugas_id' => $sidejob_id,
                 'slug' => $slug
             ]);
-        };
-
-        foreach ($request->rencaAksi as $jobs) {
-            $tugas = sidejob($jobs->name, $newjob->id);
-            foreach ($request->rencaAksi->subjob->name as $subjobs) {
-                target($tugas->id, $subjobs, $request->slug);
-            }
         }
+    
+   
+        foreach ($request->jobs as $job) {
+   
+            $tugas = sidejob($newjob->id, $job['name']);
+         
+                foreach ($job['subJobs'] as $subjob) {
+                    target($tugas->id, $subjob['name'], $request->slug);
+                }
+            
+        }
+       
     }
-}
+}    
