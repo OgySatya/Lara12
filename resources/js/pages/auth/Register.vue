@@ -28,36 +28,24 @@ const submit = () => {
 
 <template>
     <AuthBase title="Buat Data Pegawai" description="Isi data dengan benar dan baik ojo ke susu">
-        <Head title="Register" />
 
-        <form @submit.prevent="submit" class="flex flex-col gap-6">
+        <Head title="Register" />
+        <Link :href="route('register')">
+        <span class="mx-auto rounded-sm bg-sky-500 px-5 py-2 font-medium text-white">Buat Pegawai Anyar</span>
+        </Link>
+        <form @submit.prevent="submit" class="flex flex-col gap-6 w-fit mx-auto">
             <div class="grid gap-6">
                 <div class="grid gap-2">
                     <Label for="name">Nama</Label>
-                    <Input
-                        id="name"
-                        type="text"
-                        required
-                        autofocus
-                        :tabindex="1"
-                        autocomplete="name"
-                        v-model="form.name"
-                        placeholder="Nama Lengkap"
-                    />
+                    <Input id="name" type="text" required autofocus :tabindex="1" autocomplete="name"
+                        v-model="form.name" placeholder="Nama Lengkap" />
                     <InputError :message="form.errors.name" />
                 </div>
 
                 <div class="grid gap-2">
                     <Label for="username">User Name</Label>
-                    <Input
-                        id="username"
-                        type="text"
-                        required
-                        :tabindex="2"
-                        autocomplete="name"
-                        v-model="form.username"
-                        placeholder="nama panggilan"
-                    />
+                    <Input id="username" type="text" required :tabindex="2" autocomplete="name" v-model="form.username"
+                        placeholder="nama panggilan" />
                     <InputError :message="form.errors.username" />
                 </div>
 
@@ -69,13 +57,8 @@ const submit = () => {
 
                 <div class="grid gap-2">
                     <Label for="password">Jabatan</Label>
-                    <select
-                        v-model="form.jabatan"
-                        :tabindex="3"
-                        id="jabatan"
-                        name="jabatan"
-                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
-                    >
+                    <select v-model="form.jabatan" :tabindex="3" id="jabatan" name="jabatan"
+                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm">
                         <option v-for="job in props.jabatan" :value="job.id">{{ job.name }}</option>
                     </select>
                     <InputError :message="form.errors.jabatan" />
@@ -83,13 +66,8 @@ const submit = () => {
 
                 <div class="grid gap-2">
                     <Label for="group">Group</Label>
-                    <select
-                        v-model="form.group"
-                        :tabindex="4"
-                        id="group"
-                        name="group"
-                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
-                    >
+                    <select v-model="form.group" :tabindex="4" id="group" name="group"
+                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm">
                         <option value="A">Group A</option>
                         <option value="B">Group B</option>
                         <option value="C">Group C</option>
@@ -105,8 +83,12 @@ const submit = () => {
             </div>
 
             <div class="text-center text-sm text-muted-foreground">
+                Jabatan mboten wonten :
+                <TextLink :href="route('newjob')" class="underline underline-offset-4">Buat Baru</TextLink>
+            </div>
+            <div class="text-center text-sm text-muted-foreground">
                 Kembali ke
-                <TextLink :href="route('login')" class="underline underline-offset-4" :tabindex="6">Log in</TextLink>
+                <TextLink :href="route('login')" class="underline underline-offset-4">Log in</TextLink>
             </div>
         </form>
     </AuthBase>
