@@ -1,0 +1,28 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "api/index.php",
+            "use": "@vercel/php"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/api/index.php"
+        }
+    ],
+    "env": {
+        "APP_ENV": "production",
+        "APP_DEBUG": "false",
+        "APP_KEY": "@app_key",
+        "APP_URL": "https://seloaji.vercel.app",
+        "DB_CONNECTION": "mysql",
+        "DB_HOST": "gmqk6.h.filess.io",
+        "DB_PORT": "61002",
+        "DB_DATABASE": "Seloaji_climbmeant",
+        "DB_USERNAME": "Seloaji_climbmeant",
+        "DB_PASSWORD": "ba39504e990f549256621fc5cdff17a1a66be312",
+        "VITE_APP_NAME": "${APP_NAME}"
+    }
+}
