@@ -122,5 +122,10 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+    'trusted_proxies' => [
+        '10.0.0.0/8', // Vercel's IP range (example)
+        '172.16.0.0/12', // Vercel's IP range (example)
+        '192.168.0.0/16', // Vercel's IP range (example)
+    ],
 
 ];
