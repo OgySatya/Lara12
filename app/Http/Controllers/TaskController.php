@@ -71,7 +71,6 @@ class TaskController extends Controller
         $request->validate([
             'image' => 'required|string'
         ]);
-            Laporan::where('image', $request->image)->delete();
-    
+        Laporan::where('image', $request->image)->delete();
     }
 }

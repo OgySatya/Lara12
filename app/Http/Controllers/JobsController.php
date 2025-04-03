@@ -9,7 +9,6 @@ use Inertia\Response;
 use App\Models\Laporan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
 class JobsController extends Controller
@@ -56,22 +55,11 @@ class JobsController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'name' => 'required|string',
         ]);
-
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            
-            // Generate a new filename
-            $newFileName = $request->name;
-            
-            // Store the file in 'storage/app/public/uploads'
-            $path = $image->storeAs('uploads', $newFileName, 'public');
-    
-            return response()->json(['path' => "/storage/$path", 'filename' => $newFileName], 201);
-        }
-    
-        return response()->json(['error' => 'File upload failed'], 400);
+        $image = $request->file('image');
+        $newFileName = $request->name;
+        $image->storeAs('uploads', $newFileName, 'public');
     }
-    
+
 
     public function save(Request $request)
     {
@@ -116,9 +104,8 @@ class JobsController extends Controller
         $request->validate([
             'image' => 'required|string'
         ]);
-        $filePath = "uploads/" . $request->image; 
-            Storage::disk('public')->delete($filePath); 
-            Laporan::where('image', $request->image)->delete();
-    
+        $filePath = "uploads/" . $request->image;
+        Storage::disk('public')->delete($filePath);
+        Laporan::where('image', $request->image)->delete();
     }
 }

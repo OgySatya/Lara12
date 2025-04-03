@@ -92,9 +92,11 @@ const deleteImage = async (fileName: string) => {
         form.delete(route('delete'), {
             onFinish: () => form.reset(),
         });
-        alert('Foto berhasil dihapus');
+
     } catch (error) {
-        // alert('Error gak iso di hapus');
+        alert('Error gak iso di hapus');
+    } finally {
+        alert('Foto berhasil dihapus');
     }
 };
 const form = useForm({
@@ -136,6 +138,7 @@ const generatePdf = (month: number, year: number) => {
 </script>
 
 <template>
+
     <Head title="Rekapitulasi" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
@@ -144,11 +147,8 @@ const generatePdf = (month: number, year: number) => {
             <div class="flex w-56 flex-col space-y-4">
                 <div>
                     <label for="year" class="font-semibold">Tahun:</label>
-                    <select
-                        v-model="selectedYear"
-                        id="year"
-                        class="w-full rounded-lg border border-input bg-background p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
+                    <select v-model="selectedYear" id="year"
+                        class="w-full rounded-lg border border-input bg-background p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option v-for="year in years" :key="year" :value="year">
                             {{ year }}
                         </option>
@@ -157,11 +157,8 @@ const generatePdf = (month: number, year: number) => {
 
                 <div class="grid">
                     <label for="month" class="font-semibold">Sasih:</label>
-                    <select
-                        @change="redirect(selectedMonth, selectedYear)"
-                        v-model="selectedMonth"
-                        class="rounded-lg border border-input bg-background p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
+                    <select @change="redirect(selectedMonth, selectedYear)" v-model="selectedMonth"
+                        class="rounded-lg border border-input bg-background p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option v-for="month in months" :key="month.id" :value="month.id">
                             {{ month.name }}
                         </option>
@@ -169,23 +166,30 @@ const generatePdf = (month: number, year: number) => {
                 </div>
 
                 <p class="font-bold">
-                    Laporan Bulan : <span>{{ months.find((m) => m.id === selectedMonth)?.name }} {{ selectedYear }}</span>
+                    Laporan Bulan : <span>{{months.find((m) => m.id === selectedMonth)?.name}} {{ selectedYear
+                    }}</span>
                 </p>
             </div>
             <div>
                 <div v-for="(job, index) in props.tugas.target" :key="job.id">
-                    <div class="border border-gray-400 px-4 py-2 hover:bg-gray-100">{{ index + 1 }}. {{ job.name }}</div>
+                    <div class="border border-gray-400 px-4 py-2 hover:bg-gray-100">{{ index + 1 }}. {{ job.name }}
+                    </div>
                     <div class="my-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <div class="grid" v-for="(link, imgIndex) in props.tugas.target[index].laporan || []" :key="imgIndex">
-                            <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                        <div class="grid" v-for="(link, imgIndex) in props.tugas.target[index].laporan || []"
+                            :key="imgIndex">
+                            <div
+                                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                                 <img class="h-full w-full object-fill" :src="`/storage/uploads/${link}`" />
                             </div>
-                            <button class="mx-auto mt-2 w-32 rounded-lg bg-red-500 px-4 py-1 text-white hover:bg-red-700" @click="deleteImage(link)">
+                            <button
+                                class="mx-auto mt-2 w-32 rounded-lg bg-red-500 px-4 py-1 text-white hover:bg-red-700"
+                                @click="deleteImage(link)">
                                 Hapus Foto
                             </button>
                         </div>
                         <div>
-                            <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                            <div
+                                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                                 <div v-if="previewUrl[index]">
                                     <img :src="previewUrl[index]" alt="Preview" class="" />
                                 </div>
@@ -195,14 +199,14 @@ const generatePdf = (month: number, year: number) => {
                             </div>
                             <div class="mx-auto mt-2 flex w-3/4 justify-between gap-2">
                                 <label>
-                                    <input type="file" hidden @change="(event) => onFileChange(event, index)" accept="image/*" />
-                                    <div class="w-32 rounded-lg bg-lime-500 px-3 py-1 text-center text-white hover:bg-lime-700">Isi Foto</div>
+                                    <input type="file" hidden @change="(event) => onFileChange(event, index)"
+                                        accept="image/*" />
+                                    <div
+                                        class="w-32 rounded-lg bg-lime-500 px-3 py-1 text-center text-white hover:bg-lime-700">
+                                        Isi Foto</div>
                                 </label>
-                                <button
-                                    @click="uploadImage(job.id, job.slug, index)"
-                                    :disabled="isUploading[index]"
-                                    class="rounded-lg bg-gray-500 px-3 py-1 text-white hover:bg-blue-700"
-                                >
+                                <button @click="uploadImage(job.id, job.slug, index)" :disabled="isUploading[index]"
+                                    class="rounded-lg bg-gray-500 px-3 py-1 text-white hover:bg-blue-700">
                                     {{ isUploading[index] ? 'Tunggu Boss...' : 'Upload Foto' }}
                                 </button>
                             </div>
@@ -213,11 +217,8 @@ const generatePdf = (month: number, year: number) => {
             <div class="rounded-lg bg-teal-100 p-6 shadow-lg dark:bg-slate-700">
                 <p class="text-2xl text-emerald-500 dark:text-white">Rekap SKP jadi PDF</p>
 
-                <button
-                    @click="generatePdf(selectedMonth, selectedYear)"
-                    :disabled="isGenerating"
-                    class="mt-4 rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:bg-gray-400"
-                >
+                <button @click="generatePdf(selectedMonth, selectedYear)" :disabled="isGenerating"
+                    class="mt-4 rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:bg-gray-400">
                     {{ isGenerating ? 'Monggo di enteni, suwe BOSS...' : 'Rekap SKP' }}
                 </button>
             </div>

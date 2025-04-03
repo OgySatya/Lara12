@@ -97,7 +97,7 @@ class SummaryController extends Controller
             12 => 'Desember'
         ];
         $date = new \stdClass();
-        $date->month = $months[3];
+        $date->month = $months[$month];
         $date->year = $year;
         $user->job = $job;
         ini_set('max_execution_time', 300);
