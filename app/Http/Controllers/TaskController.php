@@ -66,4 +66,12 @@ class TaskController extends Controller
             'image' => $request['image'],
         ]);
     }
+    public function destroy(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|string'
+        ]);
+            Laporan::where('image', $request->image)->delete();
+    
+    }
 }

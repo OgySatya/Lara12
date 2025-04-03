@@ -34,7 +34,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 const image = ref<File[]>([]);
 const previewUrl = ref<string[]>([]);
 const isUploading = ref<boolean[]>([]);
-const isDeleting = ref<boolean[]>([]);
 
 const onFileChange = (event: Event, index: number) => {
     const target = event.target as HTMLInputElement;
@@ -50,88 +49,52 @@ const uploadImage = async (id: number, slug: string, index: number) => {
         return;
     }
     const file = image.value[index];
-    const maxSize = 200 * 1024;
+    const maxSize = 2048 * 1024;
     if (file.size > maxSize) {
-        alert('Ukuran gambar maksimal 200KB!');
+        alert('Ukuran Foto Max 2MB!');
         return;
     }
     isUploading.value[index] = true;
-    const reader = new FileReader();
-    reader.onload = async () => {
-        const base64Image = (reader.result as string).split(',')[1];
-        const fileName = `${Date.now()}_${props.user.username}_${slug}.jpg`;
+    const newFileName = `${Date.now()}_${props.user.username}_${slug}.jpg`;
+    const newFile = new File([file], newFileName, { type: file.type });
 
-        try {
-            const response = await axios.put(
-                `https://api.github.com/repos/OgySatya/seloaji/contents/foto/${fileName}`,
-                {
-                    message: `Upload image: ${fileName}`,
-                    content: base64Image,
-                    branch: 'main',
-                },
-                {
-                    headers: {
-                        Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`,
-                        Accept: 'application/vnd.github.v3+json',
-                    },
-                },
-            );
-
-            form.image = fileName;
-            form.bulan = selectedMonth.value;
-            form.tahun = selectedYear.value;
-            form.user_id = props.user.id;
-            form.target_id = id;
-        } catch (error) {
-            console.error('Upload failed:', error);
-        } finally {
-            isUploading.value[index] = false;
-            previewUrl.value = [];
-            image.value = [];
-            form.post(route('put'), {
-                onFinish: () => form.reset(),
-            });
-        }
-    };
-
-    reader.readAsDataURL(image.value[index]);
+    const formData = new FormData();
+    formData.append('image', newFile);
+    formData.append('name', newFileName);
+    try {
+        const response = await axios.post('/store', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        form.image = newFileName;
+        form.bulan = selectedMonth.value;
+        form.tahun = selectedYear.value;
+        form.user_id = props.user.id;
+        form.target_id = id;
+    } catch (error) {
+        console.error('Upload failed:', error);
+    } finally {
+        isUploading.value[index] = false;
+        previewUrl.value = [];
+        image.value = [];
+        form.post(route('save'), {
+            onFinish: () => form.reset(),
+        });
+    }
 };
-const deleteImage = async (fileName: string, index: number) => {
-    if (!confirm(`Are you sure you want to delete ${fileName}?`)) {
+
+const deleteImage = async (fileName: string) => {
+    if (!confirm(`yakin di hapus Boss?`)) {
         return;
     }
-    isDeleting.value[index] = true;
+
     try {
-        const fileUrl = `https://api.github.com/repos/OgySatya/seloaji/contents/foto/${fileName}`;
-        const fileResponse = await axios.get(fileUrl, {
-            headers: {
-                Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`,
-                Accept: 'application/vnd.github.v3+json',
-            },
-        });
-
-        const fileSha = fileResponse.data.sha;
-
-        const deleteResponse = await axios.delete(fileUrl, {
-            headers: {
-                Authorization: `token ${import.meta.env.VITE_GITHUB_TOKEN}`,
-                Accept: 'application/vnd.github.v3+json',
-            },
-            data: {
-                message: `Delete image: ${fileName}`,
-                sha: fileSha,
-                branch: 'main',
-            },
-        });
-    } catch (error) {
-        alert('Error gak iso di hapus');
-    } finally {
         form.image = fileName;
         form.delete(route('delete'), {
             onFinish: () => form.reset(),
         });
-        isDeleting.value[index] = false;
         alert('Foto berhasil dihapus');
+    } catch (error) {
+        // alert('Error gak iso di hapus');
     }
 };
 const form = useForm({
@@ -215,16 +178,10 @@ const generatePdf = (month: number, year: number) => {
                     <div class="my-4 grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div class="grid" v-for="(link, imgIndex) in props.tugas.target[index].laporan || []" :key="imgIndex">
                             <div class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                                <img
-                                    class="h-full w-full object-fill"
-                                    :src="`https://raw.githubusercontent.com/OgySatya/seloaji/main/foto/${link}`"
-                                />
+                                <img class="h-full w-full object-fill" :src="`/storage/uploads/${link}`" />
                             </div>
-                            <button
-                                class="mx-auto mt-2 rounded-lg bg-red-500 px-3 py-1 text-white hover:bg-red-700"
-                                @click="deleteImage(link, index)"
-                            >
-                                {{ isDeleting[index] ? 'Tunggu Boss...' : 'Hapus Foto' }}
+                            <button class="mx-auto mt-2 w-32 rounded-lg bg-red-500 px-4 py-1 text-white hover:bg-red-700" @click="deleteImage(link)">
+                                Hapus Foto
                             </button>
                         </div>
                         <div>
