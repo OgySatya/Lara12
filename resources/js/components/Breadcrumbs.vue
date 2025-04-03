@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb';
 import { Link } from '@inertiajs/vue3';
+import PetengEnjing from '@/pages/settings/PetengEnjing.vue';
 
 interface BreadcrumbItem {
     title: string;
@@ -25,6 +26,7 @@ defineProps<{
                             <Link :href="item.href ?? '#'">{{ item.title }}</Link>
                         </BreadcrumbLink>
                     </template>
+                    <PetengEnjing class="ml-4" />
                 </BreadcrumbItem>
                 <BreadcrumbSeparator v-if="index !== breadcrumbs.length - 1" />
             </template>
