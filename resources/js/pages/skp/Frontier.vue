@@ -5,6 +5,7 @@ import { type BreadcrumbItem, type User, type Data } from '@/types';
 import { Head, useForm } from '@inertiajs/vue3';
 import axios from 'axios';
 import { defineProps, ref } from 'vue';
+import DeleteModal from '@/components/DeleteModal.vue';
 
 const props = defineProps<{
     tugas: Data;
@@ -82,10 +83,13 @@ const uploadImage = async (id: number, slug: string, index: number) => {
 
     reader.readAsDataURL(image.value[index]);
 };
+const showModal = ref(false)
+
+const handleConfirm = () => {
+    showModal.value = false
+    console.log('Confirmed!')
+}
 const deleteImage = async (fileName: string, index: number) => {
-    if (!confirm(`Yakin Fotonya di Hapus Boss?`)) {
-        return;
-    }
     isDeleting.value[index] = true;
     try {
         const fileUrl = `https://api.github.com/repos/OgySatya/seloaji/contents/foto/${fileName}`;
@@ -117,7 +121,7 @@ const deleteImage = async (fileName: string, index: number) => {
             onFinish: () => form.reset(),
         });
         isDeleting.value[index] = false;
-        alert('Foto berhasil dihapus');
+        showModal.value = false
     }
 };
 const form = useForm({
@@ -188,7 +192,7 @@ const generatePdf = (month: number, year: number) => {
 
                 <p class="font-bold">
                     Laporan Bulan : <span>{{months.find((m) => m.id === selectedMonth)?.name}} {{ selectedYear
-                        }}</span>
+                    }}</span>
                 </p>
             </div>
             <div>
@@ -203,10 +207,14 @@ const generatePdf = (month: number, year: number) => {
                                 <img class="h-full w-full object-fill"
                                     :src="`https://raw.githubusercontent.com/OgySatya/seloaji/main/foto/${link}`" />
                             </div>
-                            <button class="mx-auto mt-2 rounded-lg bg-red-500 px-3 py-1 text-white hover:bg-red-700"
-                                @click="deleteImage(link, imgIndex)">
-                                {{ isDeleting[imgIndex] ? 'Tunggu Boss...' : 'Hapus Foto' }}
-                            </button>
+
+                            <button @click="showModal = true"
+                                class="mx-auto mt-2 rounded-lg bg-red-500 px-3 py-1 text-white hover:bg-red-700">Hapus
+                                Foto</button>
+
+                            <DeleteModal :visible="showModal" title="Nyuwun sewu" message="Yakin Hapus Foto ini Boss?"
+                                @confirm="deleteImage(link, imgIndex)" @cancel="showModal = false" />
+
                         </div>
                         <div>
                             <div
