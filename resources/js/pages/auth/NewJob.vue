@@ -28,12 +28,16 @@ const form = useForm({
     jobs: [] as { name: string; subJobs: { name: string }[] }[],
 });
 
-const submit = () => {
-    form.jobs = rencanaAksi.value;
-    console.log(form.jobs);
-    form.post(route('newjob'), {
-        onFinish: () => form.reset(),
-    });
+const submit = async () => {
+    try {
+        form.jobs = rencanaAksi.value;
+        form.post(route('newjob'), {
+            onFinish: () => form.reset(),
+        });
+    } finally {
+        alert('Berhasil Boss');
+        location.reload();
+    }
 };
 </script>
 
@@ -45,7 +49,15 @@ const submit = () => {
             <div class="grid gap-6">
                 <div class="grid gap-2">
                     <Label class="text-lg font-semibold" for="name">NAMA JABATAN ANYAR:</Label>
-                    <Input class="ring-2 ring-offset-2" id="name" type="text" required autofocus v-model="form.jabatan" placeholder="Kates Entah" />
+                    <Input
+                        class="ring-2 ring-offset-2"
+                        id="name"
+                        type="text"
+                        required
+                        autofocus
+                        v-model="form.jabatan"
+                        placeholder="contoh : Kates Entah"
+                    />
                 </div>
                 <div class="flex gap-2">
                     <p class="text-sm font-semibold" for="name">Nama pendek jabatan :</p>
@@ -55,13 +67,13 @@ const submit = () => {
                     <li class="grid gap-2 rounded-md p-4 ring-2 ring-offset-2">
                         <div class="grid gap-2">
                             <Label class="text-center underline" for="username">RENCANA AKSI {{ index + 1 }}</Label>
-                            <Input class="w-full" id="username" type="text" v-model="rencanaAksi[index].name" placeholder="mangan turu" />
+                            <Input class="w-full" id="username" type="text" v-model="rencanaAksi[index].name" placeholder="contoh : mangan turu" />
                         </div>
                         <p class="text-sm">Sub Tugas :</p>
                         <div v-for="(subJob, subIndex) in rencanaAksi[index].subJobs || []">
                             <div class="flex gap-2">
                                 <label class="my-auto">{{ subIndex + 1 }}</label
-                                ><Input id="NIP" type="text" v-model="rencanaAksi[index].subJobs[subIndex].name" placeholder="ngopi" />
+                                ><Input id="NIP" type="text" v-model="rencanaAksi[index].subJobs[subIndex].name" placeholder="contoh : ngopi" />
                             </div>
                         </div>
                         <button type="button" class="mx-auto mt-4 w-fit rounded-md bg-lime-400 px-3 py-1 text-white" @click="addSubjobs(index)">
