@@ -24,10 +24,14 @@ import { Head, Link } from '@inertiajs/vue3';
                     Ubur Ubur Ikan Lele</h1>
                 <p class="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48 dark:text-gray-400">Login
                     dulu ya le</p>
-                <div class="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
+                <div class="flex flex-col gap-4 sm:flex-row sm:justify-center sm:space-y-1">
                     <Link :href="route('login')"
-                        class="inline-flex justify-center items-center py-3 px-8 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+                        class="inline-flex justify-center items-center py-3 px-8 text-lg font-medium text-center text-white rounded-lg bg-sky-500 hover:bg-blue-500 ">
                     Log In
+                    </Link>
+                    <Link :href="route('register')"
+                        class="inline-flex justify-center items-center py-3 px-8 text-lg font-medium text-center text-white rounded-lg bg-lime-500 hover:bg-green-500 ">
+                    Gae Pagawai Anyar
                     </Link>
 
                 </div>

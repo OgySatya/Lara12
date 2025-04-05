@@ -47,10 +47,10 @@ const masuk = (name: string, pass: string) => {
     <AuthBase title="Log in dulu" description="Silahkan Pilih Pegawagi">
 
         <Head title="Log in" />
-        <Link :href="route('register')">
-        <span class="mx-auto rounded-sm bg-sky-500 px-5 py-2 font-medium text-white">Buat Pegawai Anyar</span>
+        <Link :href="route('home')">
+        <span class="mx-auto rounded-sm bg-sky-500 px-5 py-2 font-medium text-white">Kembali</span>
         </Link>
-        <main class="grid grid-cols-1 w-auto gap-5 mx-auto md:grid-cols-2">
+        <main class="grid grid-cols-1 w-auto gap-8 mx-auto md:grid-cols-2">
             <div v-if="groupA.length > 0">
                 <h1 class="mb-4 text-2xl font-bold text-center text-amber-300 dark:text-white">Group A</h1>
                 <table class="w-min text-xs border">
