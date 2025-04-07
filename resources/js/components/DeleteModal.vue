@@ -19,8 +19,7 @@ const cancel = () => emit('cancel');
 </script>
 <template>
     <div v-if="visible" class="fixed inset-0 z-50 flex items-center justify-center bg-transparent">
-        <div
-            class="w-full max-w-md rounded-lg bg-white bg-opacity-90 p-6 shadow-lg dark:bg-gray-800 dark:bg-opacity-90">
+        <div class="w-full max-w-md rounded-lg bg-zinc-200 bg-opacity-70 p-6 dark:bg-stone-600 dark:bg-opacity-70">
             <h2 class="mb-4 text-lg font-semibold">{{ title }}</h2>
             <p class="mb-6">{{ message }}</p>
 

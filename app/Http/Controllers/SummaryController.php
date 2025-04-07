@@ -110,12 +110,12 @@ class SummaryController extends Controller
 
         $mpdf = new \Mpdf\Mpdf([
             'margin_top' => 2,
-            'margin_left' => 10,
-            'margin_right' => 10,
-            'margin_bottom' => 10,
+            'margin_left' => 15,
+            'margin_right' => 15,
+            'margin_bottom' => 15,
         ]);
         $mpdf->AddPage();
-        $mpdf->SetMargins(15, 10, 10);
+        $mpdf->SetMargins(15, 15, 15, 15);
         $mpdf->WriteHTML($html);
 
         return $mpdf->Output('document.pdf', 'I');

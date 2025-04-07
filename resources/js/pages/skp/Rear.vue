@@ -1,23 +1,13 @@
 <script setup lang="ts">
 import PlaceholderPattern from '@/components/PlaceholderPattern.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem, type User } from '@/types';
+import { type BreadcrumbItem, type User, type Data, } from '@/types';
 import { Head, useForm } from '@inertiajs/vue3';
 import axios from 'axios';
+import { Button } from '@/components/ui/button';
 import { defineProps, ref } from 'vue';
+import DeleteModal from '@/components/DeleteModal.vue';
 
-interface Data {
-    name: string;
-    target: Job[];
-    id: number;
-    jabatan: { name: string };
-}
-interface Job {
-    id: number;
-    name: string;
-    slug: string;
-    laporan: string[];
-}
 const props = defineProps<{
     tugas: Data;
     user: User;
@@ -34,6 +24,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 const image = ref<File[]>([]);
 const previewUrl = ref<string[]>([]);
 const isUploading = ref<boolean[]>([]);
+const isDeleting = ref<boolean[]>([]);
+const showModal = ref(false);
 
 const onFileChange = (event: Event, index: number) => {
     const target = event.target as HTMLInputElement;
@@ -82,11 +74,8 @@ const uploadImage = async (id: number, slug: string, index: number) => {
     }
 };
 
-const deleteImage = async (fileName: string) => {
-    if (!confirm(`yakin di hapus Boss?`)) {
-        return;
-    }
-
+const deleteImage = async (fileName: string, index: number) => {
+    isDeleting.value[index] = true;
     try {
         form.image = fileName;
         form.delete(route('delete'), {
@@ -96,7 +85,8 @@ const deleteImage = async (fileName: string) => {
     } catch (error) {
         alert('Error gak iso di hapus');
     } finally {
-        alert('Foto berhasil dihapus');
+        isDeleting.value[index] = false;
+        showModal.value = false;
     }
 };
 const form = useForm({
@@ -167,29 +157,32 @@ const generatePdf = (month: number, year: number) => {
 
                 <p class="font-bold">
                     Laporan Bulan : <span>{{months.find((m) => m.id === selectedMonth)?.name}} {{ selectedYear
-                    }}</span>
+                        }}</span>
                 </p>
             </div>
             <div>
                 <div v-for="(job, index) in props.tugas.target" :key="job.id">
-                    <div class="border border-gray-400 px-4 py-2 hover:bg-gray-100">{{ index + 1 }}. {{ job.name }}
+                    <div class="border border-gray-600 px-4 py-2 rounded-sm hover:bg-gray-100 dark:hover:bg-slate-600">
+                        {{ index + 1
+                        }}. {{ job.name }}
                     </div>
                     <div class="my-4 grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div class="grid" v-for="(link, imgIndex) in props.tugas.target[index].laporan || []"
                             :key="imgIndex">
                             <div
-                                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border mb-2">
                                 <img class="h-full w-full object-fill" :src="`/storage/uploads/${link}`" />
                             </div>
-                            <button
-                                class="mx-auto mt-2 w-32 rounded-lg bg-red-500 px-4 py-1 text-white hover:bg-red-700"
-                                @click="deleteImage(link)">
-                                Hapus Foto
-                            </button>
+                            <Button @click="showModal = true" class="mx-auto w-fit" variant="destructive">Hapus
+                                Foto</Button>
+
+                            <DeleteModal :visible="showModal" :deleting="isDeleting[imgIndex]" title="Nyuwun sewu"
+                                message="Yakin Hapus Foto ini Boss?" @confirm="deleteImage(link, imgIndex)"
+                                @cancel="showModal = false" />
                         </div>
                         <div>
                             <div
-                                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                                class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border mb-2">
                                 <div v-if="previewUrl[index]">
                                     <img :src="previewUrl[index]" alt="Preview" class="" />
                                 </div>
@@ -197,30 +190,30 @@ const generatePdf = (month: number, year: number) => {
                                     <PlaceholderPattern />
                                 </div>
                             </div>
-                            <div class="mx-auto mt-2 flex w-3/4 justify-between gap-2">
+                            <div class="mx-auto flex w-3/4 justify-between gap-2">
                                 <label>
                                     <input type="file" hidden @change="(event) => onFileChange(event, index)"
                                         accept="image/*" />
                                     <div
-                                        class="w-32 rounded-lg bg-lime-500 px-3 py-1 text-center text-white hover:bg-lime-700">
+                                        class="rounded-md h-9 px-4 py-2 text-sm font-medium bg-lime-500 text-center text-white hover:bg-teal-500">
                                         Isi Foto</div>
                                 </label>
-                                <button @click="uploadImage(job.id, job.slug, index)" :disabled="isUploading[index]"
-                                    class="rounded-lg bg-gray-500 px-3 py-1 text-white hover:bg-blue-700">
+                                <Button v-if="previewUrl[index]" @click="uploadImage(job.id, job.slug, index)"
+                                    :disabled="isUploading[index]">
                                     {{ isUploading[index] ? 'Tunggu Boss...' : 'Upload Foto' }}
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="rounded-lg bg-teal-100 p-6 shadow-lg dark:bg-slate-700">
-                <p class="text-2xl text-emerald-500 dark:text-white">Rekap SKP jadi PDF</p>
+            <div class="rounded-lg bg-gradient-to-r from-sky-200 via-sky-50 p-6  dark:from-slate-700">
+                <p class="text-2xl text-amber-500 font-bold dark:text-white mb-4">Rekap SKP jadi PDF</p>
 
-                <button @click="generatePdf(selectedMonth, selectedYear)" :disabled="isGenerating"
-                    class="mt-4 rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 disabled:bg-gray-400">
+                <Button @click="generatePdf(selectedMonth, selectedYear)" :disabled="isGenerating"
+                    class="text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-md text-sm px-5 py-2 text-center me-2 mb-2">
                     {{ isGenerating ? 'Monggo di enteni, suwe BOSS...' : 'Rekap SKP' }}
-                </button>
+                </Button>
             </div>
         </div>
     </AppLayout>

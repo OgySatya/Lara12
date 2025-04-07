@@ -44,7 +44,7 @@ const masuk = (name: string, pass: string) => {
 </script>
 
 <template>
-    <AuthBase title="Log in dulu" description="Silahkan Pilih Pegawagi">
+    <AuthBase title="Log in dulu" description="Silahkan Pilih Pegawai">
 
         <Head title="Log in" />
         <Link :href="route('home')">

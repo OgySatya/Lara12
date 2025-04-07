@@ -29,7 +29,7 @@ const mainNavItems = computed<NavItem[]>(() => {
             <SidebarMenu>
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
-                        <Link :href="route('home')">
+                        <Link :href="route('profile.edit')">
                         <AppLogo />
                         </Link>
                     </SidebarMenuButton>

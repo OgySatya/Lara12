@@ -16,7 +16,7 @@ const page = usePage<SharedData>();
         <SidebarGroupLabel>{{ tugas }}</SidebarGroupLabel>
         <SidebarMenu>
             <SidebarMenuItem v-for="item in items" :key="item.title">
-                <SidebarMenuButton class="h-14 w-full " as-child :is-active="item.href === page.url">
+                <SidebarMenuButton class=" h-fit" as-child :is-active="item.href === page.url">
                     <Link :href="item.href">
                     <component :is="item.icon" />
                     <span class="text-xs">{{ item.title }}</span>

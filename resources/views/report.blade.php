@@ -11,8 +11,8 @@ ul {
   padding-left: 25px; 
 }
 .container {
-      align-items: center;      /* Centers the image vertically */
-      width: 210mm;         /* Set the container width to 210mm */         /* Set the container height to 297mm (A4 paper height) */
+      align-items: center;      
+      width: 210mm;        
     }
 
     .container .kop {
@@ -39,14 +39,15 @@ ul {
     /* Grid items */
     .grid-item {
       width: 85mm; 
-      height: 50mm; 
+      height: 55mm; 
+      border-radius: 5px; /* Rounds the corners */
       object-fit: cover; /* Ensures it fills the space */
       border: 2px solid #000; /* Adds a border around the image */
     }
 </style>
 <body>
 <div class="container">
-    <img class="kop" src="https://raw.githubusercontent.com/OgySatya/Lara12/refs/heads/main/storage/app/public/kop%20seloaji.jpg" loading="lazy" alt="Image">
+    <img class="kop" src="storage\kop seloaji.jpg" loading="lazy" alt="Image">
         <div style="text-align: center;">
             <h4 style="text-transform: uppercase;" >LAPORAN BUKTI DUKUNG LAPORAN E KINERJA BULAN
              <br>
@@ -66,7 +67,7 @@ ul {
               <li><p style="margin-block-end: 20px;">{{ $job['name'] }} </p>
                 <div class="gird-container">
                   @foreach($job['laporan'] as $link)
-                  <img class="grid-item" src="{{ 'https://raw.githubusercontent.com/OgySatya/seloaji/main/foto/' . $link }}" alt="" height="300px">
+                  <img class="grid-item" src="{{ 'storage/uploads/' . $link }}">
                   @endforeach
                 </div>
               </li>
@@ -75,7 +76,7 @@ ul {
         <div class="box">
         <p >Mengetahui :</p>
         <p >PENGAWAS SATUAN PELAYANAN TERMINAL TIPE A SELOAJI</p>
-        <img src="https://raw.githubusercontent.com/OgySatya/Lara12/refs/heads/main/storage/app/public/ttd.jpg" loading="lazy" height="80px" alt="Image">
+        <img src="storage\ttd.jpg" loading="lazy" height="80px" alt="Image">
         <p><strong><u>PURWANTO</u></strong> <br>NIP. 19670610 199203 1 008 </p>
       </div>
     </div>

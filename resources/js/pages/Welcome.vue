@@ -7,15 +7,7 @@ import { Head, Link } from '@inertiajs/vue3';
     <Head title="Wellcome" />
     <div
         class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] dark:bg-[#0a0a0a] lg:justify-center lg:p-8">
-        <header class="not-has-[nav]:hidden mb-3 w-full max-w-[335px] text-sm lg:max-w-4xl">
-            <nav class="flex items-center justify-end gap-4">
-                <Link v-if="$page.props.auth.user" :href="route('job')"
-                    class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]">
-                Masuk
-                </Link>
-            </nav>
-        </header>
-        <section class="bg-white dark:bg-gray-900">
+        <section>
             <div class="py-4 px-4 mx-auto max-w-screen-xl text-center lg:py-8">
                 <img src="https://hubdat.dephub.go.id/media/original_images/Black_White_Elegant_Monogram_Initial_Name_Logo-removebg-preview.png"
                     alt="">
