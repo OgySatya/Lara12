@@ -19,7 +19,7 @@ class JobsController extends Controller
             'id',
             'username'
         ]);
-        $job = $request->tugas ?: 1;
+        $job = $request->job ?: 1;
         $month = $request->month ?: Carbon::now()->month;
         $year = $request->year ?: Carbon::now()->year;
         $job_id = Auth::user()->jabatan_id;
