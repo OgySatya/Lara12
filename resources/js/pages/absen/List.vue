@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { router } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 const form = ref({
-    username: '',
-    password: '',
-})
+    username: 'dsfsd',
+    password: 'sdfsd',
+});
 
 function submit() {
-    router.post('/run-bot', form.value)
+    router.post('/run-bot', form.value);
 }
 </script>
 <template>
