@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-
+use App\Models\Absen;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -23,11 +23,14 @@ class SpanUser implements ShouldQueue
      */
     public function handle(): void
     {
-        $scriptPath = base_path('resources\js\pages\absen\bot.js');
-        $process = new Process(['node', $scriptPath, $this->user]);
+        // $scriptPath = base_path('resources\js\pages\absen\bot.js');
+        // $process = new Process(['node', $scriptPath, $this->user]);
 
-        $process->run();
-        sleep(2);
+        // $process->run();
+        // sleep(2);
+
+        Absen::where('user_id', $this->user)
+        ->update(['status' => true]);
 
     }
 }

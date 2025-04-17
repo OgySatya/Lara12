@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
 use Inertia\Inertia;
+use App\Models\Absen;
 use Inertia\Response;
 use App\Models\Jabatan;
 use Illuminate\Http\Request;
@@ -50,7 +51,13 @@ class RegisteredUserController extends Controller
             'group' => $request->group,
             'password' => Hash::make($request->NIP),
         ]);
-
+        for ($i = 0; $i < 10; $i++) {
+            Absen::create([
+                'user_id' => $user->id,
+                'nip' => $user->NIP,
+                'tanggal' => '2001-10-'. ($i+1)
+            ]);
+        }
         event(new Registered($user));
 
         Auth::login($user);

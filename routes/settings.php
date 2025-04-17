@@ -16,6 +16,6 @@ Route::middleware('auth')->group(function () {
         return Inertia::render('settings/Appearance');
     })->name('appearance');
 
-    Route::get('absen', [AbsenController::class, 'index'])->name('absen');
-    Route::post('/run-bot', [AbsenController::class, 'run']);
+    Route::get('setting/absen', [AbsenController::class, 'index'])->name('absen');
+    Route::patch('setting/save', [AbsenController::class, 'update'])->name('absen.update');
 });
