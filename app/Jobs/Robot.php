@@ -8,14 +8,14 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Symfony\Component\Process\Process;
-class SpanUser implements ShouldQueue
+
+class Robot implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable;
     protected $user;
     public function __construct($user)
     {
-     $this->user =$user;
-
+        $this->user = $user;
     }
 
     /**
@@ -23,14 +23,14 @@ class SpanUser implements ShouldQueue
      */
     public function handle(): void
     {
-        // $scriptPath = base_path('resources\js\pages\absen\bot.js');
-        // $process = new Process(['node', $scriptPath, $this->user]);
+        $scriptPath = base_path('resources\js\pages\absen\bot.js');
+        $process = new Process(['node', $scriptPath, $this->user]);
 
-        // $process->run();
-        // sleep(2);
+        $process->run();
+        sleep(2);
 
-        Absen::where('user_id', $this->user)
-        ->update(['status' => true]);
-
+        // Absen::find($this->user)->update([
+        //     'status' => true,
+        // ]);
     }
 }

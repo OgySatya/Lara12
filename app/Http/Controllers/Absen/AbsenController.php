@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Absen;
 
-use App\Models\User;
+use Carbon\Carbon;
+
 use Inertia\Inertia;
 use App\Models\Absen;
 use Inertia\Response;
-use App\Jobs\SpanUser;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessFailedException;
+
 
 class AbsenController extends Controller
 {
@@ -24,22 +24,29 @@ class AbsenController extends Controller
         $data['absen'] = Absen::where('user_id', $user->id)->get();
         $data['name'] = $user->name;
 
-        return Inertia::render('absen/List', [
+        $bot = Absen::where('tanggal', Carbon::now()->toDateString())->where('status', 1)->get();
+        return Inertia::render('absen/Absen', [
             'users' => $data,
+            'test' => $bot,
         ]);
     }
     public function update(Request $request)
     {
-        $request->validate([
-            'absenId' => 'required|integer|exists:absens,id',
-            'tanggal' => 'required|date',
-        ]);
-    
+
         $absen = Absen::find($request->absenId);
-        $absen->tanggal = $request->tanggal;
+        $absen->tanggal = Carbon::parse($request->tanggal)->toDateString();
+        $absen->status = true;
         $absen->save();
-    
+
         return back()->with('success', 'Tanggal updated successfully.');
     }
-    
+    public function revoke(Request $request)
+    {
+
+        $absen = Absen::find($request->absenId);
+        $absen->status = false;
+        $absen->save();
+
+        return back()->with('success', 'Tanggal updated successfully.');
+    }
 }

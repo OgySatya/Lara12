@@ -1,6 +1,8 @@
 <?php
 
-use App\Jobs\SpanUser;
+use Carbon\Carbon;
+use App\Jobs\Robot;
+
 use App\Models\Absen;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -12,10 +14,9 @@ Artisan::command('inspire', function () {
 
 
 schedule::call(function () {
-    $users = Absen::get();
+    $bot = Absen::where('tanggal', Carbon::now()->toDateString())->where('status', 1)->get();
 
-    foreach ($users as $nip) {
-        SpanUser::dispatch($nip->user_id);
-    } 
-       
-})->everyFiveSeconds();
+    foreach ($bot as $user) {
+        Robot::dispatch($user->nip);
+    }
+})->cron('0 7,12,16 * * *');

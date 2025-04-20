@@ -18,4 +18,5 @@ Route::middleware('auth')->group(function () {
 
     Route::get('setting/absen', [AbsenController::class, 'index'])->name('absen');
     Route::patch('setting/save', [AbsenController::class, 'update'])->name('absen.update');
+    Route::patch('setting/cancel', [AbsenController::class, 'revoke'])->name('absen.revoke');
 });

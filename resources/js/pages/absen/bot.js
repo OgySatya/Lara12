@@ -1,7 +1,7 @@
 // get-token.mjs or if using .js and "type": "module" in package.json
 import puppeteer from 'puppeteer';
-// const [,, nip] = process.argv;
-const nip = '199106192023211005'; // replace with your NIP
+const [,, nip] = process.argv;
+// const nip = '199106192023211005'; // replace with your NIP
 
 (async () => {
     const browser = await puppeteer.launch({
