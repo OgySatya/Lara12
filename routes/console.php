@@ -19,4 +19,4 @@ schedule::call(function () {
     foreach ($bot as $user) {
         Robot::dispatch($user->nip);
     }
-})->cron('0 7,12,16 * * *');
+})->everyFiveSeconds();

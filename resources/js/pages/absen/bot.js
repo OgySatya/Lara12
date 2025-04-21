@@ -6,12 +6,8 @@ const [,, nip] = process.argv;
 (async () => {
     const browser = await puppeteer.launch({
         headless: false,
-        executablePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
-        userDataDir: 'C:\\Users\\Msi DESKTOP\\AppData\\Local\\Microsoft\\Edge\\User Data\\Profile 1',
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
-        // executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-        // userDataDir: 'C:\\Users\\Rapht\\AppData\\Local\\Google\\Chrome\\User Data',
-        // args: ['--profile-directory=Profile 14']
+        userDataDir: 'C:\\Users\\Rapht\\AppData\\Local\\Google\\Chrome for Testing\\User Data\\',
+
     });
     const page = await browser.newPage();
 
@@ -69,5 +65,5 @@ const [,, nip] = process.argv;
         await Promise.all([page.click('button[type="submit"]'), page.waitForNavigation({ waitUntil: 'networkidle0' })]);
     }
 
-    await browser.close();
+    // await browser.close();
 })();

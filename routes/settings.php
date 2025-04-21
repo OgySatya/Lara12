@@ -2,6 +2,7 @@
 
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Absen\AbsenController;
 use App\Http\Controllers\Settings\ProfileController;
 
@@ -20,3 +21,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('setting/save', [AbsenController::class, 'update'])->name('absen.update');
     Route::patch('setting/cancel', [AbsenController::class, 'revoke'])->name('absen.revoke');
 });
+
+Route::get('review/absen', [ReviewController::class, 'index'])->name('review');
+Route::get('review/active', [ReviewController::class, 'active'])->name('active');

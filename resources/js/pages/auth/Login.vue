@@ -19,7 +19,7 @@ const form = useForm({
     username: '',
     password: '',
 });
-console.log(props.users);
+
 const groupA = computed<User[]>(() => {
     return props.users.filter((user) => user.group === 'A');
 });
@@ -47,9 +47,14 @@ const masuk = (name: string, pass: string) => {
     <AuthBase title="Log in dulu" description="Silahkan Pilih Pegawai">
 
         <Head title="Log in" />
-        <Link :href="route('home')">
-        <span class="mx-auto rounded-sm bg-sky-500 px-5 py-2 font-medium text-white">Kembali</span>
-        </Link>
+        <div class="flex justify-between">
+            <Link :href="route('home')">
+            <span class="mx-auto rounded-sm bg-sky-500 px-5 py-2 font-medium text-white">Kembali</span>
+            </Link>
+            <Link :href="route('review')">
+            <span class="mx-auto rounded-sm bg-stone-500 px-5 py-2 font-medium text-white">Review</span>
+            </Link>
+        </div>
         <main class="grid grid-cols-1 w-auto gap-8 mx-auto md:grid-cols-2">
             <div v-if="groupA.length > 0">
                 <h1 class="mb-4 text-2xl font-bold text-center text-amber-300 dark:text-white">Group A</h1>
