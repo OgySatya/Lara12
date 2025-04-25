@@ -8,7 +8,7 @@ use App\Models\Absen;
 use Inertia\Response;
 use App\Models\Jabatan;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rules;
+use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -54,8 +54,9 @@ class RegisteredUserController extends Controller
         for ($i = 0; $i < 10; $i++) {
             Absen::create([
                 'user_id' => $user->id,
+                'shift' => 1,
                 'nip' => $user->NIP,
-                'tanggal' => '2001-10-'. ($i+1)
+                'tanggal' => Carbon::now()->toDateString(),
             ]);
         }
         event(new Registered($user));

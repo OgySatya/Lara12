@@ -16,6 +16,7 @@ return new class extends Migration
             $table->date('tanggal')->nullable();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->integer('nip');
+            $table->integer('shift');
             $table->boolean('status')->default(false);
         });
     }

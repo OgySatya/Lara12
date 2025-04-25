@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\Absen;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Carbon\Carbon;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -25,8 +27,9 @@ class DatabaseSeeder extends Seeder
         for ($i = 0; $i < 10; $i++) {
             Absen::create([
                 'user_id' => 1,
+                'shift' => 1,
                 'nip' => 199106192023211005,
-                'tanggal' => '2001-10-'. ($i+1)
+                'tanggal' => Carbon::now()->toDateString(),
             ]);
         }
         User::create([
@@ -40,8 +43,9 @@ class DatabaseSeeder extends Seeder
         for ($i = 0; $i < 10; $i++) {
             Absen::create([
                 'user_id' => 2,
+                'shift' => 1,
                 'nip' => 197304172007011019,
-                'tanggal' => '2001-10-'. ($i+1)
+                'tanggal' => Carbon::now()->toDateString(),
             ]);
         }
         User::create([
@@ -55,8 +59,9 @@ class DatabaseSeeder extends Seeder
         for ($i = 0; $i < 10; $i++) {
             Absen::create([
                 'user_id' => 3,
+                'shift' => 1,
                 'nip' => 197909182008011015,
-                'tanggal' => '2001-10-'. ($i+1)
+                'tanggal' => Carbon::now()->toDateString(),
             ]);
         }
         User::create([
@@ -70,8 +75,9 @@ class DatabaseSeeder extends Seeder
         for ($i = 0; $i < 10; $i++) {
             Absen::create([
                 'user_id' => 4,
+                'shift' => 1,
                 'nip' => 198004102008011018,
-                'tanggal' => '2001-10-'. ($i+1)
+                'tanggal' => Carbon::now()->toDateString(),
             ]);}
         User::create([
             'name' => 'ISNA R. KHOIRI',
@@ -84,8 +90,9 @@ class DatabaseSeeder extends Seeder
         for ($i = 0; $i < 10; $i++) {
             Absen::create([
                 'user_id' => 5,
+                'shift' => 1,
                 'nip' => 197909302009011006,
-                'tanggal' => '2001-10-'. ($i+1)
+                'tanggal' => Carbon::now()->toDateString(),
             ]);
         }
         User::create([
@@ -99,8 +106,9 @@ class DatabaseSeeder extends Seeder
         for ($i = 0; $i < 10; $i++) {
             Absen::create([
                 'user_id' => 6,
+                'shift' => 1,
                 'nip' => 197204222009011005,
-                'tanggal' => '2001-10-'. ($i+1)
+                'tanggal' => Carbon::now()->toDateString(),
             ]);
         }
         User::create([
@@ -114,8 +122,9 @@ class DatabaseSeeder extends Seeder
         for ($i = 0; $i < 10; $i++) {
             Absen::create([
                 'user_id' => 7,
+                'shift' => 1,
                 'nip' => 198105022008011022,
-                'tanggal' => '2001-10-'. ($i+1)
+                'tanggal' => Carbon::now()->toDateString(),
             ]);
         }
         User::create([
@@ -129,8 +138,9 @@ class DatabaseSeeder extends Seeder
         for ($i = 0; $i < 10; $i++) {
             Absen::create([
                 'user_id' => 8,
+                'shift' => 1,
                 'nip' => 197005202008011021,
-                'tanggal' => '2001-10-'. ($i+1)
+                'tanggal' => Carbon::now()->toDateString(),
             ]);
         }
         User::create([
@@ -144,8 +154,9 @@ class DatabaseSeeder extends Seeder
         for ($i = 0; $i < 10; $i++) {
             Absen::create([
                 'user_id' => 9,
+                'shift' => 1,
                 'nip' => 197207252007011017,
-                'tanggal' => '2001-10-'. ($i+1)
+                'tanggal' => Carbon::now()->toDateString(),
             ]);
         }
     }

@@ -32,10 +32,11 @@ class AbsenController extends Controller
     }
     public function update(Request $request)
     {
-
-        $absen = Absen::find($request->absenId);
-        $absen->tanggal = Carbon::parse($request->tanggal)->toDateString();
+   
+        $absen = Absen::find($request->absenId)?:  Absen::where('user_id', $request->id)->first();
+        $absen->tanggal = Carbon::parse($request->tanggal)->toDateString() ?: Carbon::now()->toDateString();
         $absen->status = true;
+        $absen->shift = $request->shift ?: 1;
         $absen->save();
 
         return back()->with('success', 'Tanggal updated successfully.');
