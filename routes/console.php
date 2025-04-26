@@ -14,9 +14,9 @@ Artisan::command('inspire', function () {
 
 
 schedule::call(function () {
-    $bot = Absen::where('tanggal', Carbon::now()->toDateString())->where('status', 1)->get();
+    $data = Absen::where('tanggal', Carbon::now()->toDateString())->where('status', 1)->get();
 
-    foreach ($bot as $user) {
-        Robot::dispatch($user->nip);
+    foreach ($data as $absen) {
+        Robot::dispatch($absen->id);
     }
-})->everyFiveSeconds();
+})->everyFiveMinutes();

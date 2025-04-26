@@ -19,10 +19,11 @@ interface User {
 const props = defineProps<{
     staff: User[];
     users: { name: string; id: number }[];
+    failed: number;
 }>();
-
+console.log(props.failed);
 const form = useForm({
-    id: -1,
+    id: 0,
 });
 const newAbsen = (event: Event) => {
     const target = event.target as HTMLSelectElement;
@@ -31,6 +32,11 @@ const newAbsen = (event: Event) => {
     if (selectedId) {
         router.patch(route('absen.update'), { id: selectedId });
     }
+};
+const newShift = (event: Event, id: number) => {
+    const target = event.target as HTMLSelectElement;
+    const value = Number(target.value);
+    router.patch(route('absen.update'), { absenId: id, shift: value });
 };
 
 const batal = (id: number) => {
@@ -62,18 +68,21 @@ onMounted(() => {
 
 <template>
     <AuthBase title="DAFTAR ABSEN PEGAWAI" description="Silahkan cek daftar pegawai yang absen pada hari ini">
+
         <Head title="Absen Pegawi" />
-        <Link :href="route('login')">
+        <div class="flex justify-between items-center">
+            <p class="text-xl font-bold ">{{ currentTime }}</p>
+            <Link :href="route('login')">
             <span class="mx-auto rounded-sm bg-sky-500 px-5 py-2 font-medium text-white">Kembali</span>
-        </Link>
+            </Link>
+        </div>
+
         <main class="grid">
-            <div class="mb-4 text-center">
-                <p class="text-xl font-bold">{{ currentTime }}</p>
-            </div>
-            <div v-if="props.staff.length > 0">
-                <h1 class="mb-4 text-center text-2xl font-bold text-amber-300 dark:text-white">Daftar Pegawai ya Absen hari ini</h1>
-                <section class="flex w-full justify-center">
-                    <table class="w-fit border">
+            <div>
+                <h1 class="mb-4 text-center text-2xl font-bold text-amber-700 dark:text-white">Daftar Pegawai ya Absen
+                    hari ini</h1>
+                <section class="flex w-max justify-center gap-5">
+                    <table v-if="props.staff.length > 0" class="border-2 w-fit text-center rounded-sm">
                         <thead>
                             <tr class="bg-amber-300 dark:bg-gray-800">
                                 <th class="border p-2">No</th>
@@ -86,21 +95,45 @@ onMounted(() => {
                             <tr v-for="(data, index) in props.staff" :key="data.id">
                                 <td class="border p-2">{{ index + 1 }}</td>
                                 <td class="border p-2">{{ data.user.name }}</td>
-                                <td class="border p-2">Shift {{ data.shift }}</td>
                                 <td class="border p-2">
-                                    <button class="w-fit rounded-sm bg-red-500 px-2 pt-1 text-white" @click="batal(data.id)">Gak Jadi</button>
+                                    <select @change="(event) => newShift(event, data.id)"
+                                        class="w-fit rounded border p-2 bg-background" v-model="data.shift">
+                                        <option value="1">Shift 1</option>
+                                        <option value="2">Shift 2</option>
+                                    </select>
+                                </td>
+                                <td class="border p-2">
+                                    <button class="w-fit rounded-sm bg-red-500 px-2 pt-1 text-white"
+                                        @click="batal(data.id)">Gak Jadi</button>
+                                </td>
+                            </tr>
+                            <tr class="bg-red-500 text-white text-center">
+                                <td></td>
+                                <td>Gagal Absen</td>
+                                <td>{{ failed }} Orang</td>
+                                <td class="border p-2">
+                                    <Link :href="route('active')"
+                                        class="bg-gray-100 text-gray-800 p-1 rounded-md font-semibold  hover:text-blue-500 ">
+
+                                    <span>Ulangi Absen</span>
+                                    </Link>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                     <div class="mx-auto text-center">
-                        <Link :href="route('active')">
-                            <span class="mx-auto mt-5 rounded-xl bg-amber-300 px-5 py-2 font-medium text-white">Absen Manual</span>
+                        <br />
+                        <Link :href="route('active')"
+                            class="mx-auto mt-5 rounded-xl border-2 border-stone-600 px-5 py-2 font-medium hover:bg-gray-400 hover:text-slate-100 ">
+
+                        <span>Absen
+                            Manual</span>
                         </Link>
                         <br />
-                        <p class="my-3 text-xl font-bold">Tambah Absen</p>
-                        <select @change="newAbsen" class="w-fit rounded border p-2" v-model="form.id">
-                            <option :value="-1">Pilih Pegawai</option>
+                        <p class="mt-6 mb-3 text-xl font-bold">Tambah Absen</p>
+                        <select @change="newAbsen" class="w-fit rounded border p-2 bg-background" v-model="form.id"
+                            placeholder="Pilih Pegawai">
+                            <option value="0" disabled selected hidden>Pilih Pegawai :</option>
                             <option v-for="option in users" :key="option.id" :value="option.id">
                                 {{ option.name }}
                             </option>

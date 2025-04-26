@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Jobs\Robot;
+use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Absen;
 use Inertia\Response;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Http\JsonResponse;
 
 class ReviewController extends Controller
 {
@@ -21,21 +24,27 @@ class ReviewController extends Controller
                 $query->select('id', 'name');
             }])
             ->get();
+        $failedJobs = DB::table('failed_jobs')->count();
         return Inertia::render('absen/Review', [
             'staff' => $staff,
-            'users'=> $users,
+            'users' => $users,
+            'failed' => $failedJobs,
         ]);
     }
     public function active()
     {
         $today = Carbon::now()->toDateString();
 
-        $bots = Absen::where('tanggal', $today)
+        $data = Absen::where('tanggal', $today)
             ->where('status', 1)
             ->get();
 
-        foreach ($bots as $user) {
-            Robot::dispatch($user->nip);
+        foreach ($data as $absen) {
+            Robot::dispatch($absen->id);
         }
+    }
+    public function retry()
+    {
+        Artisan::call('queue:retry', ['id' => 'all']);
     }
 }
