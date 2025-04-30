@@ -24,14 +24,7 @@ class DatabaseSeeder extends Seeder
             'group' => 'B',
             'password' => bcrypt('199106192023211005')
         ]);
-        for ($i = 0; $i < 10; $i++) {
-            Absen::create([
-                'user_id' => 1,
-                'shift' => 1,
-                'nip' => 199106192023211005,
-                'tanggal' => Carbon::now()->toDateString(),
-            ]);
-        }
+        
         User::create([
             'name' => 'DARYANTO',
             'username' => 'daryanto',
@@ -40,14 +33,7 @@ class DatabaseSeeder extends Seeder
             'group' => 'B',
             'password' => bcrypt('197304172007011019')
         ]);
-        for ($i = 0; $i < 10; $i++) {
-            Absen::create([
-                'user_id' => 2,
-                'shift' => 1,
-                'nip' => 197304172007011019,
-                'tanggal' => Carbon::now()->toDateString(),
-            ]);
-        }
+        
         User::create([
             'name' => 'SUWITO',
             'username' => 'suwito',
@@ -56,14 +42,7 @@ class DatabaseSeeder extends Seeder
             'group' => 'B',
             'password' => bcrypt('197909182008011015')
         ]);
-        for ($i = 0; $i < 10; $i++) {
-            Absen::create([
-                'user_id' => 3,
-                'shift' => 1,
-                'nip' => 197909182008011015,
-                'tanggal' => Carbon::now()->toDateString(),
-            ]);
-        }
+        
         User::create([
             'name' => 'WULAN AFRIAL CATUR KUNCORO',
             'username' => 'kuncoro',
@@ -72,13 +51,7 @@ class DatabaseSeeder extends Seeder
             'group' => 'B',
             'password' => bcrypt('198004102008011018')
         ]);
-        for ($i = 0; $i < 10; $i++) {
-            Absen::create([
-                'user_id' => 4,
-                'shift' => 1,
-                'nip' => 198004102008011018,
-                'tanggal' => Carbon::now()->toDateString(),
-            ]);}
+        
         User::create([
             'name' => 'ISNA R. KHOIRI',
             'username' => 'isna',
@@ -87,14 +60,7 @@ class DatabaseSeeder extends Seeder
             'group' => 'B',
             'password' => bcrypt('197909302009011006')
         ]);
-        for ($i = 0; $i < 10; $i++) {
-            Absen::create([
-                'user_id' => 5,
-                'shift' => 1,
-                'nip' => 197909302009011006,
-                'tanggal' => Carbon::now()->toDateString(),
-            ]);
-        }
+        
         User::create([
             'name' => 'DIGDO SUBROTO',
             'username' => 'digdo',
@@ -103,14 +69,7 @@ class DatabaseSeeder extends Seeder
             'group' => 'C',
             'password' => bcrypt('197204222009011005')
         ]);
-        for ($i = 0; $i < 10; $i++) {
-            Absen::create([
-                'user_id' => 6,
-                'shift' => 1,
-                'nip' => 197204222009011005,
-                'tanggal' => Carbon::now()->toDateString(),
-            ]);
-        }
+        
         User::create([
             'name' => 'SUKOCO',
             'username' => 'sukoco',
@@ -119,14 +78,7 @@ class DatabaseSeeder extends Seeder
             'group' => 'C',
             'password' => bcrypt('198105022008011022')
         ]);
-        for ($i = 0; $i < 10; $i++) {
-            Absen::create([
-                'user_id' => 7,
-                'shift' => 1,
-                'nip' => 198105022008011022,
-                'tanggal' => Carbon::now()->toDateString(),
-            ]);
-        }
+        
         User::create([
             'name' => 'MARSUDI',
             'username' => 'marsudi',
@@ -135,14 +87,7 @@ class DatabaseSeeder extends Seeder
             'group' => 'C',
             'password' => bcrypt('197005202008011021')
         ]);
-        for ($i = 0; $i < 10; $i++) {
-            Absen::create([
-                'user_id' => 8,
-                'shift' => 1,
-                'nip' => 197005202008011021,
-                'tanggal' => Carbon::now()->toDateString(),
-            ]);
-        }
+        
         User::create([
             'name' => 'SUPARDI',
             'username' => 'supardi',
@@ -151,13 +96,6 @@ class DatabaseSeeder extends Seeder
             'group' => 'C',
             'password' => bcrypt('197207252007011017')
         ]);
-        for ($i = 0; $i < 10; $i++) {
-            Absen::create([
-                'user_id' => 9,
-                'shift' => 1,
-                'nip' => 197207252007011017,
-                'tanggal' => Carbon::now()->toDateString(),
-            ]);
-        }
+        
     }
 }

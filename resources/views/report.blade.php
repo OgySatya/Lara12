@@ -31,16 +31,15 @@ ul {
     }
     .grid-container {
       display: grid;          /* Enables CSS Grid */
-      grid-template-columns: repeat(2, 1fr); /* Creates 2 equal columns */
-      gap: 50px;      
+      grid-template-columns: repeat(2, 1fr); /* Creates 2 equal columns */ 
       align-items: center;        /* Adds space between grid items */
+      margin-bottom: 25px;
     }
 
     /* Grid items */
     .grid-item {
       width: 85mm; 
-      height: 55mm; 
-      border-radius: 5px; /* Rounds the corners */
+      height: 50mm; 
       object-fit: cover; /* Ensures it fills the space */
       border: 2px solid #000; /* Adds a border around the image */
     }
@@ -61,10 +60,14 @@ ul {
             </pre>
      
         </div>
-            <h4 style="text-align: center;">{{$tugas->name}}</h4>
+            <h3 style="text-align: center;">{{$tugas->name}}</h3>
             <ul >
               @foreach($tugas['target'] as $job)
-              <li><p style="margin-block-end: 20px;">{{ $job['name'] }} </p>
+                 @if(count($tugas->target[0]->laporan) > 4)
+                 <li><div style="height: 70px;margin-bottom: 10px;"><p>{{ $job['name'] }} </p></div>
+                  @else
+                  <li><div style="margin-top: -10px;"><p>{{ $job['name'] }} </p></div>
+                  @endif
                 <div class="gird-container">
                   @foreach($job['laporan'] as $link)
                   <img class="grid-item" src="{{ 'storage/uploads/' . $link }}">

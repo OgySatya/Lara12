@@ -9,6 +9,9 @@ use App\Http\Controllers\SummaryController;
 Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
+Route::get('/test', function () {
+    return Inertia::render('absen/test');
+})->name('test');
 
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
