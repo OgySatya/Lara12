@@ -13,7 +13,8 @@ class Robot implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable;
     protected $absenId;
-
+    public $tries = 3;
+    public $retryAfter = 15;
 
     public function __construct($id)
     {
@@ -28,6 +29,12 @@ class Robot implements ShouldQueue
         $scriptPath = base_path('resources\js\pages\absen\bot.js');
         $process = new Process(['node', $scriptPath, $absen->nip, $absen->shift]);
         $process->run();
+
+        if (!$process->isSuccessful()) {
+            $errorOutput = $process->getErrorOutput();
+            $output = $process->getOutput(); // optional, may be helpful for debugging
+            throw new \Exception("Node script failed:\nError: $errorOutput\nOutput: $output");
+        }
         sleep(3);
     }
 }

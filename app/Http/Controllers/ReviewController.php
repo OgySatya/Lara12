@@ -45,6 +45,6 @@ class ReviewController extends Controller
     }
     public function retry()
     {
-        Artisan::call('queue:retry', ['id' => 'all']);
+        Artisan::call('queue:retry all');
     }
 }

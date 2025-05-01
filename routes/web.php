@@ -12,7 +12,7 @@ Route::get('/', function () {
 Route::get('/test', function () {
     return Inertia::render('absen/test');
 })->name('test');
-
+Route::post('saved', [JobsController::class, 'save'])->name('saved');
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

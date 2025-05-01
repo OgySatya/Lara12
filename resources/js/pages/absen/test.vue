@@ -13,7 +13,7 @@
             <label for="name" class="block">Name:</label>
             <input v-model="form.image" type="text" class="w-full border p-2" />
         </div>
-        <button type="submit" class="rounded bg-blue-500 px-4 py-2 text-white">Submit</button>
+        <button type="submit" id="submit" class="rounded bg-blue-500 px-4 py-2 text-white">Submit</button>
     </form>
 </template>
 
@@ -39,7 +39,8 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('save'), {
+    form.image = latitude.value + ',' + longitude.value;
+    form.post(route('saved'), {
         onFinish: () => form.reset(),
     });
 };
