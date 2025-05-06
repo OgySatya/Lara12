@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Settings;
 
+use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Jabatan;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
-use App\Models\User;
 
 class ProfileController extends Controller
 {
@@ -39,6 +40,7 @@ class ProfileController extends Controller
             'NIP' => $request->NIP,
             'jabatan_id' => $request->jabatan,
             'group' => $request->group,
+            'password' => Hash::make($request->NIP),
         ]);
 
         return to_route('profile.edit');

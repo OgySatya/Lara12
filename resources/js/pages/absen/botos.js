@@ -3,9 +3,7 @@ import puppeteer from 'puppeteer';
 (async () => {
     const browser = await puppeteer.launch({
         headless: true,
-        executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-        userDataDir: 'C:\\Users\\Rapht\\AppData\\Local\\Google\\Chrome for Testing\\User Data',
-        args: ['--profile-directory=Profile 1'], // Use Profile 1 here
+        args: ['--user-data-dir=C:\\Users\\MSi DESKTOP\\AppData\\Local\\Google\\Chrome for Testing\\User Data', '--profile-directory=Profile 1'],
     });
     const page = await browser.newPage();
 
@@ -19,5 +17,5 @@ import puppeteer from 'puppeteer';
         page.waitForNavigation({ waitUntil: 'networkidle0' }), // waits for page after submit
     ]);
 
-       await browser.close();
+    await browser.close();
 })();

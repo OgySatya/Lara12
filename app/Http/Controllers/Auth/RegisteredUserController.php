@@ -51,6 +51,7 @@ class RegisteredUserController extends Controller
             'group' => $request->group,
             'password' => Hash::make($request->NIP),
         ]);
+
         for ($i = 0; $i < 10; $i++) {
             Absen::create([
                 'user_id' => $user->id,

@@ -42,7 +42,11 @@ const submit = async () => {
 </script>
 
 <template>
-    <AuthBase title="Buat Tugas Rencana Aksi" description="Isi data dengan benar dan baik ojo ke susu">
+    <AuthBase
+        class="h-screen w-full bg-[url('/storage/terminal.png')] bg-cover bg-center"
+        title="Buat Tugas Rencana Aksi"
+        description="Isi data dengan benar dan baik ojo ke susu"
+    >
         <Head title="New Job" />
 
         <form @submit.prevent="submit" class="flex w-full flex-col gap-6">

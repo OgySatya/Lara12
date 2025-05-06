@@ -27,7 +27,11 @@ const submit = () => {
 </script>
 
 <template>
-    <AuthBase title="Buat Data Pegawai" description="Isi data dengan benar dan baik ojo ke susu">
+    <AuthBase
+        class="h-screen w-full bg-[url('/storage/terminal.png')] bg-cover bg-center"
+        title="Buat Data Pegawai"
+        description="Isi data dengan benar dan baik ojo ke susu"
+    >
         <Head title="Register" />
         <Link :href="route('register')">
             <span class="mx-auto rounded-sm bg-sky-500 px-5 py-2 font-medium text-white">Buat Pegawai Anyar</span>
@@ -65,7 +69,7 @@ const submit = () => {
 
                 <div class="grid gap-2">
                     <Label for="email">NIP</Label>
-                    <Input id="NIP" type="number" required :tabindex="2" v-model="form.NIP" placeholder="123456" />
+                    <Input id="NIP" type="text" required :tabindex="2" v-model="form.NIP" placeholder="Nip" name="NIP" />
                     <InputError :message="form.errors.NIP" />
                 </div>
 
