@@ -26,7 +26,7 @@ class Robot implements ShouldQueue
     public function handle(): void
     {
         $absen = Absen::find($this->absenId);
-        $scriptPath = base_path('resources\js\pages\absen\bot.js');
+        $scriptPath = base_path('resources\js\pages\absen\absenBot.js');
         $process = new Process(['node', $scriptPath, $absen->nip, $absen->shift]);
         $process->run();
 

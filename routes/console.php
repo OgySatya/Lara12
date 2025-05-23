@@ -14,7 +14,7 @@ schedule::call(function () {
     foreach ($data as $absen) {
         Robot::dispatch($absen->id);
     }
-})->twiceDaily(7, 12);
+})->dailyAt('7:00');
 
 schedule::call(function () {
     $data = Absen::where('tanggal', Carbon::now()->toDateString())->where('status', 1)->get();
@@ -22,7 +22,7 @@ schedule::call(function () {
     foreach ($data as $absen) {
         Robot::dispatch($absen->id);
     }
-})->dailyAt('16:00');
+})->dailyAt('12:10');
 
 schedule::call(function () {
     $data = Absen::where('tanggal', Carbon::now()->toDateString())->where('status', 1)->get();
@@ -30,7 +30,15 @@ schedule::call(function () {
     foreach ($data as $absen) {
         Robot::dispatch($absen->id);
     }
-})->weekly()->fridays()->at('16:30');
+})->dailyAt('16:10');
+
+schedule::call(function () {
+    $data = Absen::where('tanggal', Carbon::now()->toDateString())->where('status', 1)->get();
+
+    foreach ($data as $absen) {
+        Robot::dispatch($absen->id);
+    }
+})->weekly()->fridays()->at('16:45');
 
 schedule::call(function () {
     $failedJobs = DB::table('failed_jobs')->count();

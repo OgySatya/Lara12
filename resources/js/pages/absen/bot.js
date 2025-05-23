@@ -3,7 +3,7 @@ const [, , nip, shift] = process.argv;
 
 (async () => {
     const browser = await puppeteer.launch({
-        headless: true,
+        headless: false,
         args: ['--user-data-dir=C:\\Users\\MSi DESKTOP\\AppData\\Local\\Google\\Chrome for Testing\\User Data', '--profile-directory=Profile 1'],
     });
     const page = await browser.newPage();
@@ -25,13 +25,13 @@ const [, , nip, shift] = process.argv;
     await page.select('select[name="status_wfh"]', '2');
     await page.click(`input[name="shift"][value="${shift}"]`);
 
-    await Promise.all([page.click('button[id="btnSubmit"]'), page.waitForNavigation({ waitUntil: 'networkidle0' })]);
+    await Promise.all([page.click('button[id="btnSubmit"]'), page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 60000 })]);
 
     const h5s = await page.$$('h5');
     const H5 = await h5s[1].evaluate((el) => el.textContent?.trim());
 
     if (H5 === 'Form Resiko') {
-        await Promise.all([page.click('button[type="submit"]'), page.waitForNavigation({ waitUntil: 'networkidle0' })]);
+        await Promise.all([page.click('button[type="submit"]'), page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 60000 })]);
         await page.type('input[name="p1_suhu"]', '36');
         await page.click('input[name="p1"][value="0"]');
         await page.click('input[name="p2a"][value="0"]');
@@ -42,7 +42,7 @@ const [, , nip, shift] = process.argv;
         await page.click('input[name="p5"][value="0"]');
         await page.click('input[name="p6"][value="0"]');
         await page.click('input[name="p7"][value="0"]');
-        await Promise.all([page.click('button[type="submit"]'), page.waitForNavigation({ waitUntil: 'networkidle0' })]);
+        await Promise.all([page.click('button[type="submit"]'), page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 60000 })]);
     }
     if (H5 === 'Form Gejala') {
         await page.type('input[name="p1_suhu"]', '36');
