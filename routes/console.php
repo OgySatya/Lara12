@@ -22,7 +22,7 @@ schedule::call(function () {
     foreach ($data as $absen) {
         Robot::dispatch($absen->id);
     }
-})->dailyAt('12:10');
+})->dailyAt('12:05');
 
 schedule::call(function () {
     $data = Absen::where('tanggal', Carbon::now()->toDateString())->where('status', 1)->get();
@@ -38,7 +38,7 @@ schedule::call(function () {
     foreach ($data as $absen) {
         Robot::dispatch($absen->id);
     }
-})->weekly()->fridays()->at('16:45');
+})->weekly()->fridays()->at('16:35');
 
 schedule::call(function () {
     $failedJobs = DB::table('failed_jobs')->count();

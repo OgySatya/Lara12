@@ -62,7 +62,8 @@ class SummaryController extends Controller
     {
         $user = Auth::user([
             'id',
-            'username'
+            'username',
+            'name',
         ]);
         $job = $request->job ?: 1;
         $month = $request->month ?: Carbon::now()->month;
@@ -118,6 +119,6 @@ class SummaryController extends Controller
         $mpdf->SetMargins(15, 15, 15, 15);
         $mpdf->WriteHTML($html);
 
-        return $mpdf->Output('document.pdf', 'I');
+        return $mpdf->Output($user->name.'_'.$job.'.pdf', 'I');
     }
 }
