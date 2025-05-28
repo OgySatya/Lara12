@@ -58,9 +58,8 @@ ul {
                 <br>NIP           : {{$user->NIP}}
                 <br>Jabatan    : {{$tugas->Jabatan->name}}
             </pre>
-     
         </div>
-            <h3 style="text-align: center;">{{$tugas->name}}</h3>
+            <h3 style="text-align: center; margin-top: -3px">{{$tugas->name}}</h3>
             <ul >
               @foreach($tugas['target'] as $job)
                  @if(count($tugas->target[0]->laporan) > 4)

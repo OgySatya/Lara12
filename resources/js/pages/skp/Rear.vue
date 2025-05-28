@@ -24,8 +24,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 const image = ref<File[]>([]);
 const previewUrl = ref<string[]>([]);
 const isUploading = ref<boolean[]>([]);
-const isDeleting = ref<boolean[]>([]);
-const showModal = ref(false);
 
 const onFileChange = (event: Event, index: number) => {
     const target = event.target as HTMLInputElement;
@@ -73,11 +71,17 @@ const uploadImage = async (id: number, slug: string, index: number) => {
         });
     }
 };
-
-const deleteImage = async (fileName: string, index: number) => {
+const isDeleting = ref<boolean[]>([]);
+const deleteImg = ref<string>('');
+const showModal = ref(false);
+const modal = (link: string) => {
+    showModal.value = true;
+    deleteImg.value = link;
+};
+const deleteImage = async (index: number) => {
     isDeleting.value[index] = true;
     try {
-        form.image = fileName;
+        form.image = deleteImg.value;
         form.delete(route('delete'), {
             onFinish: () => form.reset(),
         });
@@ -86,6 +90,7 @@ const deleteImage = async (fileName: string, index: number) => {
     } finally {
         isDeleting.value[index] = false;
         showModal.value = false;
+        deleteImg.value = '';
     }
 };
 const form = useForm({
@@ -176,14 +181,14 @@ const generatePdf = async (month: number, year: number) => {
                             >
                                 <img class="h-full w-full object-fill" :src="`/storage/uploads/${link}`" />
                             </div>
-                            <Button @click="showModal = true" class="mx-auto w-fit" variant="destructive">Hapus Foto</Button>
+                            <Button @click="modal(link)" class="mx-auto w-fit" variant="destructive">Hapus Foto</Button>
 
                             <DeleteModal
                                 :visible="showModal"
                                 :deleting="isDeleting[imgIndex]"
                                 title="Nyuwun sewu"
                                 message="Yakin Hapus Foto ini Boss?"
-                                @confirm="deleteImage(link, imgIndex)"
+                                @confirm="deleteImage(imgIndex)"
                                 @cancel="showModal = false"
                             />
                         </div>
