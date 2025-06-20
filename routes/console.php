@@ -30,15 +30,15 @@ schedule::call(function () {
     foreach ($data as $absen) {
         Robot::dispatch($absen->id);
     }
-})->dailyAt('16:10');
+})->dailyAt('19:30');
 
-schedule::call(function () {
-    $data = Absen::where('tanggal', Carbon::now()->toDateString())->where('status', 1)->get();
+// schedule::call(function () {
+//     $data = Absen::where('tanggal', Carbon::now()->toDateString())->where('status', 1)->get();
 
-    foreach ($data as $absen) {
-        Robot::dispatch($absen->id);
-    }
-})->weekly()->fridays()->at('16:35');
+//     foreach ($data as $absen) {
+//         Robot::dispatch($absen->id);
+//     }
+// })->weekly()->fridays()->at('17:05');
 
 schedule::call(function () {
     $failedJobs = DB::table('failed_jobs')->count();

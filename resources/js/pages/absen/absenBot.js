@@ -20,9 +20,6 @@ if (!nip || !shift) {
     await page.goto('https://skemaraja.dephub.go.id');
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // Close modal
-    await page.click('.modal-footer .btn-danger');
-
     // Wait for form to load
     await page.waitForSelector('form#theForm input[name="_token"]');
 

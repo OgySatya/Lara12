@@ -3,8 +3,8 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JobsController;
-use App\Http\Controllers\TaskController;
 use App\Http\Controllers\SummaryController;
+use App\Http\Controllers\SkemarajaController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -26,6 +26,11 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::delete('delete', [JobsController::class, 'destroy'])->name('delete');
     Route::get('laporan', [SummaryController::class, 'show'])->name('laporan');
     Route::get('pdf', [SummaryController::class, 'create'])->name('pdf');
+    Route::get('rekap', [SkemarajaController::class, 'index'])->name('rekap');
+    Route::post('rekap/store', [SkemarajaController::class, 'store'])->name('rekap.store');
+    Route::post('rekap/save', [SkemarajaController::class, 'save'])->name('rekap.save');
+    Route::delete('rekap/delete', [SkemarajaController::class, 'destroy'])->name('rekap.delete');
+    // Route::get('rekap/pdf', [SkemarajaController::class, 'pdf'])->name('rekap.pdf');
 });
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
