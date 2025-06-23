@@ -73,18 +73,101 @@ class SkemarajaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function show(Request $request)
     {
-        //
+        $user = Auth::user([
+            'id',
+            'username'
+        ]);
+        $month = $request->month ?: Carbon::now()->month;
+        $year = $request->year ?: Carbon::now()->year;
+
+
+    $data = Rekap::where('user_id', $user->id)
+                ->where('bulan', $month)
+                ->where('tahun', $year)
+                ->pluck('path');
+   
+    $months = [
+            1 => 'Januari',
+            2 => 'Februari',
+            3 => 'Maret',
+            4 => 'April',
+            5 => 'Mei',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'Agustus',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember'
+        ];
+        $date = new \stdClass();
+        $date->month = $months[$month];
+        $date->year = $year;
+
+  return view('absen', [
+
+            'user' => $user,
+            'data' => $data,
+            'date' => $date
+        ]);
     }
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+public function create(Request $request)
+{
+    $user = Auth::user();
+
+    $month = $request->month ?: Carbon::now()->month;
+    $year = $request->year ?: Carbon::now()->year;
+
+    $data = Rekap::where('user_id', $user->id)
+                ->where('bulan', $month)
+                ->where('tahun', $year)
+                ->pluck('path');
+
+    $months = [
+            1 => 'Januari',
+            2 => 'Februari',
+            3 => 'Maret',
+            4 => 'April',
+            5 => 'Mei',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'Agustus',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember'
+        ];
+        $date = new \stdClass();
+        $date->month = $months[$month];
+        $date->year = $year;
+
+    ini_set('max_execution_time', 300);
+
+    $html = view('absen', [
+        'user' => $user,
+        'data' => $data,
+        'date' => $date
+    ])->render();
+
+    $mpdf = new \Mpdf\Mpdf([
+        'margin_top' => 15,
+        'margin_left' => 15,
+        'margin_right' => 15,
+        'margin_bottom' => 15,
+    ]);
+
+    $mpdf->WriteHTML($html);
+
+    return $mpdf->Output($user->name.'_'.$month.'_'.$year.'.pdf', 'I');
+}
+
 
     /**
      * Remove the specified resource from storage.

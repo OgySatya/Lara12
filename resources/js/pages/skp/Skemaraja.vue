@@ -163,7 +163,7 @@ const generatePdf = async (month: number, year: number) => {
                     <div class="mx-auto my-4 grid w-full grid-cols-1 gap-4 md:grid-cols-2">
                         <div class="grid" v-for="(link, imgIndex) in props.data || []" :key="imgIndex">
                             <div
-                                class="relative mx-auto mb-2 aspect-[9/16] w-2/3 overflow-hidden rounded-md border border-sidebar-border/70 dark:border-sidebar-border"
+                                class="relative mx-auto mb-2 aspect-[9/20] w-2/3 overflow-hidden rounded-md border border-sidebar-border/70 dark:border-sidebar-border"
                             >
                                 <img class="h-full w-full object-fill" :src="`/storage/absen/${link}`" />
                             </div>
@@ -180,7 +180,7 @@ const generatePdf = async (month: number, year: number) => {
                         </div>
                         <div>
                             <div
-                                class="relative mx-auto mb-2 aspect-[9/16] w-2/3 overflow-hidden rounded-md border border-sidebar-border/70 dark:border-sidebar-border"
+                                class="relative mx-auto mb-2 aspect-[9/20] w-2/3 overflow-hidden rounded-md border border-sidebar-border/70 dark:border-sidebar-border"
                             >
                                 <div v-if="previewUrl">
                                     <img :src="previewUrl" alt="Preview" class="" />
