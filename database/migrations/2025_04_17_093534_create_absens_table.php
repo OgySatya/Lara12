@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->integer('nip');
             $table->integer('shift');
+            $table->boolean('pagi')->default(false);
+            $table->boolean('malam')->default(false);
             $table->boolean('status')->default(false);
         });
     }

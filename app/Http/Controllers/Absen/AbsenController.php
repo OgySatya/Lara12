@@ -21,6 +21,7 @@ class AbsenController extends Controller
             'id',
             'name'
         ]);
+        
         $data['absen'] = Absen::where('user_id', $user->id)->get();
         $data['name'] = $user->name;
 
@@ -32,11 +33,20 @@ class AbsenController extends Controller
     }
     public function update(Request $request)
     {
+        $validated = $request->validate([
+            'tanggal' => 'required|date',
+            'absenId' => 'required|integer|exists:absens,id',
+            'shift' => 'required|integer',
+            'pagi' => 'required|boolean',
+            'malam' => 'required|boolean',
+        ]);
    
         $absen = Absen::find($request->absenId)?:  Absen::where('user_id', $request->id)->first();
         $absen->tanggal = Carbon::parse($request->tanggal)->toDateString() ?: Carbon::now()->toDateString();
         $absen->status = true;
         $absen->shift = $request->shift ?: 1;
+        $absen->pagi = $validated['pagi'];
+        $absen->malam = $validated['malam'];
         $absen->save();
 
         return back()->with('success', 'Tanggal updated successfully.');

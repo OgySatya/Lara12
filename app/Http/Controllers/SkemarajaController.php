@@ -169,9 +169,20 @@ public function create(Request $request)
 }
 
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    public function replace(Request $request)
+{
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+  
+        $name = $request->name;
+        $oldPath = "absen/" . $name;
+        Storage::disk('public')->delete($oldPath);
+
+        $image = $request->file('image');
+        $image->storeAs('absen', $name, 'public');
+
+}
     public function destroy(Request $request)
     {
         $request->validate([

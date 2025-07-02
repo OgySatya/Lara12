@@ -5,20 +5,23 @@ import { defineProps, onMounted, ref } from 'vue';
 
 interface User {
     id: number;
-    name: string;
     status: number;
     shift: number;
+    pagi: string;
+    malam: string;
     tanggal: Date;
     NIP: string;
     user: {
         id: number;
         name: string;
+        group: string;
     };
 }
 
 const props = defineProps<{
-    staff: User[];
-    users: { name: string; id: number }[];
+    shift1: User[];
+    shift2: User[];
+    admin: User[];
     failed: number;
 }>();
 console.log(props.failed);
@@ -44,7 +47,10 @@ const batal = (id: number) => {
         absenId: id,
     });
 };
-console.log(props.staff);
+console.log(props.shift1);
+console.log(props.shift2);
+console.log(props.admin);
+
 const currentTime = ref(formatDateTime(new Date()));
 
 function formatDateTime(date: Date): string {
@@ -68,78 +74,68 @@ onMounted(() => {
 
 <template>
     <AuthBase title="DAFTAR ABSEN PEGAWAI" description="Silahkan cek daftar pegawai yang absen pada hari ini">
-
-        <Head title="Absen Pegawi" />
-        <div class="flex justify-between items-center">
-            <p class="text-xl font-bold ">{{ currentTime }}</p>
+        <Head title="Absen Pegawai" />
+        <div class="flex items-center justify-between">
+            <p class="text-xl font-bold">{{ currentTime }}</p>
             <Link :href="route('login')">
-            <span class="mx-auto rounded-sm bg-sky-500 px-5 py-2 font-medium text-white">Kembali</span>
+                <span class="mx-auto rounded-sm bg-sky-500 px-5 py-2 font-medium text-white">Kembali</span>
             </Link>
         </div>
 
         <main class="grid">
             <div>
-                <h1 class="mb-4 text-center text-2xl font-bold text-amber-700 dark:text-white">Daftar Pegawai ya Absen
-                    hari ini</h1>
-                <section class="flex w-max justify-center gap-5">
-                    <table v-if="props.staff.length > 0" class="border-2 w-fit text-center rounded-sm">
+                <h1 class="mb-4 text-center text-2xl font-bold text-amber-700 dark:text-white">Daftar Pegawai ya Absen hari ini</h1>
+                    <table class="w-max rounded-sm border-2 text-center mx-auto">
                         <thead>
                             <tr class="bg-amber-300 dark:bg-gray-800">
-                                <th class="border p-2">No</th>
-                                <th class="border p-2">Name</th>
-                                <th class="border p-2">Shift</th>
-                                <th class="border p-2"></th>
+                                <th class="border p-2">Shift 1</th>
+                                <th class="border p-2">Shift 2</th>
+                                <th class="border p-2">Admin</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(data, index) in props.staff" :key="data.id">
-                                <td class="border p-2">{{ index + 1 }}</td>
-                                <td class="border p-2">{{ data.user.name }}</td>
-                                <td class="border p-2">
-                                    <select @change="(event) => newShift(event, data.id)"
-                                        class="w-fit rounded border p-2 bg-background" v-model="data.shift">
-                                        <option value="1">Shift 1</option>
-                                        <option value="2">Shift 2</option>
-                                    </select>
-                                </td>
-                                <td class="border p-2">
-                                    <button class="w-fit rounded-sm bg-red-500 px-2 pt-1 text-white"
-                                        @click="batal(data.id)">Gak Jadi</button>
-                                </td>
+                            <tr>
+                                <td class="border p-2" v-if="props.shift1.length < 1">0</td>
+                                <template v-else>
+                                    <td class="border p-2" v-for="(data, index) in props.shift1" :key="data.id">
+                                        <p class="flex items-center">{{ index + 1 }}. {{ data.user.name }} 
+                                            <button @click="batal(data.id)" class="rounded-lg bg-red-500 p-1 text-sm font-bold ml-2">Batal</button>
+                                        </p>
+                                    </td>
+                                </template>
+                                <td class="border p-2" v-if="props.shift2.length < 1">0</td>
+                                <template v-else>
+                                    <td class="border p-2 " v-for="(data, index) in props.shift2" :key="data.id">
+                                        <p class="flex items-center">
+                                            {{ index + 1 }}. {{ data.user.name }}
+                                            <div class=" ml-2 flex gap-2">
+                                            <span v-if="data.pagi === '1'" class="rounded-lg bg-sky-300 p-1 text-sm font-bold">Pagi</span>
+                                            <span v-if="data.malam === '1'" class="rounded-lg bg-amber-600 p-1 text-sm font-bold">Malam</span>
+                                            <button @click="batal(data.id)" class="rounded-lg bg-red-500 p-1 text-sm font-bold">Batal</button>
+                                            </div>
+                                        </p>
+                                    </td>
+                                </template>
+                                <td class="border p-2" v-if="props.admin.length < 1">0</td>
+                                <template v-else>
+                                    <td class="border p-2" v-for="(data, index) in props.admin" :key="data.id">
+                                          <p class="flex items-center">{{ index + 1 }}. {{ data.user.name }} 
+                                            <button @click="batal(data.id)" class="rounded-lg bg-red-500 p-1 text-sm font-bold ml-2">Batal</button>
+                                        </p>
+                                    </td>
+                                </template>
                             </tr>
-                            <tr class="bg-red-500 text-white text-center">
-                                <td></td>
+                            <tr class="bg-red-500 text-center text-white">
                                 <td>Gagal Absen</td>
-                                <td>{{ failed }} Orang</td>
+                                <td class="border-l">{{ failed }} Orang</td>
                                 <td class="border p-2">
-                                    <Link :href="route('active')"
-                                        class="bg-gray-100 text-gray-800 p-1 rounded-md font-semibold  hover:text-blue-500 ">
-
-                                    <span>Ulangi Absen</span>
+                                    <Link :href="route('active')" class="rounded-md bg-gray-100 p-1 font-semibold text-gray-800 hover:text-blue-500">
+                                        <span>Ulangi Absen</span>
                                     </Link>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <div class="mx-auto text-center">
-                        <br />
-                        <Link :href="route('active')"
-                            class="mx-auto mt-5 rounded-xl border-2 border-stone-600 px-5 py-2 font-medium hover:bg-gray-400 hover:text-slate-100 ">
-
-                        <span>Absen
-                            Manual</span>
-                        </Link>
-                        <br />
-                        <p class="mt-6 mb-3 text-xl font-bold">Tambah Absen</p>
-                        <select @change="newAbsen" class="w-fit rounded border p-2 bg-background" v-model="form.id"
-                            placeholder="Pilih Pegawai">
-                            <option value="0" disabled selected hidden>Pilih Pegawai :</option>
-                            <option v-for="option in users" :key="option.id" :value="option.id">
-                                {{ option.name }}
-                            </option>
-                        </select>
-                    </div>
-                </section>
             </div>
         </main>
     </AuthBase>

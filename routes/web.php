@@ -30,6 +30,7 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::get('rekap', [SkemarajaController::class, 'index'])->name('rekap');
     Route::post('rekap/store', [SkemarajaController::class, 'store'])->name('rekap.store');
     Route::post('rekap/save', [SkemarajaController::class, 'save'])->name('rekap.save');
+    Route::post('rekap/replace', [SkemarajaController::class, 'replace'])->name('rekap.replace');
     Route::delete('rekap/delete', [SkemarajaController::class, 'destroy'])->name('rekap.delete');
     Route::get('rekap/view', [SkemarajaController::class, 'show'])->name('rekap/view');
     Route::get('rekap/pdf', [SkemarajaController::class, 'create'])->name('rekap.pdf');

@@ -14,7 +14,7 @@ class Robot implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable;
     protected $absenId;
     public $tries = 3;
-    public $retryAfter = 15;
+    public $retryAfter = 10;
 
     public function __construct($id)
     {

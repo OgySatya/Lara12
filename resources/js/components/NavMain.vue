@@ -27,7 +27,7 @@ const page = usePage<SharedData>();
             <SidebarMenuButton class="h-fit" as-child :is-active="page.url === '/rekap'">
                 <Link href="/rekap">
                     <component :is="CalendarRange" />
-                    <span class="font-bold">Rekap Absen</span>
+                    <span class="font-bold">Rekap Absen Skemaraja</span>
                 </Link>
             </SidebarMenuButton>
         </SidebarMenu>

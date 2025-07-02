@@ -32,6 +32,44 @@ const onFileChange = (event: Event) => {
         previewUrl.value = URL.createObjectURL(target.files[0]);
     }
 };
+const editModal = ref(false);
+const editImg = ref<string>('');
+const replaceModal = (link: string) => {
+    editModal.value = true;
+    editImg.value = link;
+};
+const closeModal = () => {
+    editModal.value = false;
+    previewUrl.value = '';
+    image.value = null;
+};
+
+async function replace() {
+    if (!image.value) {
+        alert('isi foto dulu Bolo...');
+        return;
+    }
+    const file = image.value;
+    const newFileName = editImg.value;
+    const newFile = new File([file], newFileName, { type: file.type });
+
+    const formData = new FormData();
+    formData.append('image', newFile);
+    formData.append('name', newFileName);
+    try {
+        const response = await axios.post('/rekap/replace', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        form.path = newFileName;
+    } catch (error) {
+        console.error('Upload failed:', error);
+    } finally {
+        editModal.value = false;
+        previewUrl.value = '';
+        image.value = null;
+        window.location.reload();
+    }
+}
 
 const uploadImage = async () => {
     if (!image.value) {
@@ -114,13 +152,13 @@ const months = [
 const selectedYear = ref<number>(Number(props.date.year));
 const selectedMonth = ref<number>(Number(props.date.month));
 const redirect = (month: number, year: number) => {
-    window.location.href = `/job?job=${props.user.job}&month=${month}&year=${year}`;
+    window.location.href = `/rekap?month=${month}&year=${year}`;
 };
 const isGenerating = ref(false);
 
 const generatePdf = async (month: number, year: number) => {
     isGenerating.value = true;
-    window.location.href = `/pdf?job=${props.user.job}&month=${month}&year=${year}`;
+    window.location.href = `/rekap/pdf?month=${month}&year=${year}`;
     isGenerating.value = false;
 };
 </script>
@@ -160,14 +198,41 @@ const generatePdf = async (month: number, year: number) => {
             </div>
             <div>
                 <div>
-                    <div class="mx-auto my-4 grid w-full grid-cols-1 gap-4 md:grid-cols-2">
+                    <div class="mx-auto my-4 grid w-full grid-cols-1 gap-4 md:grid-cols-4">
                         <div class="grid" v-for="(link, imgIndex) in props.data || []" :key="imgIndex">
                             <div
-                                class="relative mx-auto mb-2 aspect-[9/20] w-2/3 overflow-hidden rounded-md border border-sidebar-border/70 dark:border-sidebar-border"
+                                class="relative mx-auto mb-2 aspect-[9/20] overflow-hidden rounded-md border border-sidebar-border/70 dark:border-sidebar-border"
                             >
                                 <img class="h-full w-full object-fill" :src="`/storage/absen/${link}`" />
                             </div>
-                            <Button @click="modal(link)" class="mx-auto w-fit" variant="destructive">Hapus Foto</Button>
+                            <div class="mx-auto mt-2 flex justify-between gap-8">
+                                <Button @click="replaceModal(link)" variant="outline">Ganti Foto</Button>
+                                <Button @click="modal(link)" variant="destructive">Hapus Foto</Button>
+                            </div>
+                            <div v-if="editModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/20">
+                                <div class="relative mx-auto w-full max-w-sm rounded-xl bg-white p-4 shadow-2xl">
+                                    <button @click="closeModal" class="absolute right-3 top-2 text-xl text-gray-500">&times;</button>
+
+                                    <h2 class="mb-4 text-xl font-semibold text-slate-600">Edit Image</h2>
+
+                                    <div
+                                        class="relative mx-auto mb-2 aspect-[9/16] w-2/3 overflow-hidden rounded-md border border-sidebar-border/70 dark:border-sidebar-border"
+                                    >
+                                        <div v-if="previewUrl">
+                                            <img :src="previewUrl" alt="Preview" class="" />
+                                        </div>
+                                        <div v-else>
+                                            <PlaceholderPattern />
+                                        </div>
+                                    </div>
+
+                                    <!-- File input -->
+                                    <input type="file" @change="onFileChange" accept="image/*" class="mb-4" />
+
+                                    <!-- Submit button -->
+                                    <button @click="replace()" class="text-md rounded bg-blue-600 px-2 py-1 text-white">Ganti Foto</button>
+                                </div>
+                            </div>
 
                             <DeleteModal
                                 :visible="showModal"
@@ -180,7 +245,7 @@ const generatePdf = async (month: number, year: number) => {
                         </div>
                         <div>
                             <div
-                                class="relative mx-auto mb-2 aspect-[9/20] w-2/3 overflow-hidden rounded-md border border-sidebar-border/70 dark:border-sidebar-border"
+                                class="relative mx-auto mb-2 aspect-[9/20] overflow-hidden rounded-md border border-sidebar-border/70 dark:border-sidebar-border"
                             >
                                 <div v-if="previewUrl">
                                     <img :src="previewUrl" alt="Preview" class="" />
@@ -189,7 +254,7 @@ const generatePdf = async (month: number, year: number) => {
                                     <PlaceholderPattern />
                                 </div>
                             </div>
-                            <div class="mx-auto flex w-3/4 justify-between gap-2">
+                            <div class="mx-auto flex w-3/4 justify-between gap-2 lg:px-16">
                                 <label>
                                     <input type="file" hidden @change="(event) => onFileChange(event)" accept="image/*" />
                                     <div class="h-9 rounded-md bg-lime-500 px-4 py-2 text-center text-sm font-medium text-white hover:bg-teal-500">
@@ -204,9 +269,8 @@ const generatePdf = async (month: number, year: number) => {
                     </div>
                 </div>
             </div>
-            <div class="rounded-lg bg-gradient-to-r from-sky-200 via-sky-50 p-6 dark:from-slate-700">
-                <p class="mb-4 text-2xl font-bold text-amber-500 dark:text-white">Rekap SKP jadi PDF</p>
-
+            <div class="rounded-xl border-2 border-white/40 bg-white/30 p-6 text-white shadow-lg backdrop-blur-md">
+                <p class="mb-4 text-2xl font-bold text-amber-500 dark:text-white">Rekap Absen jadi PDF</p>
                 <Button
                     @click="generatePdf(selectedMonth, selectedYear)"
                     :disabled="isGenerating"

@@ -9,36 +9,89 @@ use Illuminate\Support\Facades\Schedule;
 
 
 schedule::call(function () {
-    $data = Absen::where('tanggal', Carbon::now()->toDateString())->where('status', 1)->get();
+   
+$shift1 = Absen::whereDate('tanggal', Carbon::today())
+    ->where('status', 1)
+    ->where('shift', 1)
+    ->get();
 
-    foreach ($data as $absen) {
+    foreach ($shift1 as $absen) {
         Robot::dispatch($absen->id);
     }
-})->dailyAt('7:00');
+})->dailyAt('6:45');
 
 schedule::call(function () {
-    $data = Absen::where('tanggal', Carbon::now()->toDateString())->where('status', 1)->get();
 
-    foreach ($data as $absen) {
+$shift1 = Absen::with('user:id,group')
+    ->whereDate('tanggal', Carbon::today())
+    ->where('status', 1)
+    ->where('shift', 1)
+    ->get()
+    ->filter(fn($item) => in_array($item->user->group, ['A', 'B', 'C']))
+    ->values();
+
+    foreach ($shift1 as $absen) {
         Robot::dispatch($absen->id);
     }
-})->dailyAt('12:05');
+})->dailyAt('19:32');
 
 schedule::call(function () {
-    $data = Absen::where('tanggal', Carbon::now()->toDateString())->where('status', 1)->get();
+    $shift2 = Absen::with('user:id,group')
+    ->whereDate('tanggal', Carbon::today())
+    ->where('status', 1)
+    ->where('shift', 2)
+    ->where('pagi', 1)
+    ->get()
+    ->filter(fn($item) => in_array($item->user->group, ['A', 'B', 'C']))
+    ->values();
 
-    foreach ($data as $absen) {
+    foreach ($shift2 as $absen) {
         Robot::dispatch($absen->id);
     }
-})->dailyAt('19:30');
+})->dailyAt('7:35');
 
-// schedule::call(function () {
-//     $data = Absen::where('tanggal', Carbon::now()->toDateString())->where('status', 1)->get();
+schedule::call(function () {
+    $shift2 = Absen::with('user:id,group')
+    ->whereDate('tanggal', Carbon::today())
+    ->where('status', 1)
+    ->where('shift', 2)
+    ->where('malam', 1)
+    ->get()
+    ->filter(fn($item) => in_array($item->user->group, ['A', 'B', 'C']))
+    ->values();
 
-//     foreach ($data as $absen) {
-//         Robot::dispatch($absen->id);
-//     }
-// })->weekly()->fridays()->at('17:05');
+    foreach ($shift2 as $absen) {
+        Robot::dispatch($absen->id);
+    }
+})->dailyAt('19:00');
+
+schedule::call(function () {
+     $admin = Absen::with('user:id,group')
+    ->whereDate('tanggal', Carbon::today())
+    ->where('status', 1)
+    ->where('shift', 2)
+    ->get()
+    ->filter(fn($item) => $item->user->group === 'Admin')
+    ->values();
+
+    foreach ($admin as $absen) {
+        Robot::dispatch($absen->id);
+    }
+})->dailyAt('16:02');
+
+schedule::call(function () {
+    $admin = Absen::with('user:id,group')
+    ->whereDate('tanggal', Carbon::today())
+    ->where('status', 1)
+    ->where('shift', 2)
+    ->get()
+    ->filter(fn($item) => $item->user->group === 'Admin')
+    ->values();
+
+    foreach ($admin as $absen) {
+        Robot::dispatch($absen->id);
+    }
+})->weekly()->fridays()->at('16:35');
 
 schedule::call(function () {
     $failedJobs = DB::table('failed_jobs')->count();
