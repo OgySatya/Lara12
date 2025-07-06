@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Models\Absen;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -12,22 +11,22 @@ use Symfony\Component\Process\Process;
 class Robot implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable;
-    protected $absenId;
+    protected $user;
     public $tries = 3;
     public $retryAfter = 10;
 
-    public function __construct($id)
+    public function __construct($absen)
     {
-        $this->absenId = $id;
+        $this->user = $absen; // Assuming $absen is an Absen model instance
     }
 
 
 
     public function handle(): void
     {
-        $absen = Absen::find($this->absenId);
+
         $scriptPath = base_path('resources\js\pages\absen\absenBot.js');
-        $process = new Process(['node', $scriptPath, $absen->nip, $absen->shift]);
+        $process = new Process(['node', $scriptPath, $this->user->nip, $this->user->shift]);
         $process->run();
 
         if (!$process->isSuccessful()) {

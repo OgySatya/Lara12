@@ -17,13 +17,13 @@ class ReviewController extends Controller
 {
     public function index(): Response
     {
-  
+
         $staff = Absen::where('tanggal', Carbon::now()->toDateString())
-        ->where('status', 1)
-        ->with(['user' => function ($query) {
-            $query->select('id', 'name', 'group');
-        }])
-        ->get();
+            ->where('status', 1)
+            ->with(['user' => function ($query) {
+                $query->select('id', 'name', 'group');
+            }])
+            ->get();
 
         $shift1 = $staff->filter(function ($item) {
             return in_array($item->user->group, ['A', 'B', 'C']) &&
@@ -35,7 +35,7 @@ class ReviewController extends Controller
                 $item->shift === 2;
         })->values();
         $admin = $staff->filter(function ($item) {
-            return $item->user->group === 'Admin' ;
+            return $item->user->group === 'Admin';
         })->values();
 
 
