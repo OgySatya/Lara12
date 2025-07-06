@@ -32,8 +32,6 @@ class BatchShift1 extends Command
      */
     public function handle()
     {
-        $bot = '8186015621:AAFC-lC8MCnWEEa-c_eVRvqNZ5LYuOVBEw4';
-        $chatId = '-4967762193';
 
         $shift1 = Absen::with('user:id,name,group')
             ->whereDate('tanggal', Carbon::today())
