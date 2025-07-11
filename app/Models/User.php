@@ -24,6 +24,8 @@ class User extends Authenticatable
         'jabatan_id',
         'group',
         'password',
+        'awal',
+        'status',
     ];
 
     /**

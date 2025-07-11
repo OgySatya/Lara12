@@ -20,8 +20,8 @@ Route::middleware('auth')->group(function () {
     Route::get('setting/absen', [AbsenController::class, 'index'])->name('absen');
 });
 
-Route::patch('setting/save', [AbsenController::class, 'update'])->name('absen.update');
-Route::patch('setting/cancel', [AbsenController::class, 'revoke'])->name('absen.revoke');
+Route::patch('setting/update', [AbsenController::class, 'update'])->name('absen.update');
+Route::patch('setting/edit', [AbsenController::class, 'edit'])->name('absen.edit');
 Route::get('review/absen', [ReviewController::class, 'index'])->name('review');
 Route::get('review/active', [ReviewController::class, 'active'])->name('active');
 Route::get('review/retry', [ReviewController::class, 'retry'])->name('retry');

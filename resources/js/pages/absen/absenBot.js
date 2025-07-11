@@ -34,8 +34,8 @@ if (!nip || !shift) {
     await page.click(`input[value="${shift}"]`);
 
     // Wait for and click submit
-    await page.waitForSelector('#btnSubmit:not([disabled])');
-    await Promise.all([page.click('#btnSubmit'), page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 60000 })]);
+    // await page.waitForSelector('#btnSubmit:not([disabled])');
+    // await Promise.all([page.click('#btnSubmit'), page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 60000 })]);
 
     await browser.close();
 })();

@@ -10,6 +10,7 @@ use Inertia\Response;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -51,13 +52,12 @@ class AbsenController extends Controller
 
         return back()->with('success', 'Tanggal updated successfully.');
     }
-    public function revoke(Request $request)
+    public function edit(Request $request)
     {
 
-        $absen = Absen::find($request->absenId);
-        $absen->status = false;
+        $absen = User::find($request->absenId);
+        $absen->status = $request->status;
         $absen->save();
 
-        return back()->with('success', 'Tanggal updated successfully.');
     }
 }

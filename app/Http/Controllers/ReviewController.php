@@ -17,32 +17,166 @@ class ReviewController extends Controller
 {
     public function index(): Response
     {
+        // $dayOfyear = Carbon::today()->dayOfYear;
+        // $whatDay = $dayOfyear  % 6;   
+        // $awal = User::first()->awal;
 
-        $staff = Absen::where('tanggal', Carbon::now()->toDateString())
-            ->where('status', 1)
-            ->with(['user' => function ($query) {
-                $query->select('id', 'name', 'group');
-            }])
-            ->get();
+        // if($awal % 2 !== 0){
+        //     $pagiMap = [
+        //         [3, 4], // A 2  
+        //         [1, 2], // C 3
+        //         [1, 2], // C 4
+        //         [5, 0], // B 5
+        //         [5, 0], // B 0
+        //         [3, 4], // A 1
+             
+        //     ];
+        //     $malamMap = [  
+        //         [5, 0], // B 0
+        //         [3, 4], // A 1
+        //         [3, 4], // A 2  
+        //         [1, 2], // C 3
+        //         [1, 2], // C 4
+        //         [5, 0], // B 5
+                
+        //     ];
+        //     $liburMap = [
+        //         [1, 2], // C 0
+        //         [5, 0], // B 1
+        //         [5, 0], // B 2
+        //         [3, 4], // A 3
+        //         [3, 4], // A 4  
+        //         [1, 2], // C 5
+        //     ];
+        // }else{
+        //     $pagiMap = [
+        //         [1, 2], // C
+        //         [1, 2], // C
+        //         [5, 0], // B
+        //         [5, 0], // B
+        //         [3, 4], // A
+        //         [3, 4], // A
+             
+        //     ];
+        //     $malamMap = [  
+        //         [3, 4], // A
+        //         [3, 4], // A    
+        //         [1, 2], // C
+        //         [1, 2], // C
+        //         [5, 0], // B
+        //         [5, 0], // B
+        //     ];
+        //     $liburMap = [
+        //         [5, 0], // B
+        //         [5, 0], // B
+        //         [3, 4], // A
+        //         [3, 4], // A    
+        //         [1, 2], // C
+        //         [1, 2], // C
+        //     ];
+        // }
+        // $pagi = $pagiMap[$whatDay];
+        // $malam = $malamMap[$whatDay];
+        // $lepas = $liburMap[$whatDay];
 
-        $shift1 = $staff->filter(function ($item) {
-            return in_array($item->user->group, ['A', 'B', 'C']) &&
-                $item->shift === 1;
-        })->values();
+        // $shift1 = User::whereIn('awal', $pagi)
+        //             ->where('group', '!=', 'Admin')
+        //             ->select('id', 'name', 'status')
+        //             ->get();
+        
+        // $shift2 = User::whereIn('awal', $malam)
+        //             ->where('group', '!=', 'Admin')
+        //             ->select('id', 'name', 'status', 'awal') 
+        //             ->get();
+        // $libur = User::whereIn('awal', $lepas)
+        //             ->where('group', '!=', 'Admin')
+        //             ->select('id', 'name', 'status', 'awal')
+        //             ->get();
 
-        $shift2 = $staff->filter(function ($item) {
-            return in_array($item->user->group, ['A', 'B', 'C']) &&
-                $item->shift === 2;
-        })->values();
-        $admin = $staff->filter(function ($item) {
-            return $item->user->group === 'Admin';
-        })->values();
+        // if ($awal % 2 !== 0) {
+        //     if ($whatDay % 2 !== 0) {
+        //        $shift2a = $shift2;
+        //         $shift2b = [];
+        //         $libur1 = $libur;
+        //     } else {
+        //         $shift2a = [];
+        //         $shift2b = $shift2;
+        //         $libur1 = [];
+        //     }
+        // } else {
+        //     if ($whatDay % 2 === 0) { 
+        //         $shift2a = $shift2;
+        //         $shift2b = [];
+        //         $libur1 = $libur;
+        //     } else {
+        //         $shift2a = [];
+        //         $shift2b = $shift2;
+        //         $libur1 = [];
+        //     }
+        // }
+                
+    $dayOfYear = Carbon::today()->dayOfYear;
+    $whatDay = $dayOfYear % 6;
+    $awal = User::first()->awal;
+    $isAwalOdd = $awal % 2 !== 0;
 
+    // Define shift maps based on `awal` parity
+    $shiftMaps = $isAwalOdd ? [
+        'pagi' => [
+            [3, 4], [1, 2], [1, 2], [5, 0], [5, 0], [3, 4],
+        ],
+        'malam' => [
+            [5, 0], [3, 4], [3, 4], [1, 2], [1, 2], [5, 0],
+        ],
+        'libur' => [
+            [1, 2], [5, 0], [5, 0], [3, 4], [3, 4], [1, 2],
+        ],
+    ] : [
+        'pagi' => [
+            [1, 2], [1, 2], [5, 0], [5, 0], [3, 4], [3, 4],
+        ],
+        'malam' => [
+            [3, 4], [3, 4], [1, 2], [1, 2], [5, 0], [5, 0],
+        ],
+        'libur' => [
+            [5, 0], [5, 0], [3, 4], [3, 4], [1, 2], [1, 2],
+        ],
+    ];
+
+    // Get groups
+    $pagi = $shiftMaps['pagi'][$whatDay];
+    $malam = $shiftMaps['malam'][$whatDay];
+    $lepas = $shiftMaps['libur'][$whatDay];
+
+    // Fetch users for each group
+    $shift1 = User::whereIn('awal', $pagi)->where('group', '!=', 'Admin')->get(['id', 'name', 'status']);
+    $shift2 = User::whereIn('awal', $malam)->where('group', '!=', 'Admin')->get(['id', 'name', 'status', 'awal']);
+    $libur  = User::whereIn('awal', $lepas)->where('group', '!=', 'Admin')->get(['id', 'name', 'status', 'awal']);
+
+    // Determine shift2 split and libur1
+    $isEvenDay = $whatDay % 2 === 0;
+    if ($isAwalOdd) {
+        $shift2a = !$isEvenDay ? $shift2 : collect();
+        $shift2b = $isEvenDay ? $shift2 : collect();
+        $libur1  = !$isEvenDay ? $libur : collect();
+    } else {
+        $shift2a = $isEvenDay ? $shift2 : collect();
+        $shift2b = !$isEvenDay ? $shift2 : collect();
+        $libur1  = $isEvenDay ? $libur : collect();
+    }
+
+        $admin = User::where('group',  'Admin')
+        ->select('id', 'name', 'status')            
+        ->get();
 
         $failedJobs = DB::table('failed_jobs')->count();
         return Inertia::render('absen/Review', [
+            'dayOfyear' => $dayOfYear,
+            'interval' => $whatDay,
             'shift1' => $shift1,
-            'shift2' => $shift2,
+            'shift2a' => $shift2a,
+            'shift2b' => $shift2b,
+            'libur' => $libur1,
             'admin' => $admin,
             'failed' => $failedJobs,
         ]);

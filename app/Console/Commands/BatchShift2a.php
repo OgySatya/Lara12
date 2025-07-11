@@ -12,14 +12,14 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 
-class BatchShift1 extends Command
+class BatchShift2a extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:batch-shift1';
+    protected $signature = 'app:batch-shift2a';
 
     /**
      * The console command description.
@@ -33,8 +33,7 @@ class BatchShift1 extends Command
      */
     public function handle()
     {
-
-    $dayOfYear = Carbon::today()->dayOfYear;
+        $dayOfYear = Carbon::today()->dayOfYear;
     $whatDay = $dayOfYear % 6;
     $awal = User::first()->awal;
     $isAwalOdd = $awal % 2 !== 0;
@@ -68,7 +67,7 @@ class BatchShift1 extends Command
     $lepas = $shiftMaps['libur'][$whatDay];
 
     // Fetch users for each group
-    $shift1 = User::whereIn('awal', $pagi)->where('group', '!=', 'Admin')->get(['id', 'name', 'status', 'NIP']);
+    $shift1 = User::whereIn('awal', $pagi)->where('group', '!=', 'Admin')->get(['id', 'name', 'status']);
     $shift2 = User::whereIn('awal', $malam)->where('group', '!=', 'Admin')->get(['id', 'name', 'status', 'awal']);
     $libur  = User::whereIn('awal', $lepas)->where('group', '!=', 'Admin')->get(['id', 'name', 'status', 'awal']);
 
@@ -83,33 +82,22 @@ class BatchShift1 extends Command
         $shift2b = !$isEvenDay ? $shift2 : collect();
         $libur1  = $isEvenDay ? $libur : collect();
     }
+        $jobs = [];
 
-    //  $jobs = [];
-    // foreach ($shift1 as $user) {
-    //     $user->shift = 1;
-    //     $jobs[] = new \App\Jobs\Robot($user); 
-    // }
-
-    // Bus::batch($jobs)
-    //     ->then(function (Batch $batch) use ($shift1) {
-    //         $names = $shift1->pluck('name')->join(', ');
-    //         Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN'). "/sendMessage", [
-    //             'chat_id' => env('TELEGRAM_CHAT_ID'),
-    //             'text' => "✅ Semua job absen selesai untuk:\n👥 $names",
-    //         ]);
-    //     })
-    //     ->catch(function (Batch $batch, Throwable $e) {
-    //         Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN'). "/sendMessage", [
-    //             'chat_id' => env('TELEGRAM_CHAT_ID'),
-    //             'text' => "❌ Batch gagal: Absen Shift 1 \n🧨 Error: {$e->getMessage()}",
-    //         ]);
-    //     })
-    //     ->dispatch();
-
-        $user = $shift1->first(); // Get the first user for demonstration
-
-        $user['shift'] = 1; // Example shift, replace with actual user shift
-   
-        dispatch(new Robot($user));
+        Bus::batch($jobs)
+            ->then(function (Batch $batch) use ($shift2a) {
+                $names = $shift2a->pluck('user.name')->join(', ');
+                Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
+                    'chat_id' => env('TELEGRAM_CHAT_ID'),
+                    'text' => "✅ Semua job absen selesai untuk:\n👥 $names",
+                ]);
+            })
+            ->catch(function (Batch $batch, Throwable $e) {
+                Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
+                    'chat_id' => env('TELEGRAM_CHAT_ID'),
+                    'text' => "❌ Batch gagal: {$batch->id}\n🧨 Error: {$e->getMessage()}",
+                ]);
+            })
+            ->dispatch();
     }
 }
