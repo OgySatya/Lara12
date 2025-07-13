@@ -34,68 +34,96 @@ class BatchLepas extends Command
     public function handle()
     {
         $dayOfYear = Carbon::today()->dayOfYear;
-    $whatDay = $dayOfYear % 6;
-    $awal = User::first()->awal;
-    $isAwalOdd = $awal % 2 !== 0;
+        $whatDay = $dayOfYear % 6;
+        $awal = User::first()->awal;
+        $isAwalOdd = $awal % 2 !== 0;
 
-    // Define shift maps based on `awal` parity
-    $shiftMaps = $isAwalOdd ? [
-        'pagi' => [
-            [3, 4], [1, 2], [1, 2], [5, 0], [5, 0], [3, 4],
-        ],
-        'malam' => [
-            [5, 0], [3, 4], [3, 4], [1, 2], [1, 2], [5, 0],
-        ],
-        'libur' => [
-            [1, 2], [5, 0], [5, 0], [3, 4], [3, 4], [1, 2],
-        ],
-    ] : [
-        'pagi' => [
-            [1, 2], [1, 2], [5, 0], [5, 0], [3, 4], [3, 4],
-        ],
-        'malam' => [
-            [3, 4], [3, 4], [1, 2], [1, 2], [5, 0], [5, 0],
-        ],
-        'libur' => [
-            [5, 0], [5, 0], [3, 4], [3, 4], [1, 2], [1, 2],
-        ],
-    ];
+        // Define shift maps based on `awal` parity
+        $shiftMaps = $isAwalOdd ? [
+            'pagi' => [
+                [3, 4],
+                [1, 2],
+                [1, 2],
+                [5, 0],
+                [5, 0],
+                [3, 4],
+            ],
+            'malam' => [
+                [5, 0],
+                [3, 4],
+                [3, 4],
+                [1, 2],
+                [1, 2],
+                [5, 0],
+            ],
+            'libur' => [
+                [1, 2],
+                [5, 0],
+                [5, 0],
+                [3, 4],
+                [3, 4],
+                [1, 2],
+            ],
+        ] : [
+            'pagi' => [
+                [1, 2],
+                [1, 2],
+                [5, 0],
+                [5, 0],
+                [3, 4],
+                [3, 4],
+            ],
+            'malam' => [
+                [3, 4],
+                [3, 4],
+                [1, 2],
+                [1, 2],
+                [5, 0],
+                [5, 0],
+            ],
+            'libur' => [
+                [5, 0],
+                [5, 0],
+                [3, 4],
+                [3, 4],
+                [1, 2],
+                [1, 2],
+            ],
+        ];
 
-    // Get groups
-    $pagi = $shiftMaps['pagi'][$whatDay];
-    $malam = $shiftMaps['malam'][$whatDay];
-    $lepas = $shiftMaps['libur'][$whatDay];
+        // Get groups
+        $pagi = $shiftMaps['pagi'][$whatDay];
+        $malam = $shiftMaps['malam'][$whatDay];
+        $lepas = $shiftMaps['libur'][$whatDay];
 
-    // Fetch users for each group
-    $shift1 = User::whereIn('awal', $pagi)->where('group', '!=', 'Admin')->get(['id', 'name', 'status']);
-    $shift2 = User::whereIn('awal', $malam)->where('group', '!=', 'Admin')->get(['id', 'name', 'status', 'awal']);
-    $libur  = User::whereIn('awal', $lepas)->where('group', '!=', 'Admin')->get(['id', 'name', 'status', 'awal']);
+        // Fetch users for each group
+        $shift1 = User::whereIn('awal', $pagi)->where('group', '!=', 'Admin')->get(['id', 'name', 'NIP']);
+        $shift2 = User::whereIn('awal', $malam)->where('group', '!=', 'Admin')->get(['id', 'name', 'NIP']);
+        $libur  = User::whereIn('awal', $lepas)->where('group', '!=', 'Admin')->get(['id', 'name', 'NIP']);
 
-    // Determine shift2 split and libur1
-    $isEvenDay = $whatDay % 2 === 0;
-    if ($isAwalOdd) {
-        $shift2a = !$isEvenDay ? $shift2 : collect();
-        $shift2b = $isEvenDay ? $shift2 : collect();
-        $libur1  = !$isEvenDay ? $libur : collect();
-    } else {
-        $shift2a = $isEvenDay ? $shift2 : collect();
-        $shift2b = !$isEvenDay ? $shift2 : collect();
-        $libur1  = $isEvenDay ? $libur : collect();
-    }
+        // Determine shift2 split and libur1
+        $isEvenDay = $whatDay % 2 === 0;
+        if ($isAwalOdd) {
+            $shift2a = !$isEvenDay ? $shift2 : collect();
+            $shift2b = $isEvenDay ? $shift2 : collect();
+            $libur1  = !$isEvenDay ? $libur : collect();
+        } else {
+            $shift2a = $isEvenDay ? $shift2 : collect();
+            $shift2b = !$isEvenDay ? $shift2 : collect();
+            $libur1  = $isEvenDay ? $libur : collect();
+        }
         $jobs = [];
+        foreach ($libur1 as $user) {
+            $user->shift = 2;
+            $jobs[] = new Robot($user);
+        }
 
         Bus::batch($jobs)
             ->then(function (Batch $batch) use ($libur1) {
-                $names = $libur1->pluck('user.name')->join(', ');
+                $names = $libur1->pluck('name')->join(', ');
                 Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
                     'chat_id' => env('TELEGRAM_CHAT_ID'),
-                    'text' => "✅ Semua job absen selesai untuk:\n👥 $names",
-                ]);
-            })
-            ->catch(function (Batch $batch, Throwable $e) {
-                Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
-                    'chat_id' => env('TELEGRAM_CHAT_ID'),
-                    'text' => "❌ Batch gagal: {$batch->id}\n🧨 Error: {$e->getMessage()}",
+                    'text' => "✅ Semua absen Libur selesai BOSS!! untuk:\n👥 $names",
                 ]);
             })
             ->dispatch();

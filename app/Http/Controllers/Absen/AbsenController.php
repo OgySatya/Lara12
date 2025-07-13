@@ -20,37 +20,21 @@ class AbsenController extends Controller
     {
         $user = Auth::user([
             'id',
-            'name'
+            'name',
+            'awal',
+            'ststus',
         ]);
-        
-        $data['absen'] = Absen::where('user_id', $user->id)->get();
-        $data['name'] = $user->name;
 
-        $bot = Absen::where('tanggal', Carbon::now()->toDateString())->where('status', 1)->get();
+
         return Inertia::render('absen/Absen', [
-            'users' => $data,
-            'test' => $bot,
+            'user' => $user,
         ]);
     }
     public function update(Request $request)
     {
-        $validated = $request->validate([
-            'tanggal' => 'required|date',
-            'absenId' => 'required|integer|exists:absens,id',
-            'shift' => 'required|integer',
-            'pagi' => 'required|boolean',
-            'malam' => 'required|boolean',
-        ]);
-   
-        $absen = Absen::find($request->absenId)?:  Absen::where('user_id', $request->id)->first();
-        $absen->tanggal = Carbon::parse($request->tanggal)->toDateString() ?: Carbon::now()->toDateString();
-        $absen->status = true;
-        $absen->shift = $request->shift ?: 1;
-        $absen->pagi = $validated['pagi'];
-        $absen->malam = $validated['malam'];
-        $absen->save();
-
-        return back()->with('success', 'Tanggal updated successfully.');
+        $awalAbsen = User::find($request->Id);
+        $awalAbsen->awal = $request->awal;
+        $awalAbsen->save();
     }
     public function edit(Request $request)
     {
@@ -58,6 +42,5 @@ class AbsenController extends Controller
         $absen = User::find($request->absenId);
         $absen->status = $request->status;
         $absen->save();
-
     }
 }

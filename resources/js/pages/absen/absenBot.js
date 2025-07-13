@@ -1,19 +1,19 @@
 import puppeteer from 'puppeteer';
 const [, , nip, shift] = process.argv;
 
-if (!nip || !shift) {
-    console.error('Usage: node script.js <nip> <shift>');
-    process.exit(1);
-}
-
 (async () => {
-    const browser = await puppeteer.launch({
-        headless: false,
-        args: ['--user-data-dir=C:\\Users\\MSi DESKTOP\\AppData\\Local\\Google\\Chrome for Testing\\User Data', '--profile-directory=Profile 1'],
-    });
+
+const browser = await puppeteer.launch({
+  headless: false,
+  userDataDir: 'C:\\Users\\Rapht\\AppData\\Local\\Google\\Chrome for Testing\\User Data',
+  args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--profile-directory=Profile 1',
+  ]
+});
 
     const page = await browser.newPage();
-    await page.setViewport({ width: 640, height: 1024 });
 
     await page.goto('https://skemaraja.dephub.go.id/logout', { waitUntil: 'domcontentloaded' });
 
@@ -29,9 +29,10 @@ if (!nip || !shift) {
     await page.select('select[name="status_wfh"]', '2');
 
     // Select shift (from argument)
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    
     await page.waitForSelector(`input[value="${shift}"]`, { visible: true });
     await page.click(`input[value="${shift}"]`);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Wait for and click submit
     // await page.waitForSelector('#btnSubmit:not([disabled])');

@@ -24,7 +24,7 @@ Schedule::command(BatchShift2a::class)->dailyAt('19:00');
 Schedule::command(BatchShift2b::class)->dailyAt('07:35');
 Schedule::command(BatchShift2b::class)->dailyAt('19:05');
 Schedule::command(BatchLepas::class)->dailyAt('07:35');
-   
+
 schedule::call(function () {
     $failedJobs = DB::table('failed_jobs')->count();
     if ($failedJobs > 0) {
