@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('NIP');
             $table->foreignId('jabatan_id')->constrained()->onDelete('cascade');
             $table->string('group');
+            $table->string('status')->default('0');
+            $table->string('awal')->default('Admin');
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

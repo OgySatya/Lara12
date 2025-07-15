@@ -33,25 +33,23 @@ class BatchAdmin extends Command
      */
     public function handle()
     {
-    $jobs = [];
 
         $admin = User::where('group',  'Admin')
                     ->where('status', 1)
                     ->select('id', 'name', 'NIP')
                     ->get();
-  
+         $jobs = [];
+        foreach ($admin as $user) {
+            $user->shift = 1;
+            $jobs[] = new Robot($user);
+        }
+        echo "Admin: " . $admin->count() . " users\n";
         Bus::batch($jobs)
             ->then(function (Batch $batch) use ($admin) {
                 $names = $admin->pluck('user.name')->join(', ');
                 Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
                     'chat_id' => env('TELEGRAM_CHAT_ID'),
                     'text' => "✅ Semua job absen selesai untuk:\n👥 $names",
-                ]);
-            })
-            ->catch(function (Batch $batch, Throwable $e) {
-                Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
-                    'chat_id' => env('TELEGRAM_CHAT_ID'),
-                    'text' => "❌ Batch gagal: {$batch->id}\n🧨 Error: {$e->getMessage()}",
                 ]);
             })
             ->dispatch();

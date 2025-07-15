@@ -50,16 +50,10 @@ class RegisteredUserController extends Controller
             'jabatan_id' => $request->jabatan,
             'group' => $request->group,
             'password' => Hash::make($request->NIP),
+            'status' => '0',
+            'awal' => 'Admin',
         ]);
 
-        for ($i = 0; $i < 10; $i++) {
-            Absen::create([
-                'user_id' => $user->id,
-                'shift' => 1,
-                'nip' => $user->NIP,
-                'tanggal' => Carbon::now()->toDateString(),
-            ]);
-        }
         event(new Registered($user));
 
         Auth::login($user);

@@ -2,16 +2,11 @@ import puppeteer from 'puppeteer';
 const [, , nip, shift] = process.argv;
 
 (async () => {
-
-const browser = await puppeteer.launch({
-  headless: false,
-  userDataDir: 'C:\\Users\\Rapht\\AppData\\Local\\Google\\Chrome for Testing\\User Data',
-  args: [
-    '--no-sandbox',
-    '--disable-setuid-sandbox',
-    '--profile-directory=Profile 1',
-  ]
-});
+    const browser = await puppeteer.launch({
+        headless: false,
+        userDataDir: 'C:\\Users\\MSi DESKTOP\\AppData\\Local\\Google\\Chrome for Testing\\User Data',
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--profile-directory=Profile 1'],
+    });
 
     const page = await browser.newPage();
 
@@ -29,7 +24,7 @@ const browser = await puppeteer.launch({
     await page.select('select[name="status_wfh"]', '2');
 
     // Select shift (from argument)
-    
+
     await page.waitForSelector(`input[value="${shift}"]`, { visible: true });
     await page.click(`input[value="${shift}"]`);
     await new Promise((resolve) => setTimeout(resolve, 1000));

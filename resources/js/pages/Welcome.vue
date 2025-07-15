@@ -8,11 +8,13 @@ import { Head, Link } from '@inertiajs/vue3';
         <section>
             <div class="mx-auto max-w-screen-xl px-4 py-4 text-center lg:py-8">
                 <div class="absolute bottom-8 left-1/2 inline-flex -translate-x-1/2 rounded-xl border-2 border-white/20 bg-white/10 bg-opacity-50">
-                    <Link :href="route('login')" class="rounded-l-xl px-6 py-2 text-xl font-bold text-white shadow-md transition hover:bg-white/20"
-                        >Masuk
+                    <Link
+                        :href="route('login')"
+                        class="rounded-l-xl border-r-2 border-white/20 px-6 py-2 text-xl font-bold text-white shadow-md transition hover:bg-white/20"
+                        >Laporan SKP
                     </Link>
-                    <Link :href="route('register')" class="rounded-r-xl px-6 py-2 text-xl font-bold text-white shadow-md transition hover:bg-white/20"
-                        >Daftar
+                    <Link :href="route('review')" class="rounded-r-xl px-6 py-2 text-xl font-bold text-white shadow-md transition hover:bg-white/20"
+                        >Absen Pegawai
                     </Link>
                 </div>
             </div>

@@ -98,10 +98,9 @@ class BatchShift1 extends Command
         $lepas = $shiftMaps['libur'][$whatDay];
 
         // Fetch users for each group
-        $shift1 = User::whereIn('awal', $pagi)->where('group', '!=', 'Admin')->get(['id', 'name', 'NIP']);
-        $shift2 = User::whereIn('awal', $malam)->where('group', '!=', 'Admin')->get(['id', 'name', 'NIP']);
-        $libur  = User::whereIn('awal', $lepas)->where('group', '!=', 'Admin')->get(['id', 'name', 'NIP']);
-
+        $shift1 = User::whereIn('awal', $pagi)->where('group', '!=', 'Admin')->where('status', 1)->get(['id', 'name', 'NIP']);
+        $shift2 = User::whereIn('awal', $malam)->where('group', '!=', 'Admin')->where('status', 1)->get(['id', 'name', 'NIP']);
+        $libur  = User::whereIn('awal', $lepas)->where('group', '!=', 'Admin')->where('status', 1)->get(['id', 'name', 'NIP']);
         // Determine shift2 split and libur1
         $isEvenDay = $whatDay % 2 === 0;
         if ($isAwalOdd) {
@@ -120,7 +119,7 @@ class BatchShift1 extends Command
             $user->shift = 1;
             $jobs[] = new Robot($user);
         }
-
+        echo "Shift 1: " . $shift1->count() . " users\n";
         Bus::batch($jobs)
             ->then(function (Batch $batch) use ($shift1) {
                 $names = $shift1->pluck('name')->join(', ');

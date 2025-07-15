@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { Head, useForm, usePage, router } from '@inertiajs/vue3';
 import HeadingSmall from '@/components/HeadingSmall.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
+import { Head, router } from '@inertiajs/vue3';
 
 const props = defineProps<{
     user: { name: string; id: number; awal: number; status: number };
@@ -14,7 +14,6 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/settings/absen',
     },
 ];
-
 
 const update = (event: Event) => {
     const value = (event.target as HTMLSelectElement).value;
@@ -35,22 +34,19 @@ const currentYear: number = new Date().getFullYear();
 
 <template>
     <AppLayout :breadcrumbs="breadcrumbs">
-
         <Head title="Profile settings" />
 
         <main class="m-5">
             <div class="flex flex-col space-y-6">
-                <HeadingSmall title="Setting Absen" description="Sangat Rahasia ya Boss!!" />
-                {{ props.user.name }}
+                <HeadingSmall title="Setting Absen" :description="props.user.name" />
             </div>
 
-            <div class="mt-5 ">
+            <div class="mt-5">
                 <div class="grid">
                     <p>Cobalah di ingat boss</p>
                     <p>Pajenengan Masuk Shift apa pada tanggal 01 Januari {{ currentYear }}</p>
                     <div class="flex items-center">
-                        <select @change="update" v-model="props.user.awal" name="shift"
-                            class="p-1 border-2 mr-3 w-fit rounded-sm mt-2">
+                        <select @change="update" v-model="props.user.awal" name="shift" class="mr-3 mt-2 w-fit rounded-sm border-2 bg-background p-1">
                             <option value="Admin">Admin</option>
                             <option value="1">Shift Pagi Pertama</option>
                             <option value="2">Shift Pagi Kedua</option>
@@ -61,22 +57,31 @@ const currentYear: number = new Date().getFullYear();
                         </select>
                     </div>
 
-                    <div class="flex my-3">
+                    <div class="my-3 flex">
                         <p class="mr-4">Status Absen Otomatis :</p>
-                        <label class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" :checked="props.user.status === 1" class="sr-only peer"
-                                @change="onToggle">
+                        <label class="inline-flex cursor-pointer items-center">
+                            <input type="checkbox" :checked="props.user.status === 1" class="peer sr-only" @change="onToggle" />
                             <div
-                                class="relative w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-600">
-                            </div>
-                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">{{ props.user.status
-                                ===
-                                1 ? 'Active' : 'Standby' }}</span>
+                                class="peer relative h-7 w-14 rounded-full bg-gray-200 after:absolute after:start-[4px] after:top-0.5 after:h-6 after:w-6 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-checked:bg-blue-600 dark:peer-focus:ring-blue-800 rtl:peer-checked:after:-translate-x-full"
+                            ></div>
+                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">{{
+                                props.user.status === 1 ? 'Active' : 'Standby'
+                            }}</span>
                         </label>
+                    </div>
+                    <div class="w-fit rounded-lg border-2 border-red-500 bg-red-50 p-2">
+                        <h3 class="font-bold text-red-500">
+                            Mohon di jaga Rahasia ini, jangan sampai bocor ke pegawai lain ya BOSS !!
+                            <br />
+                            Jangan terlalu percaya dengan Aplikasi Absen ini
+                            <br />
+                            karena ini hanya sebuah aplikasi sederhana.
+                            <br />
+                            Kadang sering ERROR, dan Ngak GUNA
+                        </h3>
                     </div>
                 </div>
             </div>
         </main>
     </AppLayout>
-
 </template>

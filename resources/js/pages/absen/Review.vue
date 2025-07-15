@@ -62,8 +62,8 @@ onMounted(() => {
             <p class="text-xl font-bold">{{ currentTime }}</p>
             <p class="font-normal text-gray-500">( Day of Year : {{ props.dayOfyear }} ) - ( Interval : {{ props.interval }} )</p>
         </div>
-        <aside class="my-2 flex w-max border-2">
-            <div class="border-r-2">
+        <aside class="my-2 grid w-max border-2 lg:flex">
+            <div class="lg:border-r-2">
                 <h2 class="border-b-2 bg-cyan-400 p-2 text-center text-xl font-bold">SHIFT 1</h2>
                 <div class="grid p-2" v-for="(data, index) in props.shift1" :key="data.id">
                     <div class="flex items-center justify-between">
@@ -81,7 +81,7 @@ onMounted(() => {
                     </div>
                 </div>
             </div>
-            <div class="border-r-2">
+            <div class="lg:border-r-2">
                 <h2 class="border-b-2 bg-cyan-400 p-2 text-center text-xl font-bold">SHIFT 2 PERTAMA</h2>
                 <div class="grid p-2" v-for="(data, index) in props.shift2a" :key="data.id">
                     <div class="flex items-center justify-between">
@@ -99,7 +99,7 @@ onMounted(() => {
                     </div>
                 </div>
             </div>
-            <div class="border-r-2">
+            <div class="lg:border-r-2">
                 <h2 class="border-b-2 bg-cyan-400 p-2 text-center text-xl font-bold">SHIFT 2 KEDUA</h2>
                 <div class="grid p-2" v-for="(data, index) in props.shift2b" :key="data.id">
                     <div class="flex items-center justify-between">
@@ -117,7 +117,7 @@ onMounted(() => {
                     </div>
                 </div>
             </div>
-            <div class="border-r-2">
+            <div class="lg:border-r-2">
                 <h2 class="border-b-2 bg-cyan-400 p-2 text-center text-xl font-bold">LEPAS JAGA</h2>
                 <div class="grid p-2" v-for="(data, index) in props.libur" :key="data.id">
                     <div class="flex items-center justify-between">
@@ -155,12 +155,23 @@ onMounted(() => {
             </div>
         </aside>
 
-        <div class="mb-5 flex w-1/3 items-center justify-between bg-red-500 px-5 py-1 text-center text-white">
-            <p>Gagal Absen</p>
+        <div class="mb-5 flex w-fit items-center justify-between bg-red-500 px-5 py-1 text-center text-white">
+            <p>Gagal Absen :</p>
             <p>{{ failed }} Orang</p>
         </div>
-        <Link :href="route('login')">
+        <Link :href="route('home')">
             <span class="mx-auto rounded-sm bg-sky-500 px-5 py-2 font-medium text-white">Kembali</span>
         </Link>
+        <div class="mt-5 rounded-lg border-2 border-red-500 bg-red-100 p-5">
+            <h3 class="text-center text-lg font-bold text-red-700">
+                Absen ini hanya untuk membatu Pegawai yang lupa absen
+                <br />
+                Terkadang Absen Otomastis tidak berjalan dengan baik
+                <br />
+                Kadang - kadang juga Ngak Berguna
+                <br />
+                Jadi jangan terlalu mengandalkan Absen Otomastis ini, tetaplah Absen Mandiri ya BOSS!!
+            </h3>
+        </div>
     </main>
 </template>
