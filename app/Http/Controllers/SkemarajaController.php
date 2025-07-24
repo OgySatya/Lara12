@@ -44,7 +44,7 @@ class SkemarajaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif',
             'name' => 'required|string',
         ]);
         $image = $request->file('image');
@@ -172,7 +172,7 @@ public function create(Request $request)
     public function replace(Request $request)
 {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif',
         ]);
   
         $name = $request->name;

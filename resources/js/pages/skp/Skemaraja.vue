@@ -169,33 +169,43 @@ const generatePdf = async (month: number, year: number) => {
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <h1 class="mx-auto text-2xl font-bold underline underline-offset-4">Rekap Absen Skemaraja</h1>
-            <div class="flex w-fit items-center gap-4">
-                <div class="m-2 flex w-fit">
-                    <label for="year" class="font-semibold">Tahun:</label>
-                    <select
-                        v-model="selectedYear"
-                        id="year"
-                        class="mx-2 rounded-lg border border-input bg-background px-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option v-for="year in years" :key="year" :value="year">
-                            {{ year }}
-                        </option>
-                    </select>
-                </div>
+            <aside class="flex w-full flex-col items-center justify-between gap-4 md:flex-row">
+                <div class="flex w-fit items-center gap-4">
+                    <div class="m-2 flex w-fit">
+                        <label for="year" class="font-semibold">Tahun:</label>
+                        <select
+                            v-model="selectedYear"
+                            id="year"
+                            class="mx-2 rounded-lg border border-input bg-background px-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option v-for="year in years" :key="year" :value="year">
+                                {{ year }}
+                            </option>
+                        </select>
+                    </div>
 
-                <div class="m-2 flex w-fit">
-                    <label for="month" class="font-semibold">Sasih:</label>
-                    <select
-                        @change="redirect(selectedMonth, selectedYear)"
-                        v-model="selectedMonth"
-                        class="mx-2 rounded-lg border border-input bg-background px-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option v-for="month in months" :key="month.id" :value="month.id">
-                            {{ month.name }}
-                        </option>
-                    </select>
+                    <div class="m-2 flex w-fit">
+                        <label for="month" class="font-semibold">Sasih:</label>
+                        <select
+                            @change="redirect(selectedMonth, selectedYear)"
+                            v-model="selectedMonth"
+                            class="mx-2 rounded-lg border border-input bg-background px-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option v-for="month in months" :key="month.id" :value="month.id">
+                                {{ month.name }}
+                            </option>
+                        </select>
+                    </div>
                 </div>
-            </div>
+                <Button
+                    @click="generatePdf(selectedMonth, selectedYear)"
+                    :disabled="isGenerating"
+                    class="mb-2 me-2 rounded-md bg-gradient-to-br from-pink-500 to-orange-400 px-5 py-2 text-center text-xl font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800"
+                >
+                    {{ isGenerating ? 'Monggo di enteni, suwe BOSS...' : 'Rekap Absen jadi PDF' }}
+                    <LoaderCircle v-if="isGenerating" class="h-5 w-5 animate-spin" />
+                </Button>
+            </aside>
             <div>
                 <div>
                     <div class="mx-auto my-4 grid w-full grid-cols-1 gap-4 md:grid-cols-4">
@@ -268,17 +278,6 @@ const generatePdf = async (month: number, year: number) => {
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="rounded-xl border-2 border-white/40 bg-white/30 p-6 text-white shadow-lg backdrop-blur-md">
-                <p class="mb-4 text-2xl font-bold text-amber-500 dark:text-white">Rekap Absen jadi PDF</p>
-                <Button
-                    @click="generatePdf(selectedMonth, selectedYear)"
-                    :disabled="isGenerating"
-                    class="mb-2 me-2 rounded-md bg-gradient-to-br from-pink-500 to-orange-400 px-5 py-2 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800"
-                >
-                    {{ isGenerating ? 'Monggo di enteni, suwe BOSS...' : 'Rekap SKP' }}
-                    <LoaderCircle v-if="isGenerating" class="h-5 w-5 animate-spin" />
-                </Button>
             </div>
         </div>
     </AppLayout>

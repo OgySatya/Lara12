@@ -197,4 +197,8 @@ class ReviewController extends Controller
     {
         Artisan::call('queue:retry all');
     }
+    public function clear()
+    {
+        Artisan::call('queue:flush');
+    }
 }

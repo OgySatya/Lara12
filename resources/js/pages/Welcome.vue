@@ -14,7 +14,7 @@ import { Head, Link } from '@inertiajs/vue3';
                         >Laporan SKP
                     </Link>
                     <Link :href="route('review')" class="rounded-r-xl px-6 py-2 text-xl font-bold text-white shadow-md transition hover:bg-white/20"
-                        >Absen Pegawai
+                        >Pengingat Absen
                     </Link>
                 </div>
             </div>

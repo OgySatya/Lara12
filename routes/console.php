@@ -25,9 +25,9 @@ Schedule::command(BatchShift2b::class)->dailyAt('07:32');
 Schedule::command(BatchShift2b::class)->dailyAt('19:05');
 Schedule::command(BatchLepas::class)->dailyAt('07:35'); 
 
-schedule::call(function () {
-    $failedJobs = DB::table('failed_jobs')->count();
-    if ($failedJobs > 0) {
-        Artisan::call('queue:retry all');
-    }
-})->everyTenMinutes();
+// schedule::call(function () {
+//     $failedJobs = DB::table('failed_jobs')->count();
+//     if ($failedJobs > 0) {
+//         Artisan::call('queue:retry all');
+//     }
+// })->everyTenMinutes();

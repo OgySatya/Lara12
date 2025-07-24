@@ -25,3 +25,4 @@ Route::patch('setting/edit', [AbsenController::class, 'edit'])->name('absen.edit
 Route::get('review/absen', [ReviewController::class, 'index'])->name('review');
 Route::get('review/active', [ReviewController::class, 'active'])->name('active');
 Route::get('review/retry', [ReviewController::class, 'retry'])->name('retry');
+Route::get('review/clear', [ReviewController::class, 'clear'])->name('clear');

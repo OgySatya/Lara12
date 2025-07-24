@@ -69,13 +69,13 @@ const currentYear: number = new Date().getFullYear();
                             }}</span>
                         </label>
                     </div>
-                    <div class="w-fit rounded-lg border-2 border-red-500 bg-red-50 p-2">
+                    <div class="w-fit rounded-lg border-2 border-red-500 bg-red-100 p-2">
                         <h3 class="font-bold text-red-500">
                             Mohon di jaga Rahasia ini, jangan sampai bocor ke pegawai lain ya BOSS !!
                             <br />
                             Jangan terlalu percaya dengan Aplikasi Absen ini
                             <br />
-                            karena ini hanya sebuah aplikasi sederhana.
+                            karena ini hanya membantu jika lupa Absen.
                             <br />
                             Kadang sering ERROR, dan Ngak GUNA
                         </h3>
