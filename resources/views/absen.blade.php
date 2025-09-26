@@ -46,7 +46,7 @@ ul {
 </style>
 <body>
   <div class="container">
-    <img class="kop" src="storage\kop seloaji.jpg" loading="lazy" alt="Image">
+    <img class="kop" src="storage\main\kop seloaji.jpg" loading="lazy" alt="Image">
         <div style="text-align: center;">
             <h4 style="text-transform: uppercase;" >Rekap Absen Skemaraja
              <br>

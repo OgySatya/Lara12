@@ -49,7 +49,13 @@ class BatchAdmin extends Command
                 $names = $admin->pluck('user.name')->join(', ');
                 Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
                     'chat_id' => env('TELEGRAM_CHAT_ID'),
-                    'text' => "✅ Semua job absen selesai untuk:\n👥 $names",
+                    'text' => "✅ Semua absen Pegawai Admin selesai Boss!!! untuk:\n👥 $names",
+                ]);
+            })
+            ->catch(function (Batch $batch, Throwable $e) {
+                Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
+                    'chat_id' => env('TELEGRAM_CHAT_ID'),
+                    'text' => "❌SERVER ERROR BOSS ABSEN PEGAWAI ADMIN DEWE-DEWE \n "."MATUR SUUWUN",
                 ]);
             })
             ->dispatch();

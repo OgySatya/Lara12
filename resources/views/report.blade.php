@@ -12,7 +12,7 @@ ul {
 }
 .container {
       align-items: center;      
-      width: 210mm;        
+      width: 210mm;    
     }
 
     .container .kop {
@@ -20,15 +20,7 @@ ul {
       height: 100%;       /* Makes the image take up the full height of the container */
       object-fit: contain; /* Ensures the image maintains aspect ratio while fitting the container */
     }
-    .box {
-      width: 80mm;
-      margin-top: 30px         /* Set the box width to 50mm */
-    }
-
-    /* Align the box to the right side */
-    .container .box {
-      margin-left: auto;  /* Pushes the box to the right side */
-    }
+   
     .grid-container {
       display: grid;          /* Enables CSS Grid */
       grid-template-columns: repeat(2, 1fr); /* Creates 2 equal columns */ 
@@ -46,7 +38,7 @@ ul {
 </style>
 <body>
 <div class="container">
-    <img class="kop" src="storage\kop seloaji.jpg" loading="lazy" alt="Image">
+    <img class="kop" src="storage\main\kop seloaji.jpg" loading="lazy" alt="Image">
         <div style="text-align: center;">
             <h4 style="text-transform: uppercase;" >LAPORAN BUKTI DUKUNG LAPORAN E KINERJA BULAN
              <br>
@@ -75,12 +67,7 @@ ul {
               </li>
             @endforeach
             </ul>
-        <div class="box">
-        <p >Mengetahui :</p>
-        <p >PENGAWAS SATUAN PELAYANAN TERMINAL TIPE A SELOAJI</p>
-        <img src="storage\ttd.jpg" loading="lazy" height="80px" alt="Image">
-        <p><strong><u>PURWANTO</u></strong> <br>NIP. 19670610 199203 1 008 </p>
-      </div>
+        <img class="kop" src="storage\main\ttd.png" style="margin-top: 20px;" loading="lazy" alt="Image">
     </div>
 </body>
 </html>

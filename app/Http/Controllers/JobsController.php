@@ -80,12 +80,27 @@ class JobsController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function duplicate($request)
     {
-        //
+        // $user = Auth::user([
+        //         'id',
+        //         'username'
+        //     ]);
+        //     $job = $request->job ?: 1;
+        //     $month = $request->month ?: Carbon::now()->month;
+        //     $year = $request->year ?: Carbon::now()->year;
+        //     $job_id = Auth::user()->jabatan_id;
+        //     $tugas = Tugas::where('jabatan_id', $job_id)->with('target', 'jabatan')->skip($job - 1)->take(1)->first();
+            
+        // $data = Laporan::where('user_id', $request-user)->get();
+
+        // foreach ($posts as $post) {
+        //     $newPost = $post->replicate(); // Duplicate the model
+        //     $newPost->user_id = $toUserId; // Assign to new user
+        //     $newPost->save();
+        // }
+
+        // return 'Posts copied successfully.';
     }
 
     /**

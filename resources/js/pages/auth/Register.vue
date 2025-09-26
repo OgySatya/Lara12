@@ -28,7 +28,7 @@ const submit = () => {
 
 <template>
     <AuthBase
-        class="h-screen w-full bg-[url('/storage/terminal.png')] bg-cover bg-center"
+        class="h-screen w-full bg-[url('/storage/main/terminal.png')] bg-cover bg-center"
         title="Buat Data Pegawai"
         description="Isi data dengan benar dan baik ojo ke susu"
     >

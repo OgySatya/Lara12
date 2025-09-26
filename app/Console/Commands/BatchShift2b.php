@@ -124,6 +124,12 @@ class BatchShift2b extends Command
                 Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
                     'chat_id' => env('TELEGRAM_CHAT_ID'),
                     'text' => "✅ Semua absen Shift 2 selesai BOSS!! untuk:\n👥 $names",
+                ]);     
+            })
+                     ->catch(function (Batch $batch, Throwable $e) {
+                Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
+                    'chat_id' => env('TELEGRAM_CHAT_ID'),
+                    'text' => "❌SERVER ERROR BOSS ABSEN SHIFT 2 ESUK DEWE-DEWE \n "."MATUR SUUWUN",
                 ]);
             })
             ->dispatch();

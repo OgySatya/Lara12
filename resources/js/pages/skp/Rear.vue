@@ -7,6 +7,7 @@ import { type BreadcrumbItem, type Data, type User } from '@/types';
 import { Head, useForm } from '@inertiajs/vue3';
 import axios from 'axios';
 import { defineProps, ref } from 'vue';
+import DuplicateModal from './modal/DuplicateModal.vue';
 
 const props = defineProps<{
     tugas: Data;
@@ -100,7 +101,10 @@ const form = useForm({
     user_id: 0,
     target_id: 0,
 });
-
+const copyModal = ref(false);
+const openCopyModal = () => {
+    copyModal.value = true;
+};
 const currentYear = new Date().getFullYear();
 const years = Array.from({ length: 7 }, (_, i) => currentYear - 3 + i);
 const months = [
@@ -138,41 +142,49 @@ const generatePdf = async (month: number, year: number) => {
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <h1 class="mx-auto font-bold underline underline-offset-4">{{ props.tugas.name }}</h1>
-            <div class="flex w-56 flex-col space-y-4">
+            <div class="flex w-full justify-between">
+                <div class="flex w-56 flex-col space-y-4">
+                    <div>
+                        <label for="year" class="font-semibold">Tahun:</label>
+                        <select
+                            v-model="selectedYear"
+                            id="year"
+                            class="w-full rounded-lg border border-input bg-background p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option v-for="year in years" :key="year" :value="year">
+                                {{ year }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="grid">
+                        <label for="month" class="font-semibold">Sasih:</label>
+                        <select
+                            @change="redirect(selectedMonth, selectedYear)"
+                            v-model="selectedMonth"
+                            class="rounded-lg border border-input bg-background p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option v-for="month in months" :key="month.id" :value="month.id">
+                                {{ month.name }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <p class="font-bold">
+                        Laporan Bulan : <span>{{ months.find((m) => m.id === selectedMonth)?.name }} {{ selectedYear }}</span>
+                    </p>
+                </div>
                 <div>
-                    <label for="year" class="font-semibold">Tahun:</label>
-                    <select
-                        v-model="selectedYear"
-                        id="year"
-                        class="w-full rounded-lg border border-input bg-background p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option v-for="year in years" :key="year" :value="year">
-                            {{ year }}
-                        </option>
-                    </select>
+                    <DuplicateModal :visible="copyModal" @cancel="copyModal = false" />
                 </div>
-
-                <div class="grid">
-                    <label for="month" class="font-semibold">Sasih:</label>
-                    <select
-                        @change="redirect(selectedMonth, selectedYear)"
-                        v-model="selectedMonth"
-                        class="rounded-lg border border-input bg-background p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option v-for="month in months" :key="month.id" :value="month.id">
-                            {{ month.name }}
-                        </option>
-                    </select>
-                </div>
-
-                <p class="font-bold">
-                    Laporan Bulan : <span>{{ months.find((m) => m.id === selectedMonth)?.name }} {{ selectedYear }}</span>
-                </p>
             </div>
             <div>
                 <div v-for="(job, index) in props.tugas.target" :key="job.id">
-                    <div class="rounded-sm border border-gray-600 px-4 py-2 hover:bg-gray-100 dark:hover:bg-slate-600">
-                        {{ index + 1 }}. {{ job.name }}
+                    <div
+                        class="flex items-center justify-between rounded-sm border border-gray-600 px-4 py-2 hover:bg-gray-100 dark:hover:bg-slate-600"
+                    >
+                        <div>{{ index + 1 }}. {{ job.name }}</div>
+                        <Button @click="copyModal = true" variant="outline">Test</Button>
                     </div>
                     <div class="my-4 grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div class="grid" v-for="(link, imgIndex) in props.tugas.target[index].laporan || []" :key="imgIndex">
