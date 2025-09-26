@@ -92,17 +92,22 @@ class BatchLepas extends Command
         Bus::batch($jobs)
             ->then(function (Batch $batch) use ($libur1) {
                 $names = $libur1->pluck('name')->join(', ');
-                Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
-                    'chat_id' => env('TELEGRAM_CHAT_ID'),
-                    'text' => "✅ Semua absen Lepas Jaga selesai BOSS!! untuk:\n👥 $names",
-                ]);
-            })
-             ->catch(function (Batch $batch, Throwable $e) {
-                Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
-                    'chat_id' => env('TELEGRAM_CHAT_ID'),
-                    'text' => "❌SERVER ERROR BOSS ABSEN LEPAS JAGA DEWE-DEWE \n "."MATUR SUUWUN",
-                ]);
-            })
+               if ($batch->totalJobs === $batch->processedJobs()) {
+                            Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
+                                'chat_id' => env('TELEGRAM_CHAT_ID'),
+                                'text' => "✅ Semua absen Lepas Jaga selesai Boss!!! \n untuk:\n👥 $names",
+                            ]);
+                        }
+                    })
+            ->catch(function (Batch $batch, Throwable $e) use ($libur1) {
+                    $names = $libur1->pluck('user.name')->join(', ');
+                    if ($batch->failedJobs > 0) {
+                            Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
+                                'chat_id' => env('TELEGRAM_CHAT_ID'),
+                                'text' => "❌Error Boss Absen Dewe-Dewe \n   errror:\n👥 $names\n\n⚠️ Matur Suwun",
+                            ]);
+                        }
+                    })
             ->dispatch();
     }
 }
