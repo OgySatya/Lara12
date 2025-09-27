@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Absen;
 use Illuminate\Bus\Batch;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Http;
 
@@ -118,25 +119,40 @@ class BatchShift2b extends Command
             $jobs[] = new Robot($user);
         }
         echo "Shift 2 Kedua: " . $shift2b->count() . " users\n";
+
         Bus::batch($jobs)
             ->then(function (Batch $batch) use ($shift2b) {
                 $names = $shift2b->pluck('name')->join(', ');
-                    if ($batch->totalJobs === $batch->processedJobs()) {
-                            Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
-                                'chat_id' => env('TELEGRAM_CHAT_ID'),
-                                'text' => "✅ Semua absen Shift 2 Esuk selesai Boss!!! \n untuk:\n👥 $names",
-                            ]);
-                        }
-                    })
+                Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
+                    'chat_id' => env('TELEGRAM_CHAT_ID'),
+                    'text' => "✅ Semua absen Shift 2 selesai Boss!!! untuk:\n$names",
+                ]);
+            })
             ->catch(function (Batch $batch, Throwable $e) use ($shift2b) {
-                    $names = $shift2b->pluck('user.name')->join(', ');
-                    if ($batch->failedJobs > 0) {
-                            Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
-                                'chat_id' => env('TELEGRAM_CHAT_ID'),
-                                'text' => "❌Error Boss Absen Dewe-Dewe \n   errror:\n👥 $names\n\n⚠️ Matur Suwun",
-                            ]);
-                        }
-                    })
+                $failedCount = $batch->failedJobs;   // number of failed jobs
+                $total = $batch->totalJobs;
+                $processed = $batch->processedJobs();
+
+                // Get failed job payloads from database
+                $failed = DB::table('failed_jobs')
+                    ->where('batch_id', $batch->id)
+                    ->get();
+
+                $failedUsers = $failed->map(function ($job) {
+                    $payload = json_decode($job->payload, true);
+                    return $payload['name'] ?? 'Unknown User';
+                });
+
+                $names = $failedUsers->join(', ');
+
+                Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
+                    'chat_id' => env('TELEGRAM_CHAT_ID'),
+                    'text' => "❌ Ada $failedCount Absen gagal dari $total total.\n"
+                        . "👉 Selesai diproses: $processed\n"
+                        . "👤 User gagal Absen: $names\n"
+                        . "⚠️ LastError : {$e->getMessage()}",
+                ]);
+            })
             ->dispatch();
     }
 }

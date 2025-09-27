@@ -4,7 +4,7 @@ const [, , nip, shift] = process.argv;
 (async () => {
     const browser = await puppeteer.launch({
         headless: false,
-        userDataDir: 'C:\\Users\\MSi DESKTOP\\AppData\\Local\\Google\\Chrome for Testing\\User Data',
+        userDataDir: 'C:\\Users\\Rapht\\AppData\\Local\\Google\\Chrome for Testing\\User Data',
         args: ['--no-sandbox', '--disable-setuid-sandbox', '--profile-directory=Profile 1'],
     });
 
@@ -15,6 +15,10 @@ const [, , nip, shift] = process.argv;
     await page.goto('https://skemaraja.dephub.go.id');
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
+    const firstSpan = await page.$eval('span', el => el.innerText.trim());
+    if (firstSpan !== 'SKEMA') {
+        await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
+    }
     // Wait for form to load
     await page.waitForSelector('form#theForm input[name="_token"]');
 

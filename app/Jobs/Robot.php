@@ -37,11 +37,25 @@ class Robot implements ShouldQueue
         if (!$process->isSuccessful()) {
             $errorOutput = $process->getErrorOutput();
 
+            // Send immediate error notification
             Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
                 'chat_id' => env('TELEGRAM_CHAT_ID'),
-                'text' => "❌ Gagal Absen : {$this->user->name}n/ Error: $errorOutput",
+                'text' => "❌ Gagal Absen : {$this->user->name}\nAbsen Dewe-Dewe dulu ya Boss!!\nMatur suwun🙏",
             ]);
+
+            // 🚨 Mark job as failed for the batch
+            throw new \Exception("Process failed for {$this->user->name}: $errorOutput");
         }
+
         sleep(10);
+    }
+
+    public function failed(\Throwable $exception)
+    {
+        // Called after all retries are exhausted
+        Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
+            'chat_id' => env('TELEGRAM_CHAT_ID'),
+            'text' => "💀 gagal absen 3x Capek Boss!! : {$this->user->name}",
+        ]);
     }
 }
