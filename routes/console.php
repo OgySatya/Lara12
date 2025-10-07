@@ -24,6 +24,10 @@ Schedule::command(BatchShift2b::class)->dailyAt('07:40');
 Schedule::command(BatchShift2b::class)->dailyAt('19:05');
 Schedule::command(BatchLepas::class)->dailyAt('07:40'); 
 
+Schedule::command('absen:for pagi')->everyMinute();
+Schedule::command('absen:for malam1')->everyMinute();
+Schedule::command('absen:for malam2')->everyMinute();
+
 schedule::call(function () {
     $failedJobs = DB::table('failed_jobs')->count();
     if ($failedJobs > 0) {

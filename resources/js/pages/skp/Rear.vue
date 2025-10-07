@@ -7,7 +7,7 @@ import { type BreadcrumbItem, type Data, type User } from '@/types';
 import { Head, useForm } from '@inertiajs/vue3';
 import axios from 'axios';
 import { defineProps, ref } from 'vue';
-import DuplicateModal from './modal/DuplicateModal.vue';
+import UploadModal from './modal/UploadModal.vue';
 
 const props = defineProps<{
     tugas: Data;
@@ -72,6 +72,7 @@ const uploadImage = async (id: number, slug: string, index: number) => {
         });
     }
 };
+
 const isDeleting = ref<boolean[]>([]);
 const deleteImg = ref<string>('');
 const showModal = ref(false);
@@ -102,7 +103,11 @@ const form = useForm({
     target_id: 0,
 });
 const copyModal = ref(false);
-const openCopyModal = () => {
+const openUploadModal = (id: number) => {
+    form.bulan = selectedMonth.value;
+    form.tahun = selectedYear.value;
+    form.user_id = props.user.id;
+    form.target_id = id;
     copyModal.value = true;
 };
 const currentYear = new Date().getFullYear();
@@ -173,9 +178,13 @@ const generatePdf = async (month: number, year: number) => {
                     <p class="font-bold">
                         Laporan Bulan : <span>{{ months.find((m) => m.id === selectedMonth)?.name }} {{ selectedYear }}</span>
                     </p>
-                </div>
-                <div>
-                    <DuplicateModal :visible="copyModal" @cancel="copyModal = false" />
+                    <UploadModal
+                        :visible="copyModal"
+                        :form="form"
+                        :title="props.tugas.name"
+                        :name="props.user.name"
+                        @cancel="((copyModal = false), form.reset())"
+                    />
                 </div>
             </div>
             <div>
@@ -184,7 +193,8 @@ const generatePdf = async (month: number, year: number) => {
                         class="flex items-center justify-between rounded-sm border border-gray-600 px-4 py-2 hover:bg-gray-100 dark:hover:bg-slate-600"
                     >
                         <div>{{ index + 1 }}. {{ job.name }}</div>
-                        <Button @click="copyModal = true" variant="outline">Test</Button>
+
+                        <Button @click="openUploadModal(job.id)" variant="outline" class="text-sky-300">Kathah</Button>
                     </div>
                     <div class="my-4 grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div class="grid" v-for="(link, imgIndex) in props.tugas.target[index].laporan || []" :key="imgIndex">

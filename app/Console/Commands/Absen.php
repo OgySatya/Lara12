@@ -18,7 +18,7 @@ class BatchLepas extends Command
      *
      * @var string
      */
-    protected $signature = 'app:batch-lepas';
+    protected $signature = 'absen:for {shift}';
 
     /**
      * The console command description.
@@ -32,6 +32,7 @@ class BatchLepas extends Command
      */
     public function handle()
     {
+    $absen = $this->argument('shift');
     $dayOfYear = Carbon::today()->dayOfYear;
     $whatDay = $dayOfYear % 6;
     $awal = User::first()->awal;
@@ -69,6 +70,10 @@ class BatchLepas extends Command
         $shift1 = User::whereIn('awal', $pagi)->where('group', '!=', 'Admin')->where('status', 1)->get(['id', 'name', 'NIP']);
         $shift2 = User::whereIn('awal', $malam)->where('group', '!=', 'Admin')->where('status', 1)->get(['id', 'name', 'NIP']);
         $libur  = User::whereIn('awal', $lepas)->where('group', '!=', 'Admin')->where('status', 1)->get(['id', 'name', 'NIP']);
+        $admin = User::where('group',  'Admin')
+                    ->where('status', 1)
+                    ->select('id', 'name', 'NIP')
+                    ->get();
 
 
     // Determine shift2 split and libur1
@@ -76,37 +81,38 @@ class BatchLepas extends Command
     if ($isAwalOdd) {
         $shift2a = !$isEvenDay ? $shift2 : collect();
         $shift2b = $isEvenDay ? $shift2 : collect();
-        $libur1  = !$isEvenDay ? $libur : collect();
+        $libur  = !$isEvenDay ? $libur : collect();
     } else {
         $shift2a = $isEvenDay ? $shift2 : collect();
         $shift2b = !$isEvenDay ? $shift2 : collect();
-        $libur1  = $isEvenDay ? $libur : collect();
+        $libur  = $isEvenDay ? $libur : collect();
     }
+         $absen = $this->argument('shift');
+         $shift = [];
+         $melebu = 0;
          $jobs = [];
-        foreach ($libur1 as $user) {
-            $user->shift = 1;
+         if ($absen === 'pagi') {
+            $shift = $shift1;
+            $melebu = 1;
+        }elseif ($absen === 'malam1') {
+            $shift = $shift2a;
+            $melebu = 2;  
+        }elseif($absen === 'malam2') {
+            $shift = $shift2b;
+            $melebu = 2;
+        }elseif($absen === 'libur') {
+            $shift = $libur;
+            $melebu = 2;
+        }else{
+            $shift = $admin;
+            $melebu = 1;
+        }
+        
+        foreach ($shift as $user) {
+            $user->shift = $melebu;
             $jobs[] = new Robot($user);
         }
-        echo "Libur: " . $libur1->count() . " users\n";
-        Bus::batch($jobs)
-            ->then(function (Batch $batch) use ($libur1) {
-                $names = $libur1->pluck('name')->join(', ');
-               if ($batch->totalJobs === $batch->processedJobs()) {
-                            Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
-                                'chat_id' => env('TELEGRAM_CHAT_ID'),
-                                'text' => "✅ Semua absen Lepas Jaga selesai Boss!!! \n untuk:\n👥 $names",
-                            ]);
-                        }
-                    })
-            ->catch(function (Batch $batch, Throwable $e) use ($libur1) {
-                    $names = $libur1->pluck('user.name')->join(', ');
-                    if ($batch->failedJobs > 0) {
-                            Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
-                                'chat_id' => env('TELEGRAM_CHAT_ID'),
-                                'text' => "❌Error Boss Absen Dewe-Dewe \n   errror:\n👥 $names\n\n⚠️ Matur Suwun",
-                            ]);
-                        }
-                    })
-            ->dispatch();
+        echo "Shift $absen: " . $shift->count() . " users\n";
+        Bus::batch($jobs)->dispatch();
     }
 }

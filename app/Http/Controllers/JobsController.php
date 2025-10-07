@@ -60,6 +60,30 @@ class JobsController extends Controller
         $image->storeAs('uploads', $newFileName, 'public');
     }
 
+    public function multiStore(Request $request)
+    {
+        $request->validate([
+            'images.*' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'bulan' => 'required|integer',
+            'tahun' => 'required|integer',
+            'user_id' => 'required|integer',
+            'target_id' => 'required|integer',
+        ]);
+
+        foreach ($request->file('images') as $file) {
+            $newFileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->storeAs('uploads', $newFileName, 'public');
+            Laporan::create([
+            'user_id' => $request['user_id'],
+            'target_id' => $request['target_id'],
+            'bulan' => $request['bulan'],
+            'tahun' => $request['tahun'],
+            'image' => $newFileName,
+        ]);
+        }
+
+        return back()->with('success', 'Images uploaded successfully!');
+    }
 
     public function save(Request $request)
     {

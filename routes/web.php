@@ -22,6 +22,7 @@ Route::middleware('auth', 'verified')->group(function () {
     // Route::delete('delete', [TaskController::class, 'destroy'])->name('delete');
     Route::get('job', [JobsController::class, 'jobView'])->name('job');
     Route::post('store', [JobsController::class, 'store'])->name('store');
+    Route::post('multi-upload', [JobsController::class, 'multiStore'])->name('multi-upload');
     Route::post('save', [JobsController::class, 'save'])->name('save');
     Route::delete('delete', [JobsController::class, 'destroy'])->name('delete');
     Route::get('laporan', [SummaryController::class, 'show'])->name('laporan');
