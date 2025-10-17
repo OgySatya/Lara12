@@ -34,8 +34,10 @@ const [, , nip, shift] = process.argv;
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Wait for and click submit
-    // await page.waitForSelector('#btnSubmit:not([disabled])');
-    // await Promise.all([page.click('#btnSubmit'), page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 60000 })]);
+    await page.waitForSelector('#btnSubmit:not([disabled])');
+    await Promise.all([page.click('#btnSubmit'), page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 60000 })]);
 
+    const name = await page.$eval('.profile-username', el => el.innerText.trim());
+    console.log(name);
     await browser.close();
 })();
