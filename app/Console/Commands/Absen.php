@@ -32,7 +32,6 @@ class BatchLepas extends Command
      */
     public function handle()
     {
-    $absen = $this->argument('shift');
     $dayOfYear = Carbon::today()->dayOfYear;
     $whatDay = $dayOfYear % 6;
     $awal = User::first()->awal;
@@ -67,13 +66,10 @@ class BatchLepas extends Command
     $lepas = $shiftMaps['libur'][$whatDay];
 
    // Fetch users for each group
-        $shift1 = User::whereIn('awal', $pagi)->where('group', '!=', 'Admin')->where('status', 1)->get(['id', 'name', 'NIP']);
-        $shift2 = User::whereIn('awal', $malam)->where('group', '!=', 'Admin')->where('status', 1)->get(['id', 'name', 'NIP']);
-        $libur  = User::whereIn('awal', $lepas)->where('group', '!=', 'Admin')->where('status', 1)->get(['id', 'name', 'NIP']);
-        $admin = User::where('group',  'Admin')
-                    ->where('status', 1)
-                    ->select('id', 'name', 'NIP')
-                    ->get();
+        $shift1 = User::whereIn('awal', $pagi)->where('group', '!=', 'Admin')->where('status', 1)->get(['id', 'name', 'NIP','absen']);
+        $shift2 = User::whereIn('awal', $malam)->where('group', '!=', 'Admin')->where('status', 1)->get(['id', 'name', 'NIP','absen']);
+        $libur  = User::whereIn('awal', $lepas)->where('group', '!=', 'Admin')->where('status', 1)->get(['id', 'name', 'NIP','absen']);
+        $admin = User::where('group',  'Admin')->where('status', 1)->select('id', 'name', 'NIP','absen')->get();
 
 
     // Determine shift2 split and libur1
@@ -103,7 +99,7 @@ class BatchLepas extends Command
         }elseif($absen === 'libur') {
             $shift = $libur;
             $melebu = 2;
-        }else{
+        }elseif($absen === 'admin') {
             $shift = $admin;
             $melebu = 1;
         }
@@ -113,6 +109,26 @@ class BatchLepas extends Command
             $jobs[] = new Robot($user);
         }
         echo "Shift $absen: " . $shift->count() . " users\n";
-        Bus::batch($jobs)->dispatch();
+       Bus::batch($jobs)
+            ->then(function (Batch $batch) use ($shift ) {
+                $names = $shift->pluck('name')->join(', ');
+                // Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
+                //     'chat_id' => env('TELEGRAM_CHAT_ID'),
+                //     'text' => "✅ Semua absen selesai Boss!!! untuk:\n$names",
+                // ]);
+            })
+            ->catch(function (Batch $batch, Throwable $e) use ($shift) {
+                $failedCount = $batch->failedJobs;   // number of failed jobs
+                $total = $batch->totalJobs;
+                $processed = $batch->processedJobs();
+
+                Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
+                    'chat_id' => env('TELEGRAM_CHAT_ID'),
+                    'text' => "❌ Ada $failedCount Absen gagal dari $total total.\n"
+                        . "👉 Selesai diproses: $processed\n"
+                        . "⚠️ LastError : {$e->getMessage()}",
+                ]);
+            })
+            ->dispatch();
     }
 }

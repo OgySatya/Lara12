@@ -1,10 +1,11 @@
 import puppeteer from 'puppeteer';
-const [, , nip, shift] = process.argv;
+const [, , nip, password, shift] = process.argv;
 
 (async () => {
     const browser = await puppeteer.launch({
         headless: false,
-        userDataDir: 'C:\\Users\\Rapht\\AppData\\Local\\Google\\Chrome for Testing\\User Data',
+        userDataDir: 'C:\\Users\\MSi DESKTOP\\AppData\\Local\\Google\\Chrome for Testing\\User Data',
+        // userDataDir: 'C:\\Users\\Rapht\\AppData\\Local\\Google\\Chrome for Testing\\User Data',
         args: ['--no-sandbox', '--disable-setuid-sandbox', '--profile-directory=Profile 1'],
     });
 
@@ -15,7 +16,7 @@ const [, , nip, shift] = process.argv;
     await page.goto('https://skemaraja.dephub.go.id');
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    const firstSpan = await page.$eval('span', el => el.innerText.trim());
+    const firstSpan = await page.$eval('span', (el) => el.innerText.trim());
     if (firstSpan !== 'SKEMA') {
         await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
     }
@@ -24,7 +25,7 @@ const [, , nip, shift] = process.argv;
 
     // Fill in form
     await page.type('input[name="nip"]', nip);
-    await page.type('input[name="password"]', nip);
+    await page.type('input[name="password"]', password);
     await page.select('select[name="status_wfh"]', '2');
 
     // Select shift (from argument)
@@ -35,9 +36,32 @@ const [, , nip, shift] = process.argv;
 
     // Wait for and click submit
     await page.waitForSelector('#btnSubmit:not([disabled])');
-    await Promise.all([page.click('#btnSubmit'), page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 60000 })]);
+    try {
+        await Promise.all([page.click('#btnSubmit'), page.waitForNavigation({ waitUntil: 'networkidle0', timeout: 60000 })]);
+    } catch (error) {
+        await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
+    }
 
-    const name = await page.$eval('.profile-username', el => el.innerText.trim());
-    console.log(name);
-    await browser.close();
+    let name;
+
+    try {
+        // Try to find and get the first <h1> text
+        name = await page.$eval('p', (el) => el.innerText.trim());
+        if (name !== 'Untuk keamanan yang lebih baik, mohon segera lakukan perubahan password. klik disini untuk ganti password.') {
+            await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
+        }
+    } catch (error) {
+        await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
+
+        await page.waitForTimeout(2000);
+        name = await page.$eval('p', (el) => el.innerText.trim());
+    }
+    if (name !== 'Untuk keamanan yang lebih baik, mohon segera lakukan perubahan password. klik disini untuk ganti password.') {
+        await page.reload({ waitUntil: ['networkidle0', 'domcontentloaded'] });
+    }
+
+    const profile = await page.$eval('.profile-username', (el) => el.innerText.trim());
+    console.log(`Absen Berhasil: ${profile}`);
+
+    // await browser.close();
 })();

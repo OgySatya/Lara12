@@ -22,6 +22,7 @@ Route::middleware('auth')->group(function () {
 
 Route::patch('setting/update', [AbsenController::class, 'update'])->name('absen.update');
 Route::patch('setting/edit', [AbsenController::class, 'edit'])->name('absen.edit');
+Route::patch('setting/password', [AbsenController::class, 'password'])->name('absen.password');
 Route::get('review/absen', [ReviewController::class, 'index'])->name('review');
 Route::get('review/active', [ReviewController::class, 'active'])->name('active');
 Route::get('review/retry', [ReviewController::class, 'retry'])->name('retry');

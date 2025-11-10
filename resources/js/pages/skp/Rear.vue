@@ -194,7 +194,7 @@ const generatePdf = async (month: number, year: number) => {
                     >
                         <div>{{ index + 1 }}. {{ job.name }}</div>
 
-                        <Button @click="openUploadModal(job.id)" variant="outline" class="text-sky-300">Kathah</Button>
+                        <Button @click="openUploadModal(job.id)" variant="outline" class="text-sky-300">Upload Akeh</Button>
                     </div>
                     <div class="my-4 grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div class="grid" v-for="(link, imgIndex) in props.tugas.target[index].laporan || []" :key="imgIndex">

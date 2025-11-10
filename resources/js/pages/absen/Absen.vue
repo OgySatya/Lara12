@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import HeadingSmall from '@/components/HeadingSmall.vue';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
-import { Head, router } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 
 const props = defineProps<{
-    user: { name: string; id: number; awal: number; status: number };
+    user: { name: string; id: number; awal: number; status: number; absen: string };
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -28,6 +31,15 @@ const onToggle = (event: Event) => {
         absenId: props.user.id,
         status: checked ? 1 : 0,
     });
+};
+const form = useForm({
+    absen: props.user.absen,
+    absenId: props.user.id,
+});
+
+const submit = () => {
+    console.log(form);
+    form.patch(route('absen.password'));
 };
 const currentYear: number = new Date().getFullYear();
 </script>
@@ -56,7 +68,16 @@ const currentYear: number = new Date().getFullYear();
                             <option value="0">Libur</option>
                         </select>
                     </div>
+                    <form class="mt-4" @submit.prevent="submit">
+                        <div class="grid w-fit gap-2">
+                            <Label class="text-xl font-bold">Password Absen</Label>
+                            <Input type="text" v-model="form.absen" autofocus />
+                        </div>
 
+                        <div class="mt-2 flex">
+                            <Button type="submit" :disabled="form.processing"> Ganti Password Absen </Button>
+                        </div>
+                    </form>
                     <div class="my-3 flex">
                         <p class="mr-4">Status Absen Otomatis :</p>
                         <label class="inline-flex cursor-pointer items-center">

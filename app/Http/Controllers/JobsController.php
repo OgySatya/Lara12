@@ -63,7 +63,7 @@ class JobsController extends Controller
     public function multiStore(Request $request)
     {
         $request->validate([
-            'images.*' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'images.*' => 'required|image|mimes:jpg,jpeg,png',
             'bulan' => 'required|integer',
             'tahun' => 'required|integer',
             'user_id' => 'required|integer',

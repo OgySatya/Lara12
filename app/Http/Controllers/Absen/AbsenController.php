@@ -23,6 +23,7 @@ class AbsenController extends Controller
             'name',
             'awal',
             'ststus',
+            'absen',
         ]);
 
 
@@ -43,4 +44,13 @@ class AbsenController extends Controller
         $absen->status = $request->status;
         $absen->save();
     }
+    public function password(Request $request)
+    {
+      $absen = User::find($request->absenId);
+
+    $absen->absen = $request->absen;
+    $absen->save();
+
+    }
+
 }

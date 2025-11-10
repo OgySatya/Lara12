@@ -28,34 +28,23 @@ class Robot implements ShouldQueue
     public function handle(): void
     {
 
-        echo "Processing user: {$this->user->name}, NIP: {$this->user->NIP}, Shift: {$this->user->shift}\n";
+        echo "Processing user: {$this->user->name}, NIP: {$this->user->NIP}, Password: {$this->user->absen}, Shift: {$this->user->shift}\n";
         // $scriptPath = base_path('resources/js/pages/absen/absenBot.js');
 
-        // $process = new Process(['node', $scriptPath, $this->user->NIP, $this->user->shift]);
+        // $process = new Process(['node', $scriptPath, $this->user->NIP, $this->user->absen, $this->user->shift]);
         // $process->run();
 
-        // if (!$process->isSuccessful()) {
-        //     $errorOutput = $process->getErrorOutput();
+  
 
-        //     // Send immediate error notification
-        //     Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
-        //         'chat_id' => env('TELEGRAM_CHAT_ID'),
-        //         'text' => "❌ Gagal Absen : {$this->user->name}\nAbsen Dewe-Dewe dulu ya Boss!!\nMatur suwun🙏",
-        //     ]);
-
-        //     // 🚨 Mark job as failed for the batch
-        //     throw new \Exception("Process failed for {$this->user->name}: $errorOutput");
-        // }
-
-        // sleep(10);
+        //  sleep(10);
     }
 
-    public function failed(\Throwable $exception)
-    {
-        // // Called after all retries are exhausted
-        // Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
-        //     'chat_id' => env('TELEGRAM_CHAT_ID'),
-        //     'text' => "💀 gagal absen 3x Capek Boss!! : {$this->user->name}",
-        // ]);
-    }
+    // public function failed(\Throwable $exception)
+    // {
+    //     // Called after all retries are exhausted
+    //     Http::post("https://api.telegram.org/bot" . env('TELEGRAM_BOT_TOKEN') . "/sendMessage", [
+    //         'chat_id' => env('TELEGRAM_CHAT_ID'),
+    //         'text' => "💀 gagal absen 3x Capek Boss!! : {$this->user->name}",
+    //     ]);
+    // }
 }
