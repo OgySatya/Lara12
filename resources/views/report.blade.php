@@ -35,34 +35,79 @@ ul {
       object-fit: cover; /* Ensures it fills the space */
       border: 2px solid #000; /* Adds a border around the image */
     }
+
+.table-two {
+  border-collapse: collapse;
+  width: 100%;
+  margin-left: 30px;
+  margin-bottom: 20px;
+}
+
+.table-two td, .table-two th {
+  padding: 3px;
+}
+
+.table-one {
+  border-collapse: collapse;
+  width: 100%;
+
+}
+
+.table-one td, .table-one th {
+  border: 1px solid #000; 
+  padding: 6px;
+  text-align: center;
+}
+
+.table-one tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
 </style>
 <body>
 <div class="container">
-    <img class="kop" src="storage\main\kop seloaji.jpg" loading="lazy" alt="Image">
+    <img class="kop" src="{{ asset('images/kop seloaji.jpg') }}" loading="lazy" alt="Image">
         <div style="text-align: center;">
             <h4 style="text-transform: uppercase;" >LAPORAN BUKTI DUKUNG LAPORAN E KINERJA BULAN
              <br>
              {{$date->month}} {{$date->year}}
             </h4>
         </div>
-        <div >
-            <pre style="font-family: Arial, sans-serif;">Nama          : {{$user->name}}
-                <br>NIP              : {{$user->NIP}}
-                <br>Jabatan       : {{$tugas->Jabatan->name}}
-                <br>Unit Kerja    : Satuan Pelayanan Terminal Tipe A Seloaji Ponorogo
-            </pre>
+        <div>
+                    <table class="table-two">
+            <tr>
+              <td>Nama</td>
+              <td>: {{$user->name}}</td>
+            </tr>
+            <tr>
+              <td>NIP</td>
+              <td>: {{$user->NIP}}</td>
+
+            </tr>
+            <tr>
+              <td>Jabatan</td>
+              <td>: {{$tugas->Jabatan->name}}</td>
+
+            </tr>
+            <tr>
+              <td>Unit Kerja </td>
+              <td>: Satuan Pelayanan Terminal Tipe A Seloaji Ponorogo</td>
+
+            </tr>
+           
+          </table>
         </div>
     <h3 style="text-align: center; margin-top: -3px">{{$tugas->name}}</h3>
     <p style="font-weight: bold; margin-bottom:4px;">A. RENCANA AKSI :</p>
     <ul >
               @foreach($tugas['target'] as $job)
-                 <li><div style="margin-bottom: 3px"><p>{{ $job['name'] }} </p></div>
+                 <li><p>{{ $job['name'] }} </p>
               </li>
             @endforeach
             </ul>
 
       
- <form action="{{ route('post') }}" method="post">
+ <!-- <form action="{{ route('post') }}" method="post">
     @csrf
     <input type="hidden" name="id" value="{{ $tugas->id }}">
     <input type="hidden" name="route" value="{{ $route }}">
@@ -72,7 +117,10 @@ ul {
     </textarea>
 
     <button class="bg-blue-600 text-white px-4 py-2 mt-4">Save</button>
-</form>
+</form> -->
+<div class="table-one">
+    {!! $tugas->post !!}
+</div>
 
 {{-- CKEditor CDN --}}
 <script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
@@ -109,7 +157,7 @@ ClassicEditor
               </li>
             @endforeach
             </ul>
-        <img class="kop" src="storage\main\ttd.png" style="margin-top: 20px;" loading="lazy" alt="Image">
+        <img class="kop" src="images\ttd.png" style="margin-top: 20px;" loading="lazy" alt="Image">
     </div>
 </body>
 </html>
