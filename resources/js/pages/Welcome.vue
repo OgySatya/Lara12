@@ -4,7 +4,7 @@ import { Head, Link } from '@inertiajs/vue3';
 
 <template>
     <Head title="Wellcome" />
-    <div class="h-screen w-full bg-[url('/storage/main/seloaji.jpg')] bg-cover bg-center">
+    <div class="h-screen w-full bg-[url('/images/seloaji.jpg')] bg-cover bg-center">
         <section>
             <div class="mx-auto max-w-screen-xl px-4 py-4 text-center lg:py-8">
                 <div class="absolute bottom-8 left-1/2 inline-flex -translate-x-1/2 rounded-xl border-2 border-white/20 bg-white/10 bg-opacity-50">

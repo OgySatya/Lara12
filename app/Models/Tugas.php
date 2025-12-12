@@ -9,7 +9,7 @@ class Tugas extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'jabatan_id'];
+    protected $fillable = ['name', 'jabatan_id','post'];
 
     public function jabatan()
     {

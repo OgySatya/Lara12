@@ -14,7 +14,7 @@ const props = defineProps<{
     user: User;
     date: { month: number; year: number };
 }>();
-
+console.log(props.tugas)
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: props.user.name,
@@ -134,9 +134,9 @@ const redirect = (month: number, year: number) => {
 };
 const isGenerating = ref(false);
 
-const generatePdf = async (month: number, year: number) => {
+const generatePdf = async (month: number, year: number, id: string) => {
     isGenerating.value = true;
-    window.location.href = `/pdf?job=${props.user.job}&month=${month}&year=${year}`;
+    window.location.href = `/${id}?job=${props.user.job}&month=${month}&year=${year}`;
     isGenerating.value = false;
 };
 </script>
@@ -240,15 +240,25 @@ const generatePdf = async (month: number, year: number) => {
                     </div>
                 </div>
             </div>
+            <div>
+    </div>
             <div class="rounded-lg bg-gradient-to-r from-sky-200 via-sky-50 p-6 dark:from-slate-700">
                 <p class="mb-4 text-2xl font-bold text-amber-500 dark:text-white">Rekap SKP jadi PDF</p>
 
                 <Button
-                    @click="generatePdf(selectedMonth, selectedYear)"
+                    @click="generatePdf(selectedMonth, selectedYear,'pdf')"
                     :disabled="isGenerating"
                     class="mb-2 me-2 rounded-md bg-gradient-to-br from-pink-500 to-orange-400 px-5 py-2 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800"
                 >
                     {{ isGenerating ? 'Monggo di enteni, suwe BOSS...' : 'Rekap SKP' }}
+                    <LoaderCircle v-if="isGenerating" class="h-5 w-5 animate-spin" />
+                </Button>
+                <Button
+                    @click="generatePdf(selectedMonth, selectedYear,'laporan')"
+                    :disabled="isGenerating"
+                    class="mb-2 me-2 rounded-md bg-gradient-to-br from-pink-500 to-orange-400 px-5 py-2 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800"
+                >
+                    {{ isGenerating ? 'Monggo di enteni, suwe BOSS...' : 'Edit Kata2' }}
                     <LoaderCircle v-if="isGenerating" class="h-5 w-5 animate-spin" />
                 </Button>
             </div>

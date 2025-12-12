@@ -22,6 +22,7 @@ export interface Data {
     target: Job[];
     id: number;
     jabatan: { name: string };
+    post:string;
 }
 export interface Job {
     id: number;

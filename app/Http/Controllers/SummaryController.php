@@ -54,7 +54,8 @@ class SummaryController extends Controller
         return view('report', [
             'tugas' => $tugas,
             'user' => $user,
-            'date' => $date
+            'date' => $date,
+            'route' => $request->job 
         ]);
     }
 
@@ -106,7 +107,9 @@ class SummaryController extends Controller
         $html = view('report', [
             'tugas' => $tugas,
             'user' => $user,
-            'date' => $date
+            'date' => $date,
+            'route' => $request->job 
+            
         ])->render();
 
         $mpdf = new \Mpdf\Mpdf([

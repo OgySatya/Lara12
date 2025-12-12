@@ -46,54 +46,12 @@ ul {
             </h4>
         </div>
         <div >
-            <pre style="font-family: Arial, sans-serif;">Nama          : {{$user->name}}
-                <br>NIP              : {{$user->NIP}}
-                <br>Jabatan       : {{$tugas->Jabatan->name}}
-                <br>Unit Kerja    : Satuan Pelayanan Terminal Tipe A Seloaji Ponorogo
+            <pre style="font-family: Arial, sans-serif;">Nama       : {{$user->name}}
+                <br>NIP           : {{$user->NIP}}
+                <br>Jabatan    : {{$tugas->Jabatan->name}}
             </pre>
         </div>
-    <h3 style="text-align: center; margin-top: -3px">{{$tugas->name}}</h3>
-    <p style="font-weight: bold; margin-bottom:4px;">A. RENCANA AKSI :</p>
-    <ul >
-              @foreach($tugas['target'] as $job)
-                 <li><div style="margin-bottom: 3px"><p>{{ $job['name'] }} </p></div>
-              </li>
-            @endforeach
-            </ul>
-
-      
- <form action="{{ route('post') }}" method="post">
-    @csrf
-    <input type="hidden" name="id" value="{{ $tugas->id }}">
-    <input type="hidden" name="route" value="{{ $route }}">
-
-    <textarea id="editor" name="content">
-        {{ old('content', $tugas->post) }}
-    </textarea>
-
-    <button class="bg-blue-600 text-white px-4 py-2 mt-4">Save</button>
-</form>
-
-{{-- CKEditor CDN --}}
-<script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
-
-<script>
-ClassicEditor
-    .create( document.querySelector( '#editor' ), {
-        toolbar: [
-            'heading',
-            'bold','italic','underline','link',
-            'bulletedList','numberedList','blockQuote',
-            'insertTable','undo','redo'
-        ],
-        table: {
-            contentToolbar: [
-                'tableColumn', 'tableRow', 'mergeTableCells'
-            ]
-        }
-    })
-    .catch(error => console.error(error));
-</script>
+            <h3 style="text-align: center; margin-top: -3px">{{$tugas->name}}</h3>
             <ul >
               @foreach($tugas['target'] as $job)
                  @if(count($tugas->target[0]->laporan) > 4)

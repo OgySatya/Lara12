@@ -103,41 +103,21 @@ class JobsController extends Controller
             'image' => $request['image'],
         ]);
     }
+    
 
-    public function duplicate($request)
+    public function post(Request $request)
     {
-        // $user = Auth::user([
-        //         'id',
-        //         'username'
-        //     ]);
-        //     $job = $request->job ?: 1;
-        //     $month = $request->month ?: Carbon::now()->month;
-        //     $year = $request->year ?: Carbon::now()->year;
-        //     $job_id = Auth::user()->jabatan_id;
-        //     $tugas = Tugas::where('jabatan_id', $job_id)->with('target', 'jabatan')->skip($job - 1)->take(1)->first();
-            
-        // $data = Laporan::where('user_id', $request-user)->get();
-
-        // foreach ($posts as $post) {
-        //     $newPost = $post->replicate(); // Duplicate the model
-        //     $newPost->user_id = $toUserId; // Assign to new user
-        //     $newPost->save();
-        // }
-
-        // return 'Posts copied successfully.';
+        $post = tugas::findOrFail($request->id);
+        $post->update([
+            'post' => $request->content,
+        ]);
+        $id = $request->route;
+          // Redirect back to the edit page (same form)
+    return redirect()->route('laporan', ['job' => $id])
+                     ->with('success', 'Content saved!');
     }
+    
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Request $request)
     {
         $request->validate([
