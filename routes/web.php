@@ -28,6 +28,7 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::delete('delete', [JobsController::class, 'destroy'])->name('delete');
     Route::get('laporan', [SummaryController::class, 'show'])->name('laporan');
     Route::get('pdf', [SummaryController::class, 'create'])->name('pdf');
+    Route::get('/laporan/pdf', [SummaryController::class, 'pdf']);
 
     Route::get('rekap', [SkemarajaController::class, 'index'])->name('rekap');
     Route::post('rekap/store', [SkemarajaController::class, 'store'])->name('rekap.store');

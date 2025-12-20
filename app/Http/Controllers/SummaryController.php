@@ -8,6 +8,7 @@ use App\Models\Tugas;
 use App\Models\Laporan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\Snappy\Facades\SnappyPdf;
 
 class SummaryController extends Controller
 {
@@ -102,7 +103,8 @@ class SummaryController extends Controller
         $date->month = $months[$month];
         $date->year = $year;
         $user->job = $job;
-        ini_set('max_execution_time', 300);
+        ini_set('memory_limit', '512M');
+         set_time_limit(120);
 
         $html = view('report', [
             'tugas' => $tugas,
@@ -111,7 +113,6 @@ class SummaryController extends Controller
             'route' => $request->job 
             
         ])->render();
-
         $mpdf = new \Mpdf\Mpdf([
             'margin_top' => 2,
             'margin_left' => 15,
@@ -124,4 +125,5 @@ class SummaryController extends Controller
 
         return $mpdf->Output($user->name.'_'.$job.'.pdf', 'I');
     }
+
 }

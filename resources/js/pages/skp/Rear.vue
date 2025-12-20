@@ -6,7 +6,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem, type Data, type User } from '@/types';
 import { Head, useForm } from '@inertiajs/vue3';
 import axios from 'axios';
-import { defineProps, ref } from 'vue';
+import {  ref } from 'vue';
 import UploadModal from './modal/UploadModal.vue';
 
 const props = defineProps<{
@@ -148,7 +148,7 @@ const generatePdf = async (month: number, year: number, id: string) => {
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <h1 class="mx-auto font-bold underline underline-offset-4">{{ props.tugas.name }}</h1>
             <div class="flex w-full justify-between">
-                <div class="flex w-56 flex-col space-y-4">
+                <div class="flex w-fit flex-col space-y-4">
                     <div>
                         <label for="year" class="font-semibold">Tahun:</label>
                         <select
@@ -186,6 +186,24 @@ const generatePdf = async (month: number, year: number, id: string) => {
                         @cancel="((copyModal = false), form.reset())"
                     />
                 </div>
+                 <div class="grid rounded-lg bg-gradient-to-b from-lime-200 via-sky-50 to-green-200 py-2 px-5 dark:from-slate-700 items-center">
+                <Button
+                    @click="generatePdf(selectedMonth, selectedYear,'pdf')"
+                    :disabled="isGenerating"
+                    class="mb-2 me-2 rounded-md bg-gradient-to-br from-pink-400 to-orange-400 px-3 py-2 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800"
+                >
+                    {{ isGenerating ? 'Monggo di enteni, suwe BOSS...' : 'Rekap SKP jadi PDF' }}
+                    <LoaderCircle v-if="isGenerating" class="h-5 w-5 animate-spin" />
+                </Button>
+                <Button
+                    @click="generatePdf(selectedMonth, selectedYear,'laporan')"
+                    :disabled="isGenerating"
+                    class="mb-2 me-2 rounded-md bg-gradient-to-br from-violet-400 to-fuchsia-400 px-3 py-2 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800"
+                >
+                    {{ isGenerating ? 'Monggo di enteni, suwe BOSS...' : 'Edit Kata2' }}
+                    <LoaderCircle v-if="isGenerating" class="h-5 w-5 animate-spin" />
+                </Button>
+            </div>
             </div>
             <div>
                 <div v-for="(job, index) in props.tugas.target" :key="job.id">
@@ -242,9 +260,7 @@ const generatePdf = async (month: number, year: number, id: string) => {
             </div>
             <div>
     </div>
-            <div class="rounded-lg bg-gradient-to-r from-sky-200 via-sky-50 p-6 dark:from-slate-700">
-                <p class="mb-4 text-2xl font-bold text-amber-500 dark:text-white">Rekap SKP jadi PDF</p>
-
+            <div class="flex rounded-lg bg-gradient-to-r from-sky-200 via-sky-50 p-2 dark:from-slate-700">
                 <Button
                     @click="generatePdf(selectedMonth, selectedYear,'pdf')"
                     :disabled="isGenerating"
