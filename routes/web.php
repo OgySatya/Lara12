@@ -26,6 +26,7 @@ Route::middleware('auth', 'verified')->group(function () {
     Route::post('save', [JobsController::class, 'save'])->name('save');
     Route::post('post', [JobsController::class, 'post'])->name('post');
     Route::delete('delete', [JobsController::class, 'destroy'])->name('delete');
+    Route::delete('delete/sedoyo', [JobsController::class, 'multiDestroy'])->name('delete.sedoyo');
     Route::get('laporan', [SummaryController::class, 'show'])->name('laporan');
     Route::get('pdf', [SummaryController::class, 'create'])->name('pdf');
     Route::get('/laporan/pdf', [SummaryController::class, 'pdf']);

@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Inertia\Inertia;
 use App\Models\Tugas;
 use Inertia\Response;
-use App\Models\Image;
+use App\Models\Laporan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -25,22 +25,24 @@ class JobsController extends Controller
         $job_id = Auth::user()->jabatan_id;
         $tugas = Tugas::where('jabatan_id', $job_id)->with('target', 'jabatan')->skip($job - 1)->take(1)->first();
 
-        function getImages($userId, $targetId)
+        function getLaporanImages($userId, $targetId, $month, $year)
         {
-            return Image::where('user_id', $userId)
+            return Laporan::where('user_id', $userId)
                 ->where('target_id', $targetId)
+                ->where('bulan', $month)
+                ->where('tahun', $year)
                 ->pluck('image');
         }
 
         foreach ($tugas->target as $target) {
-            $target->image = getImages($user->id, $target->id);
+            $target->laporan = getLaporanImages($user->id, $target->id, $month, $year);
         }
 
         $date = new \stdClass();
         $date->month = $month;
         $date->year = $year;
         $user->job = $job;
-        return Inertia::render('skp/Jobs', [
+        return Inertia::render('skp/Rear', [
             'tugas' => $tugas,
             'user' => $user,
             'date' => $date
@@ -71,9 +73,11 @@ class JobsController extends Controller
         foreach ($request->file('images') as $file) {
             $newFileName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
             $file->storeAs('uploads', $newFileName, 'public');
-            Image::create([
+            Laporan::create([
             'user_id' => $request['user_id'],
             'target_id' => $request['target_id'],
+            'bulan' => $request['bulan'],
+            'tahun' => $request['tahun'],
             'image' => $newFileName,
         ]);
         }
@@ -84,14 +88,18 @@ class JobsController extends Controller
     public function save(Request $request)
     {
         $request->validate([
+            'bulan' => 'required|integer',
+            'tahun' => 'required|integer',
             'user_id' => 'required|integer',
             'target_id' => 'required|integer',
             'image' => 'required|string',
         ]);
 
-        Image::create([
+        Laporan::create([
             'user_id' => $request['user_id'],
             'target_id' => $request['target_id'],
+            'bulan' => $request['bulan'],
+            'tahun' => $request['tahun'],
             'image' => $request['image'],
         ]);
     }
@@ -105,7 +113,7 @@ class JobsController extends Controller
         ]);
         $id = $request->route;
           // Redirect back to the edit page (same form)
-    return redirect()->route('Image', ['job' => $id])
+    return redirect()->route('laporan', ['job' => $id])
                      ->with('success', 'Content saved!');
     }
     
@@ -117,25 +125,6 @@ class JobsController extends Controller
         ]);
         $filePath = "uploads/" . $request->image;
         Storage::disk('public')->delete($filePath);
-        Image::where('image', $request->image)->delete();
-    }
-
-    public function multiDestroy(Request $request)
-    {
-        $request->validate([
-            'target_id' => 'required|integer',
-            'user_id' => 'required|integer'
-        ]);
-        $id = $request->target_id;
-        $foto = Image::where('user_id', $request->user_id)
-                ->where('target_id', $request->target_id)
-                ->pluck('image');
-
-           foreach ($foto as $file) {
-            $filePath = "uploads/" . $file;
-             Storage::disk('public')->delete($filePath);
-             Image::where('image', $file)->delete();
-        }
-        
+        Laporan::where('image', $request->image)->delete();
     }
 }

@@ -23,8 +23,10 @@ export interface Data {
     id: number;
     jabatan: { name: string };
     post:string;
+    image:string;
 }
 export interface Job {
+    image: never[];
     id: number;
     name: string;
     slug: string;

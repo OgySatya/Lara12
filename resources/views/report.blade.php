@@ -38,7 +38,7 @@ ul {
 </style>
 <body>
 <div class="container">
-    <!-- <img class="kop" src="storage\main\kop seloaji.jpg" loading="lazy" alt="Image"> -->
+    <img class="kop" src="storage\main\kop.jpg" loading="lazy" alt="Image">
         <div style="text-align: center;">
             <h4 style="text-transform: uppercase;" >LAPORAN BUKTI DUKUNG LAPORAN E KINERJA BULAN
              <br>
@@ -54,20 +54,20 @@ ul {
             <h3 style="text-align: center; margin-top: -3px">{{$tugas->name}}</h3>
             <ul >
               @foreach($tugas['target'] as $job)
-                 @if(count($tugas->target[0]->laporan) > 4)
+                 @if(count($tugas->target[0]->image) > 4)
                  <li><div style="height: 70px;margin-bottom: 10px;"><p>{{ $job['name'] }} </p></div>
                   @else
                   <li><div style="margin-top: -10px;"><p>{{ $job['name'] }} </p></div>
                   @endif
                 <div class="gird-container">
-                  @foreach($job['laporan'] as $link)
+                  @foreach($job['image'] as $link)
                   <img class="grid-item" src="{{ 'storage/uploads/' . $link }}">
                   @endforeach
                 </div>
               </li>
             @endforeach
             </ul>
-        <!-- <img class="kop" src="storage\main\ttd.png" style="margin-top: 20px;" loading="lazy" alt="Image"> -->
+        <img class="kop" src="storage\main\ttd.png" style="margin-top: 20px;" loading="lazy" alt="Image">
     </div>
 </body>
 </html>

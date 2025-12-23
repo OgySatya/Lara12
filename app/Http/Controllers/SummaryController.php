@@ -5,10 +5,9 @@ namespace App\Http\Controllers;
 use Mpdf\Mpdf;
 use Carbon\Carbon;
 use App\Models\Tugas;
-use App\Models\Laporan;
+use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Barryvdh\Snappy\Facades\SnappyPdf;
 
 class SummaryController extends Controller
 {
@@ -22,17 +21,15 @@ class SummaryController extends Controller
         $job_id = Auth::user()->jabatan_id;
         $tugas = Tugas::where('jabatan_id', $job_id)->with('target', 'jabatan')->skip($job - 1)->take(1)->first();
 
-        function getLaporanImages($userId, $targetId, $month, $year)
+        function getImages($userId, $targetId,)
         {
-            return Laporan::where('user_id', $userId)
+            return Image::where('user_id', $userId)
                 ->where('target_id', $targetId)
-                ->where('bulan', $month)
-                ->where('tahun', $year)
                 ->pluck('image');
         }
 
         foreach ($tugas->target as $target) {
-            $target->laporan = getLaporanImages($user->id, $target->id, $month, $year);
+            $target->image = getImages($user->id, $target->id,);
         }
         $months = [
             1 => 'Januari',
@@ -52,11 +49,12 @@ class SummaryController extends Controller
         $date->month = $months[$month];
         $date->year = $year;
         $user->job = $job;
-        return view('report', [
+        return view('rekap', [
             'tugas' => $tugas,
             'user' => $user,
             'date' => $date,
-            'route' => $request->job 
+            'route' => $request->job, 
+            'pdf' => 0
         ]);
     }
 
@@ -73,17 +71,15 @@ class SummaryController extends Controller
         $job_id = Auth::user()->jabatan_id;
         $tugas = Tugas::where('jabatan_id', $job_id)->with('target', 'jabatan')->skip($job - 1)->take(1)->first();
 
-        function LaporanImages($userId, $targetId, $month, $year)
+        function getImages($userId, $targetId,)
         {
-            return Laporan::where('user_id', $userId)
+            return Image::where('user_id', $userId)
                 ->where('target_id', $targetId)
-                ->where('bulan', $month)
-                ->where('tahun', $year)
                 ->pluck('image');
         }
 
         foreach ($tugas->target as $target) {
-            $target->laporan = LaporanImages($user->id, $target->id, $month, $year);
+            $target->image = getImages($user->id, $target->id,);
         }
         $months = [
             1 => 'Januari',
@@ -106,11 +102,12 @@ class SummaryController extends Controller
         ini_set('memory_limit', '512M');
          set_time_limit(120);
 
-        $html = view('report', [
+        $html = view('rekap', [
             'tugas' => $tugas,
             'user' => $user,
             'date' => $date,
-            'route' => $request->job 
+            'route' => $request->job, 
+            'pdf'=> 1
             
         ])->render();
         $mpdf = new \Mpdf\Mpdf([
