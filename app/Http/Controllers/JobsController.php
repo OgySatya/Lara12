@@ -104,9 +104,8 @@ class JobsController extends Controller
             'post' => $request->content,
         ]);
         $id = $request->route;
-          // Redirect back to the edit page (same form)
-    return redirect()->route('Image', ['job' => $id])
-                     ->with('success', 'Content saved!');
+        return redirect()->route('laporan', ['job' => $id])
+                 ->with('success', 'Content saved!');
     }
     
 

@@ -49,7 +49,7 @@ class SummaryController extends Controller
         $date->month = $months[$month];
         $date->year = $year;
         $user->job = $job;
-        return view('report', [
+        return view('rekap', [
             'tugas' => $tugas,
             'user' => $user,
             'date' => $date,
@@ -102,7 +102,7 @@ class SummaryController extends Controller
         ini_set('memory_limit', '512M');
          set_time_limit(120);
 
-        $html = view('report', [
+        $html = view('rekap', [
             'tugas' => $tugas,
             'user' => $user,
             'date' => $date,

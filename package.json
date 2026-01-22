@@ -35,7 +35,7 @@
         "laravel-vite-plugin": "^1.0",
         "lucide": "^0.468.0",
         "lucide-vue-next": "^0.468.0",
-        "puppeteer": "^24.12.1",
+        "puppeteer": "^24.34.0",
         "radix-vue": "^1.9.11",
         "reka-ui": "^2.3.2",
         "tailwind-merge": "^2.5.5",
@@ -50,5 +50,23 @@
         "@rollup/rollup-linux-x64-gnu": "4.9.5",
         "@tailwindcss/oxide-linux-x64-gnu": "^4.0.1",
         "lightningcss-linux-x64-gnu": "^1.29.1"
-    }
+    },
+    "name": "lara12",
+    "version": "1.0.0",
+    "description": "",
+    "main": "eslint.config.js",
+    "directories": {
+        "test": "tests"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/OgySatya/Lara12.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/OgySatya/Lara12/issues"
+    },
+    "homepage": "https://github.com/OgySatya/Lara12#readme"
 }
