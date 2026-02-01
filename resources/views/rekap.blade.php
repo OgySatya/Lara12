@@ -68,17 +68,17 @@ p{
   width: 100%;
   border-collapse: collapse;
   font-family: Arial, sans-serif;
+  margin: 0 auto;
 }
 .simple-table table{
-  border: 1px solid #ddd;
+  border: 0.1px solid #6c6c6c;
 }
 .simple-table p{
   margin-left: 25px;
 }
 .simple-table th, .simple-table td {
-  padding: 10px;
-  text-align: center;
-  border: 1px solid #ddd;
+  padding: 5px;
+  border: 0.1px solid #6c6c6c;
 }
 .btn {
   padding: 8px 16px;
@@ -133,9 +133,9 @@ p{
            
           </table>
         </div>
-    <h4>A.   RENCANA HASIL KERJA </h4>
+    <h4>A. Rencan Hasil Kerja</h4>
     <p style="font-weight: bold;margin-left:20px ">{{$tugas->name}}</p>
-    <h4>B.   RENCANA AKSI </h4>
+    <h4>B. Rencana Aksi</h4>
     <ul style="margin-left:15px ; list-style-type: number; margin-bottom: -10px;">
               @foreach($tugas['target'] as $job)
                  <li>
