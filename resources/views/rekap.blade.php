@@ -192,9 +192,9 @@ p{
               @foreach($tugas['target'] as $job)
                   <li style="list-style-type: upper-roman;"><p>{{ $job['name'] }} </p>
                   <div class="gird-container">
-                  @foreach($job['image'] as $link)
+                @foreach(collect($job['image'])->shuffle() as $link)
                   <img class="grid-item" src="{{ 'storage/uploads/' . $link }}">
-                  @endforeach
+              @endforeach
                 </div>
               </li>
             @endforeach
