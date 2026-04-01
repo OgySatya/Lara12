@@ -231,14 +231,14 @@ const generatePdf = async (month: number, year: number, id: string) => {
                         <Button @click="openSedoyo(job.id)"  class="text-red-500" variant="outline">Hapus Sedoyo</Button>
                         </div>
                     </div>
-                    <div class="my-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div class="my-4 grid grid-cols-1 gap-4 md:grid-cols-5">
                         <div class="grid" v-for="(link, imgIndex) in props.tugas.target[index].image || []" :key="imgIndex">
                             <div
                                 class="relative mb-2 aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
                             >
                                 <img class="h-full w-full object-fill" :src="`/storage/uploads/${link}`" />
                             </div>
-                            <Button @click="modal(link)" class="mx-auto w-fit" variant="destructive">Hapus Foto</Button>
+                            <Button @click="modal(link)" class="mx-auto" variant="destructive">Hapus</Button>
 
                             <DeleteModal
                                 :visible="showModal"

@@ -69,6 +69,8 @@ p{
   border-collapse: collapse;
   font-family: Arial, sans-serif;
   margin: 0 auto;
+  align-content: center;
+  
 }
 .simple-table table{
   border: 0.1px solid #6c6c6c;
@@ -80,6 +82,7 @@ p{
   padding: 5px;
   border: 0.1px solid #6c6c6c;
 }
+
 .btn {
   padding: 8px 16px;
   background-color: #2563eb; /* blue */
@@ -192,7 +195,7 @@ p{
               @foreach($tugas['target'] as $job)
                   <li style="list-style-type: upper-roman;"><p>{{ $job['name'] }} </p>
                   <div class="gird-container">
-                @foreach(collect($job['image'])->shuffle() as $link)
+                @foreach(collect($job['image'])->shuffle()->take(4) as $link)
                   <img class="grid-item" src="{{ 'storage/uploads/' . $link }}">
               @endforeach
                 </div>
